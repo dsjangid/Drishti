@@ -1,0 +1,12 @@
+# JUCC Edge AI Engine Dependencies
+# SIH-2026 Problem Statement PS-26124
+
+numpy>=1.23.0
+opencv-python>=4.7.0.72
+pillow>=9.5.0
+
+# Optional PyTorch & Deep Learning backends
+# torch>=2.0.0
+# torchvision>=0.15.0
+# ultralytics>=8.0.0
+# onnxruntime>=1.15.0
