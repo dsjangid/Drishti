@@ -5,6 +5,8 @@ __pycache__/
 ai_output/
 datasets/
 runs/
+temp_rad_images/
 *.pt
 *.onnx
 *.engine
+*.mp4
