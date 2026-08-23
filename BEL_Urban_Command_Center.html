@@ -65,7 +65,6 @@
     }
     .glass-card:hover {
       box-shadow: 0 16px 40px -6px rgba(30, 35, 32, 0.07), 0 4px 12px -2px rgba(30, 35, 32, 0.03);
-      transform: translateY(-2px);
     }
 
     .glass-pill-bar {
@@ -76,7 +75,7 @@
     }
 
     .glass-sidebar {
-      background: rgba(239, 243, 234, 0.85);
+      background: rgba(239, 243, 234, 0.90);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
     }
@@ -258,7 +257,7 @@
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
         <h1 class="text-3xl sm:text-4xl font-extrabold text-[#1E2320] tracking-tight" id="main-view-title">Incident Dockets</h1>
-        <p class="text-xs text-[#717D75] mt-1">Real-time edge-AI transit sensing across 10 municipal buses · Nagar Nigam Jaipur</p>
+        <p class="text-xs text-[#717D75] mt-1" id="main-view-subtitle">Real-time edge-AI transit sensing across 10 municipal buses · Nagar Nigam Jaipur</p>
       </div>
 
       <!-- Top Right Search & User Profile Pill -->
@@ -297,163 +296,118 @@
       </div>
     </div>
 
-    <!-- Segmented Filter Pills & Floating Notification Toast (Exact Screenshot) -->
-    <div class="flex flex-wrap items-center justify-between gap-4">
-      
-      <!-- Filter Tabs Strip -->
-      <div class="flex flex-wrap items-center gap-2 glass-pill-bar p-1.5 text-xs font-medium">
-        
-        <button onclick="setIncidentFilter('ALL')" id="pill-filter-all" class="px-5 py-2 rounded-full bg-white text-[#1E2320] font-bold shadow-sm flex items-center gap-2.5 transition-all cursor-pointer">
-          <span class="material-symbols-outlined text-sm">dashboard</span>
-          <span>All Dockets</span>
-          <span class="px-2 py-0.5 bg-[#EFF4EB] rounded-full text-[10px] font-mono" id="badge-count-all">18</span>
-        </button>
-
-        <button onclick="setIncidentFilter('PENDING')" id="pill-filter-pending" class="px-5 py-2 rounded-full text-[#717D75] hover:text-[#1E2320] flex items-center gap-2.5 transition-all cursor-pointer">
-          <span class="material-symbols-outlined text-sm text-amber-600">hourglass_top</span>
-          <span>Pending Review</span>
-          <span class="px-2 py-0.5 bg-[#EFF4EB] rounded-full text-[10px] font-mono text-amber-800 font-bold" id="badge-count-pending">12</span>
-        </button>
-
-        <button onclick="setIncidentFilter('CRITICAL')" id="pill-filter-critical" class="px-5 py-2 rounded-full text-[#717D75] hover:text-[#1E2320] flex items-center gap-2.5 transition-all cursor-pointer">
-          <span class="material-symbols-outlined text-sm text-rose-600">shield</span>
-          <span>Active Pursuits</span>
-          <span class="px-2 py-0.5 bg-rose-100 rounded-full text-[10px] font-mono font-bold text-rose-700" id="badge-count-critical">1</span>
-        </button>
-
-        <button onclick="setIncidentFilter('RESOLVED')" id="pill-filter-resolved" class="px-5 py-2 rounded-full text-[#717D75] hover:text-[#1E2320] flex items-center gap-2.5 transition-all cursor-pointer">
-          <span class="material-symbols-outlined text-sm text-emerald-600">check_circle</span>
-          <span>Resolved Today</span>
-          <span class="px-2 py-0.5 bg-emerald-100 rounded-full text-[10px] font-mono font-bold text-emerald-800" id="badge-count-resolved">5</span>
-        </button>
-
-        <button onclick="setIncidentFilter('FLEET')" id="pill-filter-fleet" class="px-5 py-2 rounded-full text-[#717D75] hover:text-[#1E2320] flex items-center gap-2.5 transition-all cursor-pointer">
-          <span class="material-symbols-outlined text-sm text-[#4A62D6]">directions_bus</span>
-          <span>Fleet Buses</span>
-          <span class="px-2 py-0.5 bg-[#EEF1FD] rounded-full text-[10px] font-mono font-bold text-[#4A62D6]">10</span>
-        </button>
-
-      </div>
-
-      <!-- Floating Notification Pill -->
-      <div id="live-action-banner" class="hidden sm:flex items-center gap-3 bg-white/95 backdrop-blur-md rounded-2xl px-5 py-2.5 shadow-sm">
-        <div class="w-8 h-8 rounded-full bg-[#E8F8EE] text-[#1E8A44] flex items-center justify-center">
-          <span class="material-symbols-outlined text-base">check</span>
-        </div>
-        <div>
-          <strong class="text-xs font-bold text-[#1E2320] block" id="banner-action-title">Docket resolved</strong>
-          <span class="text-[11px] text-[#717D75] block" id="banner-action-sub">Moved to "Resolved Today"</span>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- 10-BUS DIRECT SELECTOR STRIP (STATICALLY RENDERED FOR GUARANTEED CLICKABILITY) -->
-    <div class="glass-card p-4 space-y-2.5">
-      <div class="flex justify-between items-center text-xs">
-        <span class="font-bold text-[#1E2320] flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider">
-          <span class="material-symbols-outlined text-base text-[#4A62D6]">directions_bus</span>
-          <span>10-Bus Direct Fleet Switcher (Click any bus below to inspect instantly):</span>
-        </span>
-        <span class="text-[11px] text-[#717D75] font-mono">10 Units Online · 4G LTE Edge Mesh</span>
-      </div>
-
-      <div id="fleet-selector-strip" class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2.5 font-mono text-xs">
-        
-        <button onclick="selectBusDirectly('BUS-001')" id="bus-pill-BUS-001" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-[11px]">BUS-001</span>
-            <span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
-          </div>
-          <span class="text-[10px] truncate text-[#717D75]">28 km/h · Rajesh</span>
-        </button>
-
-        <button onclick="selectBusDirectly('BUS-002')" id="bus-pill-BUS-002" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-[11px]">BUS-002</span>
-            <span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
-          </div>
-          <span class="text-[10px] truncate text-[#717D75]">34 km/h · Vikram</span>
-        </button>
-
-        <button onclick="selectBusDirectly('BUS-003')" id="bus-pill-BUS-003" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#1E2320] text-white shadow-md">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-[11px]">BUS-003</span>
-            <span class="w-2 h-2 rounded-full bg-white"></span>
-          </div>
-          <span class="text-[10px] truncate text-slate-300">22 km/h · Manoj</span>
-        </button>
-
-        <button onclick="selectBusDirectly('BUS-004')" id="bus-pill-BUS-004" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-[11px]">BUS-004</span>
-            <span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
-          </div>
-          <span class="text-[10px] truncate text-[#717D75]">31 km/h · Ramesh</span>
-        </button>
-
-        <button onclick="selectBusDirectly('BUS-005')" id="bus-pill-BUS-005" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-[11px]">BUS-005</span>
-            <span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
-          </div>
-          <span class="text-[10px] truncate text-[#717D75]">42 km/h · Suresh</span>
-        </button>
-
-        <button onclick="selectBusDirectly('BUS-006')" id="bus-pill-BUS-006" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-[11px]">BUS-006</span>
-            <span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
-          </div>
-          <span class="text-[10px] truncate text-[#717D75]">26 km/h · Anil</span>
-        </button>
-
-        <button onclick="selectBusDirectly('BUS-007')" id="bus-pill-BUS-007" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-[11px]">BUS-007</span>
-            <span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
-          </div>
-          <span class="text-[10px] truncate text-[#717D75]">29 km/h · Dinesh</span>
-        </button>
-
-        <button onclick="selectBusDirectly('BUS-008')" id="bus-pill-BUS-008" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-[11px]">BUS-008</span>
-            <span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
-          </div>
-          <span class="text-[10px] truncate text-[#717D75]">35 km/h · Sunil</span>
-        </button>
-
-        <button onclick="selectBusDirectly('BUS-009')" id="bus-pill-BUS-009" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-[11px]">BUS-009</span>
-            <span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
-          </div>
-          <span class="text-[10px] truncate text-[#717D75]">18 km/h · Praveen</span>
-        </button>
-
-        <button onclick="selectBusDirectly('BUS-010')" id="bus-pill-BUS-010" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-[11px]">BUS-010</span>
-            <span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
-          </div>
-          <span class="text-[10px] truncate text-[#717D75]">14 km/h · Mahesh</span>
-        </button>
-
-      </div>
-    </div>
-
     <!-- ======================================================================= -->
     <!-- VIEW 1: COMMAND CENTER (BENTO INCIDENT DOCKETS + INTEGRATED GIS MAP) -->
     <!-- ======================================================================= -->
-    <div id="tab-view-command-center" class="space-y-7">
+    <div id="tab-view-command-center" class="space-y-6">
       
+      <!-- Segmented Filter Pills & Floating Notification Toast -->
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div class="flex flex-wrap items-center gap-2 glass-pill-bar p-1.5 text-xs font-medium">
+          <button onclick="setIncidentFilter('ALL')" id="pill-filter-all" class="px-5 py-2 rounded-full bg-white text-[#1E2320] font-bold shadow-sm flex items-center gap-2.5 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-sm">dashboard</span>
+            <span>All Dockets</span>
+            <span class="px-2 py-0.5 bg-[#EFF4EB] rounded-full text-[10px] font-mono" id="badge-count-all">18</span>
+          </button>
+
+          <button onclick="setIncidentFilter('PENDING')" id="pill-filter-pending" class="px-5 py-2 rounded-full text-[#717D75] hover:text-[#1E2320] flex items-center gap-2.5 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-sm text-amber-600">hourglass_top</span>
+            <span>Pending Review</span>
+            <span class="px-2 py-0.5 bg-[#EFF4EB] rounded-full text-[10px] font-mono text-amber-800 font-bold" id="badge-count-pending">12</span>
+          </button>
+
+          <button onclick="setIncidentFilter('CRITICAL')" id="pill-filter-critical" class="px-5 py-2 rounded-full text-[#717D75] hover:text-[#1E2320] flex items-center gap-2.5 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-sm text-rose-600">shield</span>
+            <span>Active Pursuits</span>
+            <span class="px-2 py-0.5 bg-rose-100 rounded-full text-[10px] font-mono font-bold text-rose-700" id="badge-count-critical">1</span>
+          </button>
+
+          <button onclick="setIncidentFilter('RESOLVED')" id="pill-filter-resolved" class="px-5 py-2 rounded-full text-[#717D75] hover:text-[#1E2320] flex items-center gap-2.5 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-sm text-emerald-600">check_circle</span>
+            <span>Resolved Today</span>
+            <span class="px-2 py-0.5 bg-emerald-100 rounded-full text-[10px] font-mono font-bold text-emerald-800" id="badge-count-resolved">5</span>
+          </button>
+
+          <button onclick="setIncidentFilter('FLEET')" id="pill-filter-fleet" class="px-5 py-2 rounded-full text-[#717D75] hover:text-[#1E2320] flex items-center gap-2.5 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-sm text-[#4A62D6]">directions_bus</span>
+            <span>Fleet Buses</span>
+            <span class="px-2 py-0.5 bg-[#EEF1FD] rounded-full text-[10px] font-mono font-bold text-[#4A62D6]">10</span>
+          </button>
+        </div>
+
+        <!-- Floating Notification Banner -->
+        <div id="live-action-banner" class="hidden sm:flex items-center gap-3 bg-white/95 backdrop-blur-md rounded-2xl px-5 py-2.5 shadow-sm">
+          <div class="w-8 h-8 rounded-full bg-[#E8F8EE] text-[#1E8A44] flex items-center justify-center">
+            <span class="material-symbols-outlined text-base">check</span>
+          </div>
+          <div>
+            <strong class="text-xs font-bold text-[#1E2320] block" id="banner-action-title">Docket resolved</strong>
+            <span class="text-[11px] text-[#717D75] block" id="banner-action-sub">Moved to "Resolved Today"</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10-Bus Direct Access Selector Strip -->
+      <div class="glass-card p-4 space-y-2.5">
+        <div class="flex justify-between items-center text-xs">
+          <span class="font-bold text-[#1E2320] flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider">
+            <span class="material-symbols-outlined text-base text-[#4A62D6]">directions_bus</span>
+            <span>10-Bus Fleet Telemetry &amp; Camera Switcher (Click any bus to inspect):</span>
+          </span>
+          <span class="text-[11px] text-[#717D75] font-mono">10 Units Online · 4G LTE Edge Mesh</span>
+        </div>
+
+        <div id="fleet-selector-strip" class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2.5 font-mono text-xs">
+          <!-- Statically rendered buttons for all 10 buses -->
+          <button onclick="selectBusDirectly('BUS-001')" id="bus-pill-BUS-001" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
+            <div class="flex justify-between items-center"><span class="font-bold text-[11px]">BUS-001</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span></div>
+            <span class="text-[10px] truncate text-[#717D75]">28 km/h · Rajesh</span>
+          </button>
+          <button onclick="selectBusDirectly('BUS-002')" id="bus-pill-BUS-002" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
+            <div class="flex justify-between items-center"><span class="font-bold text-[11px]">BUS-002</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span></div>
+            <span class="text-[10px] truncate text-[#717D75]">34 km/h · Vikram</span>
+          </button>
+          <button onclick="selectBusDirectly('BUS-003')" id="bus-pill-BUS-003" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#1E2320] text-white shadow-md">
+            <div class="flex justify-between items-center"><span class="font-bold text-[11px]">BUS-003</span><span class="w-2 h-2 rounded-full bg-white"></span></div>
+            <span class="text-[10px] truncate text-slate-300">22 km/h · Manoj</span>
+          </button>
+          <button onclick="selectBusDirectly('BUS-004')" id="bus-pill-BUS-004" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
+            <div class="flex justify-between items-center"><span class="font-bold text-[11px]">BUS-004</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span></div>
+            <span class="text-[10px] truncate text-[#717D75]">31 km/h · Ramesh</span>
+          </button>
+          <button onclick="selectBusDirectly('BUS-005')" id="bus-pill-BUS-005" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
+            <div class="flex justify-between items-center"><span class="font-bold text-[11px]">BUS-005</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span></div>
+            <span class="text-[10px] truncate text-[#717D75]">42 km/h · Suresh</span>
+          </button>
+          <button onclick="selectBusDirectly('BUS-006')" id="bus-pill-BUS-006" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
+            <div class="flex justify-between items-center"><span class="font-bold text-[11px]">BUS-006</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span></div>
+            <span class="text-[10px] truncate text-[#717D75]">26 km/h · Anil</span>
+          </button>
+          <button onclick="selectBusDirectly('BUS-007')" id="bus-pill-BUS-007" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
+            <div class="flex justify-between items-center"><span class="font-bold text-[11px]">BUS-007</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span></div>
+            <span class="text-[10px] truncate text-[#717D75]">29 km/h · Dinesh</span>
+          </button>
+          <button onclick="selectBusDirectly('BUS-008')" id="bus-pill-BUS-008" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
+            <div class="flex justify-between items-center"><span class="font-bold text-[11px]">BUS-008</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span></div>
+            <span class="text-[10px] truncate text-[#717D75]">35 km/h · Sunil</span>
+          </button>
+          <button onclick="selectBusDirectly('BUS-009')" id="bus-pill-BUS-009" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
+            <div class="flex justify-between items-center"><span class="font-bold text-[11px]">BUS-009</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span></div>
+            <span class="text-[10px] truncate text-[#717D75]">18 km/h · Praveen</span>
+          </button>
+          <button onclick="selectBusDirectly('BUS-010')" id="bus-pill-BUS-010" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
+            <div class="flex justify-between items-center"><span class="font-bold text-[11px]">BUS-010</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span></div>
+            <span class="text-[10px] truncate text-[#717D75]">14 km/h · Mahesh</span>
+          </button>
+        </div>
+      </div>
+
       <!-- Selected Bus Live Telemetry & Inspector Bar -->
       <div id="active-bus-telemetry-banner" class="glass-card p-5 flex flex-wrap items-center justify-between gap-4 border border-blue-500/25 bg-gradient-to-r from-blue-50/60 via-white to-white">
         <div class="flex items-center gap-3.5">
-          <div class="w-12 h-12 rounded-2xl bg-[#1E2320] text-white flex flex-col items-center justify-center font-mono font-bold shadow-md">
-            <span class="text-xs" id="hud-selected-bus-id">BUS-003</span>
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <div class="px-3.5 py-2 rounded-2xl bg-[#1E2320] text-white flex items-center gap-2 font-mono font-bold shadow-md">
+            <span class="text-xs tracking-wider" id="hud-selected-bus-id">BUS-003</span>
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
           </div>
           <div>
             <div class="flex items-center gap-2">
@@ -540,48 +494,63 @@
     <!-- ======================================================================= -->
     <div id="tab-view-edge-vision" class="hidden space-y-6">
       
-      <!-- Camera Bus Switcher Strip in Tab 2 -->
-      <div class="glass-card p-4 flex flex-wrap items-center justify-between gap-3">
-        <span class="font-bold text-[#1E2320] text-xs font-mono uppercase tracking-wider">Switch Onboard Camera Unit:</span>
-        <div id="camera-tab-bus-selector" class="flex flex-wrap gap-2 font-mono text-xs">
+      <!-- Camera Bus Switcher Strip -->
+      <div class="glass-card p-4 space-y-2.5">
+        <div class="flex justify-between items-center text-xs">
+          <span class="font-bold text-[#1E2320] text-xs font-mono uppercase tracking-wider flex items-center gap-2">
+            <span class="material-symbols-outlined text-base text-[#4A62D6]">videocam</span>
+            <span>Switch Onboard Camera Unit (Click to view live stream):</span>
+          </span>
+          <span class="text-[11px] text-[#717D75] font-mono">10 Units Online · 1080p Optical Stream</span>
+        </div>
+        <div id="camera-tab-bus-selector" class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2 font-mono text-xs">
           <!-- Dynamically populated -->
         </div>
       </div>
 
-      <div class="glass-card p-6 space-y-4">
+      <!-- Live Video Viewport Card -->
+      <div class="glass-card p-6 space-y-5">
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-black/[0.05] pb-4">
           <div>
-            <h3 class="font-bold text-[#1E2320] text-lg" id="edge-cam-title">BUS-003 · FRONT 1080p WINDSHIELD CAMERA</h3>
-            <p class="text-xs text-[#717D75]" id="edge-cam-subtitle">YOLOv8-Nano + License Plate OCR local inference @ 18.4 FPS on NVIDIA Jetson Orin</p>
+            <h3 class="font-bold text-[#1E2320] text-xl" id="edge-cam-title">BUS-003 · FRONT 1080p WINDSHIELD CAMERA</h3>
+            <p class="text-xs text-[#717D75] mt-0.5" id="edge-cam-subtitle">Manoj Meena (Route 3: Tonk Road) · Tonk Road Corridor · Severe 16cm Pothole Crater Detected</p>
           </div>
 
-          <div class="flex items-center gap-2 font-mono text-xs">
-            <span class="px-3.5 py-1 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-bold">18.4 FPS Local</span>
-            <span class="px-3.5 py-1 rounded-full bg-[#EEF1FD] text-[#4A62D6] font-bold">82.4% Bandwidth Saved</span>
+          <div class="flex items-center gap-2.5 font-mono text-xs">
+            <span class="px-3.5 py-1.5 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-bold">18.4 FPS Local NPU</span>
+            <span class="px-3.5 py-1.5 rounded-full bg-[#EEF1FD] text-[#4A62D6] font-bold">82.4% Bandwidth Saved</span>
           </div>
         </div>
 
-        <!-- Video Viewport Frame -->
-        <div class="relative w-full h-88 bg-[#181C1A] rounded-3xl overflow-hidden flex items-center justify-center select-none shadow-inner">
-          <div class="absolute inset-0 bg-gradient-to-b from-[#181C1A] via-[#222825] to-[#121514] opacity-90">
-            <div class="w-full h-full opacity-20 bg-[radial-gradient(#4A62D6_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <!-- High-Tech Video Viewport Frame with Explicit Min Height -->
+        <div class="relative w-full h-[400px] bg-[#141816] rounded-3xl overflow-hidden flex items-center justify-center select-none shadow-2xl border border-black/10">
+          
+          <!-- Perspective Road Grid Background -->
+          <div class="absolute inset-0 bg-gradient-to-b from-[#181E1B] via-[#101412] to-[#0A0D0C] opacity-95">
+            <div class="w-full h-full opacity-25 bg-[radial-gradient(#4A62D6_1px,transparent_1px)] [background-size:20px_20px]"></div>
           </div>
 
-          <div class="absolute inset-x-0 bottom-0 top-1/2 border-t border-dashed border-slate-700/50 pointer-events-none"></div>
+          <!-- Central Horizon & Vanishing Road Lines -->
+          <div class="absolute inset-x-0 bottom-0 top-[45%] flex justify-center pointer-events-none">
+            <div class="w-1/2 h-full border-x-2 border-dashed border-slate-600/40"></div>
+          </div>
 
-          <!-- Bounding Boxes Container (Dynamically updated per bus) -->
+          <!-- Dynamic Bounding Boxes Container -->
           <div id="camera-bounding-boxes-container" class="absolute inset-0">
             <!-- Dynamically populated per bus -->
           </div>
 
-          <!-- Top HUD Bar -->
-          <div class="absolute top-4 left-5 right-5 flex justify-between items-center text-[10px] font-mono text-slate-300 bg-black/70 px-4 py-2 rounded-full border border-slate-700/60 backdrop-blur-sm">
-            <span class="text-white font-bold" id="hud-cam-bus-tag">FRAME #4029 • BUS-003</span>
-            <span class="text-emerald-400 font-semibold" id="hud-cam-status-tag">AI TELEMETRY STREAMING</span>
-            <span class="text-slate-300" id="hud-cam-time">16:42:00 IST</span>
+          <!-- Top HUD Overlay -->
+          <div class="absolute top-4 left-5 right-5 flex justify-between items-center text-[10px] font-mono text-slate-300 bg-black/75 px-4 py-2.5 rounded-full border border-slate-700/60 backdrop-blur-md shadow-lg">
+            <span class="text-white font-bold flex items-center gap-1.5" id="hud-cam-bus-tag">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              <span>LIVE • BUS-003 • 1080p @ 60Hz</span>
+            </span>
+            <span class="text-emerald-400 font-semibold hidden sm:inline" id="hud-cam-status-tag">YOLOv8-NANO + LICENSE PLATE OCR</span>
+            <span class="text-slate-300 font-bold" id="hud-cam-time">16:42:00 IST</span>
           </div>
 
-          <!-- Target Lock Banner -->
+          <!-- Target Lock Banner (For Hit and Run simulation) -->
           <div id="target-lock-hud" class="absolute inset-0 bg-rose-900/30 border-4 border-rose-500 hidden flex-col items-center justify-center p-4 backdrop-blur-[2px]">
             <div class="bg-white border-2 border-rose-600 p-6 rounded-3xl text-center space-y-2.5 max-w-sm shadow-2xl">
               <span class="material-symbols-outlined text-4xl text-rose-600 animate-bounce">targeted</span>
@@ -599,7 +568,7 @@
         <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
           <div class="flex items-center gap-2 text-xs">
             <span class="text-[#717D75] font-medium">Camera Angle:</span>
-            <button onclick="switchCameraAngle('Front 1080p')" id="btn-angle-front" class="px-3.5 py-1.5 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold cursor-pointer">Front 1080p</button>
+            <button onclick="switchCameraAngle('Front 1080p')" id="btn-angle-front" class="px-4 py-2 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold cursor-pointer">Front 1080p</button>
             <button onclick="switchCameraAngle('Downward Asphalt')" id="btn-angle-asphalt" class="btn-pill-ghost font-mono text-xs font-semibold">Downward Road</button>
             <button onclick="switchCameraAngle('Left Blindspot')" id="btn-angle-blindspot" class="btn-pill-ghost font-mono text-xs font-semibold">Left Blindspot</button>
           </div>
@@ -626,7 +595,7 @@
     <div id="tab-view-work-orders" class="hidden space-y-6">
       
       <div class="glass-card p-6 space-y-4">
-        <div class="flex justify-between items-center border-b border-black/[0.05] pb-4">
+        <div class="flex flex-wrap justify-between items-center gap-3 border-b border-black/[0.05] pb-4">
           <div>
             <h3 class="font-bold text-[#1E2320] text-lg">Municipal Defect Registry &amp; PWD Work Orders</h3>
             <p class="text-xs text-[#717D75]">1,284 total defects logged across 32 Jaipur wards · 50.6% resolution rate</p>
@@ -993,8 +962,8 @@
         cam: 'Front 1080p', temp: 46, fps: 18.6, lat_ms: 41, 
         scene: 'Passing Rajasthan University Gate · Pedestrian Crossings Monitored',
         boxes: [
-          { label: 'Automobile: Hatchback (97.1%)', dist: '14.2m', color: 'blue', left: '28%', top: '36%', width: '160px', height: '100px' },
-          { label: '🚶 Student Crossing (94.2%)', dist: '< 1.8m Flagged', color: 'rose', left: '12%', top: '42%', width: '90px', height: '140px' }
+          { label: 'Automobile: Hatchback (97.1%)', dist: '14.2m', color: 'blue', left: '28%', top: '36%', width: '180px', height: '110px' },
+          { label: '🚶 Student Crossing (94.2%)', dist: '< 1.8m Flagged', color: 'rose', left: '12%', top: '42%', width: '100px', height: '150px' }
         ]
       },
       { 
@@ -1005,8 +974,8 @@
         cam: 'Front 1080p', temp: 48, fps: 18.4, lat_ms: 42, 
         scene: 'Approaching 200ft Bypass Underpass · Waterlogging Inundation Risk',
         boxes: [
-          { label: 'Automobile: Delivery Van (95.8%)', dist: '18.5m', color: 'blue', left: '32%', top: '34%', width: '180px', height: '110px' },
-          { label: '🌊 Waterlogging 25cm (96.2%)', dist: 'Drain Inundation', color: 'sky', left: '60%', top: '65%', width: '150px', height: '70px' }
+          { label: 'Automobile: Delivery Van (95.8%)', dist: '18.5m', color: 'blue', left: '32%', top: '34%', width: '190px', height: '120px' },
+          { label: '🌊 Waterlogging 25cm (96.2%)', dist: 'Drain Inundation', color: 'sky', left: '58%', top: '65%', width: '160px', height: '80px' }
         ]
       },
       { 
@@ -1017,9 +986,9 @@
         cam: 'Front 1080p', temp: 52, fps: 18.2, lat_ms: 44, 
         scene: 'Tonk Road Corridor · Severe 16cm Pothole Crater Detected',
         boxes: [
-          { label: 'Automobile: Sedan (96.4%)', dist: '12.8m', color: 'blue', left: '30%', top: '34%', width: '170px', height: '105px' },
-          { label: '⚠️ Pothole (16cm) · 94.1%', dist: 'JDA Alert #DEF-892', color: 'amber', left: '62%', top: '68%', width: '140px', height: '75px' },
-          { label: '🚶 Pedestrian (94.2%)', dist: '< 1.5m Flagged', color: 'rose', left: '10%', top: '40%', width: '90px', height: '135px' }
+          { label: 'Automobile: Sedan (96.4%)', dist: '12.8m', color: 'blue', left: '30%', top: '34%', width: '180px', height: '115px' },
+          { label: '⚠️ Pothole (16cm) · 94.1%', dist: 'JDA Alert #DEF-892', color: 'amber', left: '60%', top: '66%', width: '150px', height: '80px' },
+          { label: '🚶 Pedestrian (94.2%)', dist: '< 1.5m Flagged', color: 'rose', left: '10%', top: '40%', width: '100px', height: '145px' }
         ]
       },
       { 
@@ -1030,8 +999,8 @@
         cam: 'Front 1080p', temp: 47, fps: 18.5, lat_ms: 41, 
         scene: 'Sikar Road KM 7.1 · Asphalt Fracture & Surface Depression',
         boxes: [
-          { label: 'Automobile: SUV (96.0%)', dist: '15.1m', color: 'blue', left: '35%', top: '35%', width: '165px', height: '105px' },
-          { label: '⚠️ Pothole Cluster (92.4%)', dist: 'Depth 12cm', color: 'amber', left: '55%', top: '70%', width: '130px', height: '65px' }
+          { label: 'Automobile: SUV (96.0%)', dist: '15.1m', color: 'blue', left: '35%', top: '35%', width: '180px', height: '115px' },
+          { label: '⚠️ Pothole Cluster (92.4%)', dist: 'Depth 12cm', color: 'amber', left: '55%', top: '68%', width: '140px', height: '75px' }
         ]
       },
       { 
@@ -1042,7 +1011,7 @@
         cam: 'Front 1080p', temp: 47, fps: 18.8, lat_ms: 40, 
         scene: 'Airport T2 Junction · Hit-and-Run Intercept Plate OCR Target Lock',
         boxes: [
-          { label: '🚨 TARGET LOCK: RJ-14-CE-8821 (97.2%)', dist: 'White Fortuner SUV', color: 'rose', left: '25%', top: '30%', width: '220px', height: '130px' }
+          { label: '🚨 TARGET LOCK: RJ-14-CE-8821 (97.2%)', dist: 'White Fortuner SUV', color: 'rose', left: '25%', top: '28%', width: '240px', height: '145px' }
         ]
       },
       { 
@@ -1053,8 +1022,8 @@
         cam: 'Front 1080p', temp: 49, fps: 18.1, lat_ms: 43, 
         scene: 'Transport Nagar Flyover · Expansion Joint Dip Flagged',
         boxes: [
-          { label: 'Heavy Truck (95.4%)', dist: '22.0m', color: 'blue', left: '25%', top: '28%', width: '200px', height: '140px' },
-          { label: '⚠️ Expansion Joint Dip (93.1%)', dist: 'Impact 2.8g', color: 'amber', left: '58%', top: '72%', width: '140px', height: '60px' }
+          { label: 'Heavy Truck (95.4%)', dist: '22.0m', color: 'blue', left: '25%', top: '28%', width: '220px', height: '150px' },
+          { label: '⚠️ Expansion Joint Dip (93.1%)', dist: 'Impact 2.8g', color: 'amber', left: '58%', top: '70%', width: '150px', height: '70px' }
         ]
       },
       { 
@@ -1065,8 +1034,8 @@
         cam: 'Front 1080p', temp: 48, fps: 18.3, lat_ms: 42, 
         scene: 'Mansarovar Metro Pillar 84 · Road Shoulder Drop-off',
         boxes: [
-          { label: 'Motorcycle: Two-Wheeler (94.1%)', dist: '8.4m', color: 'blue', left: '18%', top: '45%', width: '80px', height: '110px' },
-          { label: '⚠️ Shoulder Drop-off (88.4%)', dist: 'Depth 9cm', color: 'amber', left: '68%', top: '65%', width: '120px', height: '70px' }
+          { label: 'Motorcycle: Two-Wheeler (94.1%)', dist: '8.4m', color: 'blue', left: '18%', top: '45%', width: '90px', height: '120px' },
+          { label: '⚠️ Shoulder Drop-off (88.4%)', dist: 'Depth 9cm', color: 'amber', left: '65%', top: '65%', width: '130px', height: '75px' }
         ]
       },
       { 
@@ -1077,8 +1046,8 @@
         cam: 'Front 1080p', temp: 46, fps: 18.7, lat_ms: 40, 
         scene: 'Jagatpura 7 No. Stand · Municipal Drain Overflow Pool',
         boxes: [
-          { label: 'Automobile: Compact (96.2%)', dist: '16.4m', color: 'blue', left: '32%', top: '35%', width: '160px', height: '100px' },
-          { label: '🌊 Drain Overflow (90.2%)', dist: 'Pool 14cm', color: 'sky', left: '55%', top: '68%', width: '140px', height: '70px' }
+          { label: 'Automobile: Compact (96.2%)', dist: '16.4m', color: 'blue', left: '32%', top: '35%', width: '170px', height: '110px' },
+          { label: '🌊 Drain Overflow (90.2%)', dist: 'Pool 14cm', color: 'sky', left: '55%', top: '68%', width: '150px', height: '75px' }
         ]
       },
       { 
@@ -1089,8 +1058,8 @@
         cam: 'Front 1080p', temp: 58, fps: 16.4, lat_ms: 49, 
         scene: 'VKI Road No. 9 · Industrial Crater Cluster & High Vibration',
         boxes: [
-          { label: 'Commercial Vehicle (93.7%)', dist: '11.0m', color: 'blue', left: '26%', top: '32%', width: '175px', height: '115px' },
-          { label: '⚠️ Severe Crater Cluster (95.0%)', dist: 'Impact >3.4g', color: 'rose', left: '58%', top: '65%', width: '160px', height: '80px' }
+          { label: 'Commercial Vehicle (93.7%)', dist: '11.0m', color: 'blue', left: '26%', top: '32%', width: '185px', height: '125px' },
+          { label: '⚠️ Severe Crater Cluster (95.0%)', dist: 'Impact >3.4g', color: 'rose', left: '58%', top: '65%', width: '170px', height: '85px' }
         ]
       },
       { 
@@ -1101,8 +1070,8 @@
         cam: 'Front 1080p', temp: 45, fps: 18.9, lat_ms: 39, 
         scene: 'Choti Chaupar Heritage Arc · Tourist Density & E-Rickshaw Flow',
         boxes: [
-          { label: 'E-Rickshaw Fleet (96.7%)', dist: '6.2m', color: 'blue', left: '20%', top: '38%', width: '130px', height: '110px' },
-          { label: '🚶 Tourist Group (93.4%)', dist: '< 2.0m Density', color: 'amber', left: '60%', top: '42%', width: '120px', height: '130px' }
+          { label: 'E-Rickshaw Fleet (96.7%)', dist: '6.2m', color: 'blue', left: '20%', top: '38%', width: '140px', height: '120px' },
+          { label: '🚶 Tourist Group (93.4%)', dist: '< 2.0m Density', color: 'amber', left: '60%', top: '42%', width: '130px', height: '140px' }
         ]
       },
     ];
@@ -1205,20 +1174,7 @@
       });
 
       // 2. Update Camera Tab Selector Pills Style
-      const camStrip = document.getElementById('camera-tab-bus-selector');
-      if (camStrip) {
-        camStrip.innerHTML = '';
-        jaipurFleet.forEach(b => {
-          const isSel = (b.id === busId);
-          const camBtn = document.createElement('button');
-          camBtn.onclick = () => selectBusDirectly(b.id, false);
-          camBtn.className = `px-3.5 py-1.5 rounded-full text-xs font-mono font-bold transition-all cursor-pointer ${
-            isSel ? 'bg-[#1E2320] text-white shadow-sm' : 'bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]'
-          }`;
-          camBtn.innerText = b.id;
-          camStrip.appendChild(camBtn);
-        });
-      }
+      populateCameraBusSelector();
 
       // 3. Update Command Center Active Bus Telemetry Banner
       const hudId = document.getElementById('hud-selected-bus-id');
@@ -1236,7 +1192,7 @@
       const camSub = document.getElementById('edge-cam-subtitle');
       if (camSub) camSub.innerText = `${bus.driver} (${bus.route}) · ${bus.scene}`;
       const hudTag = document.getElementById('hud-cam-bus-tag');
-      if (hudTag) hudTag.innerText = `FRAME #4029 • ${bus.id}`;
+      if (hudTag) hudTag.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span><span>LIVE • ${bus.id} • 1080p @ 60Hz</span>`;
 
       // 5. Render Dynamic Bounding Boxes in Camera Feed
       const boxContainer = document.getElementById('camera-bounding-boxes-container');
@@ -1283,6 +1239,22 @@
       }
       playBeep(720);
       showToast('Bus Inspected', `${bus.id} (${bus.route}) · Driver: ${bus.driver}`, 'info');
+    }
+
+    function populateCameraBusSelector() {
+      const camStrip = document.getElementById('camera-tab-bus-selector');
+      if (!camStrip) return;
+      camStrip.innerHTML = '';
+      jaipurFleet.forEach(b => {
+        const isSel = (b.id === selectedBusId);
+        const camBtn = document.createElement('button');
+        camBtn.onclick = () => selectBusDirectly(b.id, false);
+        camBtn.className = `p-2 rounded-xl text-center font-mono text-xs font-bold transition-all cursor-pointer flex items-center justify-between ${
+          isSel ? 'bg-[#1E2320] text-white shadow-md' : 'bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]'
+        }`;
+        camBtn.innerHTML = `<span>${b.id}</span><span class="w-1.5 h-1.5 rounded-full ${isSel ? 'bg-white' : 'bg-[#1E8A44]'}"></span>`;
+        camStrip.appendChild(camBtn);
+      });
     }
 
     function filterDocketsByBus(busId) {
@@ -1496,7 +1468,7 @@
       setIncidentFilter('ALL');
     }
 
-    // RESOLVE ACTION (MATCHING SCREENSHOT FLOATING TOAST)
+    // RESOLVE ACTION
     function resolveIncidentDocket(incId) {
       const inc = roadIncidents.find(i => i.id === incId);
       if (!inc) return;
@@ -1569,7 +1541,6 @@
 
       if (val && val.trim() !== '') {
         const q = val.toUpperCase().trim();
-        // Support searching "1", "2", "001", "BUS-001", "Manoj", etc.
         const busMatch = jaipurFleet.find(b => 
           b.id.toUpperCase() === q ||
           b.id.toUpperCase().replace('-', '') === q ||
@@ -1649,7 +1620,7 @@
       });
     }
 
-    // TAB SWITCHER
+    // TAB SWITCHER WITH CONTEXT-AWARE HEADERS
     function setViewTab(tabName) {
       const tabs = ['command-center', 'edge-vision', 'work-orders', 'analytics'];
       tabs.forEach(t => {
@@ -1668,9 +1639,23 @@
         targetRail.className = 'w-10 h-10 rounded-full bg-[#1E2320] text-white flex items-center justify-center shadow-sm transition-all cursor-pointer';
       }
 
-      if (tabName === 'command-center' && map) {
-        setTimeout(() => map.invalidateSize(), 100);
+      // Update Page Title and Subtitle per Tab Context
+      const mainTitle = document.getElementById('main-view-title');
+      const mainSubtitle = document.getElementById('main-view-subtitle');
+      if (tabName === 'command-center') {
+        if (mainTitle) mainTitle.innerText = 'Incident Dockets & Fleet Map';
+        if (mainSubtitle) mainSubtitle.innerText = 'Real-time edge-AI transit sensing across 10 municipal buses · Nagar Nigam Jaipur';
+        if (map) setTimeout(() => map.invalidateSize(), 100);
+      } else if (tabName === 'edge-vision') {
+        if (mainTitle) mainTitle.innerText = 'Onboard Edge AI Cameras';
+        if (mainSubtitle) mainSubtitle.innerText = '1080p live windshield vision, license plate OCR, and spatial object detection';
+        populateCameraBusSelector();
+      } else if (tabName === 'work-orders') {
+        if (mainTitle) mainTitle.innerText = 'Municipal Defect Registry';
+        if (mainSubtitle) mainSubtitle.innerText = '1,284 total defects logged across 32 Jaipur wards · PWD Work Orders & Repair ROI';
       } else if (tabName === 'analytics') {
+        if (mainTitle) mainTitle.innerText = 'City Traffic Intelligence';
+        if (mainSubtitle) mainSubtitle.innerText = '24h volume curves, vehicle classification, school zones & edge NPU telemetry';
         setTimeout(() => initAnalyticsCharts(), 100);
       }
 
@@ -1896,9 +1881,9 @@
         if (b) b.className = 'btn-pill-ghost font-mono text-xs font-semibold';
       });
 
-      if (angle === 'Front 1080p') document.getElementById('btn-angle-front').className = 'px-3.5 py-1.5 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold cursor-pointer';
-      else if (angle === 'Downward Asphalt') document.getElementById('btn-angle-asphalt').className = 'px-3.5 py-1.5 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold cursor-pointer';
-      else if (angle === 'Left Blindspot') document.getElementById('btn-angle-blindspot').className = 'px-3.5 py-1.5 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold cursor-pointer';
+      if (angle === 'Front 1080p') document.getElementById('btn-angle-front').className = 'px-4 py-2 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold cursor-pointer';
+      else if (angle === 'Downward Asphalt') document.getElementById('btn-angle-asphalt').className = 'px-4 py-2 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold cursor-pointer';
+      else if (angle === 'Left Blindspot') document.getElementById('btn-angle-blindspot').className = 'px-4 py-2 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold cursor-pointer';
 
       showToast('Camera Angle Switched', `Viewing ${angle} stream.`, 'info');
       playBeep(640);
@@ -2047,6 +2032,7 @@
       try { populateDefectTable(); } catch (e) { console.error(e); }
       try { populateHardwareMatrix(); } catch (e) { console.error(e); }
       try { updatePillCounts(); } catch (e) { console.error(e); }
+      try { populateCameraBusSelector(); } catch (e) { console.error(e); }
       try { selectBusDirectly('BUS-003', false); } catch (e) { console.error(e); }
     }
 
