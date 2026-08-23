@@ -5,7 +5,7 @@
 
 ---
 
-## 🌟 Overview
+## Overview
 
 **JUCC (Jaipur Urban Command Center)** is a high-performance GIS Command Center designed for municipal transport authorities, traffic police, PWD/JDA engineers, and city planners.
 
@@ -13,7 +13,7 @@ It ingests live edge-AI telemetry from municipal buses equipped with NVIDIA Jets
 
 ---
 
-## 🚀 Key Features
+## Key Features
 
 ### 1. Real-Time GIS Fleet & Defect Mesh
 - **Interactive Dark-Mode Map**: Rendered with Leaflet.js and custom high-contrast cartography.
@@ -21,12 +21,12 @@ It ingests live edge-AI telemetry from municipal buses equipped with NVIDIA Jets
 - **Incident Markers**: Real-time visualization of Potholes, Waterlogging, Hit-and-Run events, Missing Signage, Rash Driving, and Pedestrian risks.
 
 ### 2. Multi-View Architecture (6 Modes)
-1. **🗺️ Map & Heatmap View**: Spatial distribution with interactive defect clusters and live incident feed.
-2. **⏱️ Timeline Stream**: Chronological sensor-to-server time progression of municipal detections.
-3. **🗂️ Incident Dockets Grid**: Detailed visual docket cards with confidence scores and camera angles.
-4. **📊 Traffic & Charts View**: Real-time traffic flow time-series (24h) and 6-class AI vehicle classification charts (Chart.js).
-5. **⚖️ Before / After ROI**: Algorithmic repair verification and municipal return-on-investment payback analysis.
-6. **📑 Report & GIS Export**: Export engine supporting PDF, CSV, GeoJSON layers, and ESRI Shapefile metadata.
+1. **Map & Heatmap View**: Spatial distribution with interactive defect clusters and live incident feed.
+2. **Timeline Stream**: Chronological sensor-to-server time progression of municipal detections.
+3. **Incident Dockets Grid**: Detailed visual docket cards with confidence scores and camera angles.
+4. **Traffic & Charts View**: Real-time traffic flow time-series (24h) and 6-class AI vehicle classification charts (Chart.js).
+5. **Before / After ROI**: Algorithmic repair verification and municipal return-on-investment payback analysis.
+6. **Report & GIS Export**: Export engine supporting PDF, CSV, GeoJSON layers, and ESRI Shapefile metadata.
 
 ### 3. Interactive Filtering & 24h Playback
 - **Time Scrubber**: 24-hour simulation slider with 1x, 2x, and 4x playback speeds.
@@ -34,13 +34,13 @@ It ingests live edge-AI telemetry from municipal buses equipped with NVIDIA Jets
 - **Multi-Dimensional Filters**: Filter by Incident Type, Min Severity slider (0–100%), Timeframe, AI Confidence (>80%, >90%, >95%), Bus Unit, and Status.
 
 ### 4. Specialized Forensics & Safety Modules
-- **🛡️ Hit-and-Run Multi-Camera Trail**: Automatic ANPR/OCR plate extraction (`RJ-14-CE-8821`), cross-bus camera handoff, speed calculations, and instant police escalation.
-- **👤 Driver Safety Index**: Driver safety scores (0–100), rash acceleration/braking tallies, and training recommendations.
-- **🚶 Pedestrian & School Zone Safety**: Near-miss analytics at high-risk pedestrian crossings (Choti Chaupar, RU Gate, Sindhi Camp) with recommended JDA interventions.
+- **Hit-and-Run Multi-Camera Trail**: Automatic ANPR/OCR plate extraction (`RJ-14-CE-8821`), cross-bus camera handoff, speed calculations, and instant police escalation.
+- **Driver Safety Index**: Driver safety scores (0–100), rash acceleration/braking tallies, and training recommendations.
+- **Pedestrian & School Zone Safety**: Near-miss analytics at high-risk pedestrian crossings (Choti Chaupar, RU Gate, Sindhi Camp) with recommended JDA interventions.
 
 ---
 
-## 💻 Quick Start
+## Quick Start
 
 ### Run Locally (No dependencies required):
 ```bash
@@ -55,7 +55,7 @@ Open **[http://localhost:8080](http://localhost:8080)** (or `index.html`) in any
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 - **Interface**: Vanilla HTML5, Tailwind CSS, Material Symbols, Source Serif 4 & JetBrains Mono typography.
 - **Mapping**: Leaflet GIS, OpenStreetMap tiles with custom dark inverted shader matrix.
 - **Data Visualization**: Chart.js for time-series and doughnut charts.
@@ -63,5 +63,5 @@ Open **[http://localhost:8080](http://localhost:8080)** (or `index.html`) in any
 
 ---
 
-## 📄 License
+## License
 Internal Defense & Municipal Evaluation Prototype · BEL SIH-2026.

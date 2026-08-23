@@ -14,22 +14,24 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-          },
-          colors: {
-            canvas: '#EFF3EA',
-            surface: '#FFFFFF',
-            subbox: '#F4F7F0',
-            dark: '#1E2320',
-            muted: '#717D75',
+    if (typeof tailwind !== 'undefined') {
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+              mono: ['"JetBrains Mono"', 'monospace'],
+            },
+            colors: {
+              canvas: '#EFF3EA',
+              surface: '#FFFFFF',
+              subbox: '#F4F7F0',
+              dark: '#1E2320',
+              muted: '#717D75',
+            }
           }
         }
-      }
+      };
     }
   </script>
 
@@ -205,6 +207,12 @@
       animation: dramatic-flash 0.8s ease-in-out 3;
     }
 
+    .selected-inc {
+      transform: scale(1.35) !important;
+      box-shadow: 0 0 0 8px rgba(217, 119, 6, 0.5) !important;
+      z-index: 9999 !important;
+    }
+
     /* Modal Animation */
     .modal-backdrop {
       transition: opacity 0.25s ease-out;
@@ -251,7 +259,7 @@
           <span class="material-symbols-outlined text-xl">monitoring</span>
         </button>
 
-        <button onclick="triggerHitAndRunSimulation()" title="Simulate Hit-and-Run Intercept ⚡" class="w-10 h-10 rounded-full text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-all cursor-pointer animate-pulse">
+        <button onclick="triggerHitAndRunSimulation()" title="Simulate Hit-and-Run Intercept" class="w-10 h-10 rounded-full text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-all cursor-pointer animate-pulse">
           <span class="material-symbols-outlined text-xl">shield</span>
         </button>
       </nav>
@@ -541,34 +549,34 @@
           <span class="text-[11px] text-[#717D75] font-mono">10 Units Online · 1080p Optical Stream</span>
         </div>
         <div id="camera-tab-bus-selector" class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2 font-mono text-xs">
-          <button onclick="selectBusDirectly('BUS-001')" id="cam-pill-BUS-001" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
+          <button onclick="selectBusDirectly('BUS-001', false, false)" id="cam-pill-BUS-001" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
             <span>BUS-001</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
           </button>
-          <button onclick="selectBusDirectly('BUS-002')" id="cam-pill-BUS-002" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
+          <button onclick="selectBusDirectly('BUS-002', false, false)" id="cam-pill-BUS-002" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
             <span>BUS-002</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
           </button>
-          <button onclick="selectBusDirectly('BUS-003')" id="cam-pill-BUS-003" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#1E2320] text-white shadow-md flex items-center justify-between">
+          <button onclick="selectBusDirectly('BUS-003', false, false)" id="cam-pill-BUS-003" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#1E2320] text-white shadow-md flex items-center justify-between">
             <span>BUS-003</span><span class="w-2 h-2 rounded-full bg-white"></span>
           </button>
-          <button onclick="selectBusDirectly('BUS-004')" id="cam-pill-BUS-004" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
+          <button onclick="selectBusDirectly('BUS-004', false, false)" id="cam-pill-BUS-004" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
             <span>BUS-004</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
           </button>
-          <button onclick="selectBusDirectly('BUS-005')" id="cam-pill-BUS-005" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
+          <button onclick="selectBusDirectly('BUS-005', false, false)" id="cam-pill-BUS-005" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
             <span>BUS-005</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
           </button>
-          <button onclick="selectBusDirectly('BUS-006')" id="cam-pill-BUS-006" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
+          <button onclick="selectBusDirectly('BUS-006', false, false)" id="cam-pill-BUS-006" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
             <span>BUS-006</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
           </button>
-          <button onclick="selectBusDirectly('BUS-007')" id="cam-pill-BUS-007" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
+          <button onclick="selectBusDirectly('BUS-007', false, false)" id="cam-pill-BUS-007" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
             <span>BUS-007</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
           </button>
-          <button onclick="selectBusDirectly('BUS-008')" id="cam-pill-BUS-008" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
+          <button onclick="selectBusDirectly('BUS-008', false, false)" id="cam-pill-BUS-008" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
             <span>BUS-008</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
           </button>
-          <button onclick="selectBusDirectly('BUS-009')" id="cam-pill-BUS-009" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
+          <button onclick="selectBusDirectly('BUS-009', false, false)" id="cam-pill-BUS-009" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
             <span>BUS-009</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
           </button>
-          <button onclick="selectBusDirectly('BUS-010')" id="cam-pill-BUS-010" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
+          <button onclick="selectBusDirectly('BUS-010', false, false)" id="cam-pill-BUS-010" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
             <span>BUS-010</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
           </button>
         </div>
@@ -664,23 +672,23 @@
           <div class="flex flex-wrap items-center gap-2 text-xs">
             <span class="text-[#717D75] font-bold font-mono">OPTICAL SENSORS:</span>
             <button onclick="switchCameraAngle('front')" id="btn-angle-front" class="px-4 py-2 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold cursor-pointer shadow-sm">
-              📷 Front 1080p
+              Front 1080p
             </button>
             <button onclick="switchCameraAngle('asphalt')" id="btn-angle-asphalt" class="btn-pill-ghost font-mono text-xs font-semibold">
-              🔍 Downward Road (Pothole Scanner)
+              Downward Road (Pothole Scanner)
             </button>
             <button onclick="switchCameraAngle('blindspot')" id="btn-angle-blindspot" class="btn-pill-ghost font-mono text-xs font-semibold">
-              🚶 Left Blindspot (Kerb &amp; Footpath)
+              Left Blindspot (Kerb & Footpath)
             </button>
             <button onclick="switchCameraAngle('cabin')" id="btn-angle-cabin" class="btn-pill-ghost font-mono text-xs font-semibold">
-              👁️ Driver DMS (Fatigue &amp; Cabin)
+              Driver DMS (Fatigue & Cabin)
             </button>
           </div>
 
           <div class="flex items-center gap-2.5">
             <button onclick="triggerHitAndRunSimulation()" class="btn-pill-solid bg-rose-600 hover:bg-rose-700">
               <span class="material-symbols-outlined text-sm">shield</span>
-              <span>Simulate Hit &amp; Run ⚡</span>
+              <span>Simulate Hit &amp; Run</span>
             </button>
             <button onclick="captureCameraSnapshot()" class="btn-pill-ghost">
               <span class="material-symbols-outlined text-sm text-emerald-600">photo_camera</span>
@@ -749,7 +757,7 @@
           </div>
 
           <div class="p-5 rounded-3xl bg-[#E8F8EE] space-y-2.5">
-            <span class="text-[10px] font-bold text-emerald-800 uppercase font-mono">AFTER JDA HOT-MIX REPAIR (August 2026) · ✅ VERIFIED</span>
+            <span class="text-[10px] font-bold text-emerald-800 uppercase font-mono">AFTER JDA HOT-MIX REPAIR (August 2026) · VERIFIED</span>
             <strong class="text-slate-900 text-xs block font-bold">0 Potholes Detected in Last 14 Days</strong>
             <p class="text-[11px] text-slate-600">Vibration shock normal (&lt;0.4g) · JDA Hot-mix Cost: ₹45,000 · <strong>4.4x Payoff in 24 Days</strong></p>
           </div>
@@ -823,7 +831,7 @@
             <p class="text-xs text-[#717D75]">Live Jetson Orin thermals, inference FPS, latency, and camera operational health</p>
           </div>
           <div class="flex items-center gap-2">
-            <button onclick="updateHardwareMatrixLive()" class="px-2.5 py-1 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-700 font-mono text-[10px] font-bold">Refresh Live ⚡</button>
+            <button onclick="updateHardwareMatrixLive()" class="px-2.5 py-1 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-700 font-mono text-[10px] font-bold">Refresh Live</button>
             <span class="px-3.5 py-1 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-mono text-xs font-bold">49/50 Cameras Active</span>
           </div>
         </div>
@@ -863,7 +871,7 @@
           <span class="material-symbols-outlined text-rose-600 text-xl">shield</span>
           <h3 class="font-bold text-[#1E2320] text-base">Hit-and-Run Forensics &amp; Multi-Camera Trail</h3>
         </div>
-        <button onclick="closeHitAndRunPanel()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold cursor-pointer">✕</button>
+        <button onclick="closeHitAndRunPanel()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold cursor-pointer">&times;</button>
       </div>
 
       <div class="bg-[#FDECEC] rounded-3xl p-5 space-y-3 border border-rose-200">
@@ -913,7 +921,7 @@
           <span class="material-symbols-outlined text-emerald-600 text-xl">person</span>
           <h3 class="font-bold text-[#1E2320] text-base">JCTSL Driver Safety Index &amp; Telemetry</h3>
         </div>
-        <button onclick="closeDriverModal()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold cursor-pointer">✕</button>
+        <button onclick="closeDriverModal()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold cursor-pointer">&times;</button>
       </div>
 
       <div class="overflow-x-auto font-mono">
@@ -974,7 +982,7 @@
           <span class="material-symbols-outlined text-[#1E2320] text-xl">summarize</span>
           <h3 class="font-bold text-[#1E2320] text-base">Municipal Report &amp; GIS Export Engine</h3>
         </div>
-        <button onclick="closeExportModal()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold cursor-pointer">✕</button>
+        <button onclick="closeExportModal()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold cursor-pointer">&times;</button>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
@@ -1020,7 +1028,7 @@
           <span id="modal-badge-type" class="px-3 py-1 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-bold font-mono text-[10px]">POTHOLE</span>
           <h3 class="font-bold text-[#1E2320] text-base" id="modal-inc-title">Severe Pothole Crater</h3>
         </div>
-        <button onclick="closeIncidentModal()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold cursor-pointer">✕</button>
+        <button onclick="closeIncidentModal()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold cursor-pointer">&times;</button>
       </div>
 
       <div class="space-y-3 font-mono">
@@ -1035,7 +1043,7 @@
 
       <div class="flex justify-end gap-2.5 pt-3 border-t border-black/[0.05]">
         <button onclick="closeIncidentModal()" class="btn-pill-ghost">Close</button>
-        <button onclick="dispatchModalIncident()" id="btn-dispatch-crew" class="btn-pill-solid bg-[#1E8A44] hover:bg-[#166A33]">✓ Dispatch PWD Crew</button>
+        <button onclick="dispatchModalIncident()" id="btn-dispatch-crew" class="btn-pill-solid bg-[#1E8A44] hover:bg-[#166A33]">Dispatch PWD Crew</button>
       </div>
     </div>
   </div>
@@ -1060,7 +1068,7 @@
             <p class="text-xs text-[#717D75] font-mono mt-0.5" id="inspector-bus-route">Route 3: Tonk Road Corridor · JCTSL Fleet</p>
           </div>
         </div>
-        <button onclick="closeBusInspector()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold cursor-pointer transition-all">✕</button>
+        <button onclick="closeBusInspector()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold cursor-pointer transition-all">&times;</button>
       </div>
 
       <!-- Driver & Vehicle Profile Row -->
@@ -1184,7 +1192,7 @@
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
             boxes: [
               { label: 'Automobile: Hatchback (97.1%)', dist: '14.2m · 38 km/h', color: 'blue', left: '28%', top: '36%', width: '180px', height: '110px' },
-              { label: '🚶 Student Crossing (94.2%)', dist: '< 1.8m Flagged', color: 'rose', left: '12%', top: '42%', width: '100px', height: '150px' }
+              { label: 'Student Crossing (94.2%)', dist: '< 1.8m Flagged', color: 'rose', left: '12%', top: '42%', width: '100px', height: '150px' }
             ]
           },
           asphalt: {
@@ -1201,8 +1209,8 @@
             sub: 'Bus Stand Passenger & Cyclist Safety Zone',
             status: 'LEFT KERB OPTICAL SENSOR · 120° FOV',
             boxes: [
-              { label: '🚶 4 Passengers Waiting (95.1%)', dist: 'RU Gate Bus Shelter', color: 'blue', left: '45%', top: '35%', width: '170px', height: '140px' },
-              { label: '🚲 Cyclist (91.4%)', dist: '2.4m Safe Zone', color: 'emerald', left: '15%', top: '48%', width: '110px', height: '120px' }
+              { label: '4 Passengers Waiting (95.1%)', dist: 'RU Gate Bus Shelter', color: 'blue', left: '45%', top: '35%', width: '170px', height: '140px' },
+              { label: 'Cyclist (91.4%)', dist: '2.4m Safe Zone', color: 'emerald', left: '15%', top: '48%', width: '110px', height: '120px' }
             ]
           },
           cabin: {
@@ -1211,7 +1219,7 @@
             status: 'DRIVER MONITORING SYSTEM (DMS) · 60 FPS INFRARED',
             boxes: [
               { label: 'Driver: Rajesh Sharma (98.4%)', dist: 'Status: Alert & Focused', color: 'emerald', left: '25%', top: '25%', width: '220px', height: '180px' },
-              { label: 'Seatbelt: Latched ✅', dist: 'No Phone in Hand', color: 'emerald', left: '55%', top: '65%', width: '160px', height: '65px' }
+              { label: 'Seatbelt: Latched (OK)', dist: 'No Phone in Hand', color: 'emerald', left: '55%', top: '65%', width: '160px', height: '65px' }
             ]
           }
         }
@@ -1230,7 +1238,7 @@
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
             boxes: [
               { label: 'Automobile: Delivery Van (95.8%)', dist: '18.5m · 44 km/h', color: 'blue', left: '32%', top: '34%', width: '190px', height: '120px' },
-              { label: '🌊 Waterlogging 25cm (96.2%)', dist: 'Drain Inundation Alert', color: 'sky', left: '58%', top: '65%', width: '160px', height: '80px' }
+              { label: 'Waterlogging 25cm (96.2%)', dist: 'Drain Inundation Alert', color: 'sky', left: '58%', top: '65%', width: '160px', height: '80px' }
             ]
           },
           asphalt: {
@@ -1273,8 +1281,8 @@
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
             boxes: [
               { label: 'Automobile: Sedan (96.4%)', dist: '12.8m · 26 km/h', color: 'blue', left: '30%', top: '34%', width: '180px', height: '115px' },
-              { label: '⚠️ Pothole (16cm) · 94.1%', dist: 'JDA Alert #DEF-892', color: 'amber', left: '60%', top: '66%', width: '150px', height: '80px' },
-              { label: '🚶 Pedestrian (94.2%)', dist: '< 1.5m Flagged', color: 'rose', left: '10%', top: '40%', width: '100px', height: '145px' }
+              { label: 'Pothole (16cm) · 94.1%', dist: 'JDA Alert #DEF-892', color: 'amber', left: '60%', top: '66%', width: '150px', height: '80px' },
+              { label: 'Pedestrian (94.2%)', dist: '< 1.5m Flagged', color: 'rose', left: '10%', top: '40%', width: '100px', height: '145px' }
             ]
           },
           asphalt: {
@@ -1282,8 +1290,8 @@
             sub: 'Tonk Road KM 4.2 · High Impact Crater Defect Measurement',
             status: 'DOWNWARD ASPHALT SENSOR · 4K MACRO SCANNER',
             boxes: [
-              { label: '⚠️ CRATER #DEF-892 (94.8%)', dist: 'Depth: 16.4cm · Area: 0.85m²', color: 'rose', left: '32%', top: '38%', width: '240px', height: '150px' },
-              { label: 'Z-Axis Impact: 3.2g ⚠️', dist: 'Suspension Shock Warning', color: 'rose', left: '68%', top: '20%', width: '180px', height: '70px' },
+              { label: 'CRATER #DEF-892 (94.8%)', dist: 'Depth: 16.4cm · Area: 0.85m²', color: 'rose', left: '32%', top: '38%', width: '240px', height: '150px' },
+              { label: 'Z-Axis Impact: 3.2g', dist: 'Suspension Shock Warning', color: 'rose', left: '68%', top: '20%', width: '180px', height: '70px' },
               { label: 'Required: 12 MT Hot-Mix', dist: 'Est Cost: ₹45,000', color: 'amber', left: '10%', top: '65%', width: '170px', height: '70px' }
             ]
           },
@@ -1301,7 +1309,7 @@
             status: 'DRIVER MONITORING SYSTEM (DMS) · 60 FPS INFRARED',
             boxes: [
               { label: 'Driver: Manoj Meena', dist: 'Score: 78/100 · Caution', color: 'amber', left: '25%', top: '25%', width: '220px', height: '180px' },
-              { label: '⚠️ Harsh Braking Detected', dist: 'Decel: -0.62g (14:32 IST)', color: 'rose', left: '55%', top: '65%', width: '180px', height: '65px' }
+              { label: 'Harsh Braking Detected', dist: 'Decel: -0.62g (14:32 IST)', color: 'rose', left: '55%', top: '65%', width: '180px', height: '65px' }
             ]
           }
         }
@@ -1320,7 +1328,7 @@
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
             boxes: [
               { label: 'Automobile: SUV (96.0%)', dist: '15.1m · 38 km/h', color: 'blue', left: '35%', top: '35%', width: '180px', height: '115px' },
-              { label: '⚠️ Pothole Cluster (92.4%)', dist: 'Depth 12cm', color: 'amber', left: '55%', top: '68%', width: '140px', height: '75px' }
+              { label: 'Pothole Cluster (92.4%)', dist: 'Depth 12cm', color: 'amber', left: '55%', top: '68%', width: '140px', height: '75px' }
             ]
           },
           asphalt: {
@@ -1362,7 +1370,7 @@
             sub: 'Suresh Saini (Route 5: Airport Link) · Airport T2 Junction Target Lock',
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR TARGET LOCK',
             boxes: [
-              { label: '🚨 TARGET LOCK: RJ-14-CE-8821 (97.2%)', dist: 'White Fortuner SUV · 84 km/h', color: 'rose', left: '25%', top: '28%', width: '240px', height: '145px' }
+              { label: 'TARGET LOCK: RJ-14-CE-8821 (97.2%)', dist: 'White Fortuner SUV · 84 km/h', color: 'rose', left: '25%', top: '28%', width: '240px', height: '145px' }
             ]
           },
           asphalt: {
@@ -1405,7 +1413,7 @@
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
             boxes: [
               { label: 'Heavy Truck (95.4%)', dist: '22.0m · 32 km/h', color: 'blue', left: '25%', top: '28%', width: '220px', height: '150px' },
-              { label: '⚠️ Expansion Joint Dip (93.1%)', dist: 'Impact 2.8g', color: 'amber', left: '58%', top: '70%', width: '150px', height: '70px' }
+              { label: 'Expansion Joint Dip (93.1%)', dist: 'Impact 2.8g', color: 'amber', left: '58%', top: '70%', width: '150px', height: '70px' }
             ]
           },
           asphalt: {
@@ -1448,7 +1456,7 @@
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
             boxes: [
               { label: 'Motorcycle: Two-Wheeler (94.1%)', dist: '8.4m · 24 km/h', color: 'blue', left: '18%', top: '45%', width: '90px', height: '120px' },
-              { label: '⚠️ Shoulder Drop-off (88.4%)', dist: 'Depth 9cm', color: 'amber', left: '65%', top: '65%', width: '130px', height: '75px' }
+              { label: 'Shoulder Drop-off (88.4%)', dist: 'Depth 9cm', color: 'amber', left: '65%', top: '65%', width: '130px', height: '75px' }
             ]
           },
           asphalt: {
@@ -1491,7 +1499,7 @@
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
             boxes: [
               { label: 'Automobile: Compact (96.2%)', dist: '16.4m · 40 km/h', color: 'blue', left: '32%', top: '35%', width: '170px', height: '110px' },
-              { label: '🌊 Drain Overflow (90.2%)', dist: 'Pool 14cm', color: 'sky', left: '55%', top: '68%', width: '150px', height: '75px' }
+              { label: 'Drain Overflow (90.2%)', dist: 'Pool 14cm', color: 'sky', left: '55%', top: '68%', width: '150px', height: '75px' }
             ]
           },
           asphalt: {
@@ -1534,7 +1542,7 @@
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
             boxes: [
               { label: 'Commercial Vehicle (93.7%)', dist: '11.0m · 20 km/h', color: 'blue', left: '26%', top: '32%', width: '185px', height: '125px' },
-              { label: '⚠️ Severe Crater Cluster (95.0%)', dist: 'Impact >3.4g', color: 'rose', left: '58%', top: '65%', width: '170px', height: '85px' }
+              { label: 'Severe Crater Cluster (95.0%)', dist: 'Impact >3.4g', color: 'rose', left: '58%', top: '65%', width: '170px', height: '85px' }
             ]
           },
           asphalt: {
@@ -1542,8 +1550,8 @@
             sub: 'VKI Industrial Area Heavy Crater Scan',
             status: 'DOWNWARD ASPHALT SENSOR',
             boxes: [
-              { label: '⚠️ Severe Crater Cluster (95.0%)', dist: 'Depth: 18.2cm · 20 MT Hot-mix', color: 'rose', left: '30%', top: '38%', width: '260px', height: '150px' },
-              { label: 'Z-Axis Impact: 3.4g ⚠️', dist: 'Axle Damage Risk Level: HIGH', color: 'rose', left: '65%', top: '22%', width: '190px', height: '70px' }
+              { label: 'Severe Crater Cluster (95.0%)', dist: 'Depth: 18.2cm · 20 MT Hot-mix', color: 'rose', left: '30%', top: '38%', width: '260px', height: '150px' },
+              { label: 'Z-Axis Impact: 3.4g', dist: 'Axle Damage Risk Level: HIGH', color: 'rose', left: '65%', top: '22%', width: '190px', height: '70px' }
             ]
           },
           blindspot: {
@@ -1560,7 +1568,7 @@
             status: 'DRIVER MONITORING SYSTEM · FATIGUE ALERT',
             boxes: [
               { label: 'Driver: Praveen Gurjar', dist: 'Score: 58/100 · HIGH RISK', color: 'rose', left: '25%', top: '25%', width: '220px', height: '180px' },
-              { label: '⚠️ Eye Aspect Ratio: 0.18 (Drowsy)', dist: 'Buzzer Warning Triggered', color: 'rose', left: '55%', top: '65%', width: '190px', height: '65px' }
+              { label: 'Eye Aspect Ratio: 0.18 (Drowsy)', dist: 'Buzzer Warning Triggered', color: 'rose', left: '55%', top: '65%', width: '190px', height: '65px' }
             ]
           }
         }
@@ -1579,7 +1587,7 @@
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
             boxes: [
               { label: 'E-Rickshaw Fleet (96.7%)', dist: '6.2m · 12 km/h', color: 'blue', left: '20%', top: '38%', width: '140px', height: '120px' },
-              { label: '🚶 Tourist Group (93.4%)', dist: '< 2.0m Density', color: 'amber', left: '60%', top: '42%', width: '130px', height: '140px' }
+              { label: 'Tourist Group (93.4%)', dist: '< 2.0m Density', color: 'amber', left: '60%', top: '42%', width: '130px', height: '140px' }
             ]
           },
           asphalt: {
@@ -1818,12 +1826,14 @@
 
         ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
         ctx.font = '10px "JetBrains Mono", monospace';
-        ctx.fillText(`REC 🟢 1080p60 · FPS: ${(59.5 + Math.random()).toFixed(1)} · BITRATE: 4.2Mbps`, 15, canvas.height - 15);
+        ctx.fillText(`REC [LIVE] 1080p60 · FPS: ${(59.5 + Math.random()).toFixed(1)} · BITRATE: 4.2Mbps`, 15, canvas.height - 15);
 
-        videoAnimFrame = requestAnimationFrame(renderFrame);
+        const reqAnim = window.requestAnimationFrame || (cb => setTimeout(cb, 1000 / 60));
+        videoAnimFrame = reqAnim(renderFrame);
       }
 
-      if (videoAnimFrame) cancelAnimationFrame(videoAnimFrame);
+      const cancelAnim = window.cancelAnimationFrame || (id => clearTimeout(id));
+      if (videoAnimFrame) cancelAnim(videoAnimFrame);
       renderFrame();
     }
 
@@ -1886,9 +1896,9 @@
           p.className = `p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer ${
             isSel ? 'bg-[#1E2320] text-white shadow-md' : 'bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]'
           }`;
-          const sub = p.querySelector('span.text-\[10px\]');
+          const sub = p.querySelector('.truncate') || p.lastElementChild;
           if (sub) sub.className = `text-[10px] truncate ${isSel ? 'text-slate-300' : 'text-[#717D75]'}`;
-          const dot = p.querySelector('span.w-2');
+          const dot = p.querySelector('.rounded-full') || p.querySelector('span:last-child');
           if (dot) dot.className = `w-2 h-2 rounded-full ${isSel ? 'bg-white' : 'bg-[#1E8A44]'}`;
         }
       });
@@ -1901,7 +1911,7 @@
           cp.className = `p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer flex items-center justify-between ${
             isSel ? 'bg-[#1E2320] text-white shadow-md' : 'bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]'
           }`;
-          const dot = cp.querySelector('span.w-2');
+          const dot = cp.querySelector('.rounded-full') || cp.querySelector('span:last-child');
           if (dot) dot.className = `w-2 h-2 rounded-full ${isSel ? 'bg-white' : 'bg-[#1E8A44]'}`;
         }
       });
@@ -2101,7 +2111,7 @@
               <strong class="text-[#1E2320] font-bold text-sm hover:underline cursor-pointer" onclick="selectBusDirectly('${inc.bus}')">${inc.bus} · ${inc.loc.split(' ')[0]}</strong>
             </div>
             <span class="px-3 py-1 rounded-full font-mono text-[11px] font-bold ${badgeBg}">
-              ⚑ ${inc.severity}
+              Severity: ${inc.severity}
             </span>
           </div>
 
@@ -2180,7 +2190,7 @@
               </div>
             </div>
             <span class="px-3 py-1 rounded-full font-mono text-[11px] font-bold ${bus.score > 90 ? 'bg-[#E8F8EE] text-[#1E8A44]' : 'bg-amber-100 text-amber-800'}">
-              ★ ${bus.score}/100 Score
+              ${bus.score}/100 Score
             </span>
           </div>
 
@@ -2238,7 +2248,7 @@
         document.getElementById('banner-action-sub').innerText = `Moved "${inc.loc}" to Resolved Today`;
       }
 
-      showToast('Docket Resolved', `✓ Moved "${inc.loc}" to Resolved Today.`, 'success');
+      showToast('Docket Resolved', `Moved "${inc.loc}" to Resolved Today.`, 'success');
       updatePillCounts();
       populateBentoIncidentGrid(currentSearchQuery, currentFilter);
       populateDefectTable(currentSearchQuery);
@@ -2296,6 +2306,7 @@
         currentSearchQuery = val || '';
         populateBentoIncidentGrid(currentSearchQuery, currentFilter);
         populateDefectTable(currentSearchQuery);
+        renderMarkers(currentFilter);
 
         if (val && val.trim() !== '') {
           const q = val.toUpperCase().trim();
@@ -2309,7 +2320,7 @@
             b.route.toUpperCase().includes(q)
           );
           if (busMatch) {
-            selectBusDirectly(busMatch.id, true, true);
+            selectBusDirectly(busMatch.id, true, false);
           }
         }
       }, 200);
@@ -2340,6 +2351,10 @@
         const statusPill = inc.status === 'Resolved' ? 'bg-[#E8F8EE] text-[#1E8A44]' :
                            inc.status === 'In Progress' ? 'bg-[#EEF1FD] text-[#4A62D6]' : 'bg-[#FDECEC] text-[#D33838]';
 
+        const actionBtn = inc.status === 'Resolved'
+          ? `<span class="text-[#1E8A44] font-bold text-[11px]">Resolved</span>`
+          : `<button onclick="resolveIncidentDocket('${inc.id}')" class="btn-pill-ghost py-1 px-3 text-[11px]">Dispatch</button>`;
+
         tr.innerHTML = `
           <td class="py-3 px-4 font-bold text-[#1E2320]">${inc.id}</td>
           <td class="py-3 px-4 font-bold text-[#1E2320]">${inc.loc}</td>
@@ -2348,11 +2363,7 @@
           <td class="py-3 px-4 font-bold text-[#1E8A44]">${inc.conf}%</td>
           <td class="py-3 px-4"><span class="px-3 py-1 rounded-full font-semibold text-[10px] ${statusPill}">${inc.status}</span></td>
           <td class="py-3 px-4 text-[#717D75]">${inc.cost}</td>
-          <td class="py-3 px-4 text-right">
-            <button onclick="resolveIncidentDocket('${inc.id}')" class="btn-pill-ghost py-1 px-3 text-[11px]">
-              Dispatch ⚡
-            </button>
-          </td>
+          <td class="py-3 px-4 text-right">${actionBtn}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -2386,7 +2397,7 @@
           <td class="py-2.5 px-3 font-bold">${b.fps}</td>
           <td class="py-2.5 px-3 ${latColor}">${b.lat_ms} ms</td>
           <td class="py-2.5 px-3 text-[#1E8A44] font-bold">${b.signal || '98% (LTE)'}</td>
-          <td class="py-2.5 px-3"><span class="text-[#1E8A44] font-bold">✅ Active</span></td>
+          <td class="py-2.5 px-3"><span class="text-[#1E8A44] font-bold">Active</span></td>
         `;
         tbody.appendChild(tr);
       });
@@ -2459,7 +2470,12 @@
       markersLayer.clearLayers();
       busMarkers = {};
 
+      const q = (currentSearchQuery || '').toLowerCase().trim();
+
       jaipurFleet.forEach(b => {
+        if (q && !b.id.toLowerCase().includes(q) && !b.driver.toLowerCase().includes(q) && !b.route.toLowerCase().includes(q)) {
+          return;
+        }
         const isSel = (b.id === selectedBusId);
         const customIcon = L.divIcon({
           className: 'custom-bus-icon',
@@ -2481,10 +2497,14 @@
           if (filterType === 'CRITICAL' && inc.type !== 'CRITICAL') return;
           if (filterType === 'RESOLVED' && inc.status !== 'Resolved') return;
 
+          if (q && !inc.loc.toLowerCase().includes(q) && !inc.title.toLowerCase().includes(q) && !inc.bus.toLowerCase().includes(q) && !inc.type.toLowerCase().includes(q) && !inc.id.toLowerCase().includes(q) && !inc.status.toLowerCase().includes(q)) {
+            return;
+          }
+
           let iconClass = 'incident-marker-pothole';
-          let iconSymbol = '⚠️';
-          if (inc.type === 'CRITICAL') { iconClass = 'incident-marker-critical'; iconSymbol = '🚨'; }
-          else if (inc.type === 'WATERLOGGING') { iconClass = 'incident-marker-water'; iconSymbol = '🌊'; }
+          let iconSymbol = '';
+          if (inc.type === 'CRITICAL') { iconClass = 'incident-marker-critical'; iconSymbol = ''; }
+          else if (inc.type === 'WATERLOGGING') { iconClass = 'incident-marker-water'; iconSymbol = ''; }
 
           const isNearTime = Math.abs(currentScrubMinutes - inc.minuteScrub) < 40;
           if (isNearTime) iconClass += ' selected-inc';
@@ -2608,7 +2628,7 @@
         hud.classList.add('flex');
       }
 
-      showToast('🚨 CRITICAL HIT & RUN DETECTED!', 'Target vehicle RJ-14-CE-8821 intercepted by BUS-005 camera.', 'danger');
+      showToast('CRITICAL HIT & RUN DETECTED!', 'Target vehicle RJ-14-CE-8821 intercepted by BUS-005 camera.', 'danger');
 
       setTimeout(() => {
         openHitAndRunPanel();
@@ -2690,7 +2710,7 @@
       if (currentModalIncidentId) {
         resolveIncidentDocket(currentModalIncidentId);
       } else {
-        showToast('Work Order Dispatched', '✓ JDA contractor assigned with hot-mix patch crew.', 'success');
+        showToast('Work Order Dispatched', 'JDA contractor assigned with hot-mix patch crew.', 'success');
       }
       closeIncidentModal();
     }
@@ -2755,7 +2775,7 @@
       }
 
       const tempElem = document.getElementById('inspector-npu-temp');
-      if (tempElem) tempElem.innerText = `${bus.temp}°C ${bus.temp > 55 ? '⚠️ High' : 'Normal'}`;
+      if (tempElem) tempElem.innerText = `${bus.temp}°C ${bus.temp > 55 ? 'High (Warning)' : 'Normal'}`;
 
       const fpsElem = document.getElementById('inspector-npu-fps');
       if (fpsElem) fpsElem.innerText = `${bus.fps} FPS`;
@@ -2801,7 +2821,7 @@
 
     function transmitPoliceAlert() {
       playBeep(1200);
-      showToast('Police FIR Transmitted', '🚨 Pursuit vector sent to Rajasthan Police PCR dispatch.', 'danger');
+      showToast('Police FIR Transmitted', 'Pursuit vector sent to Rajasthan Police PCR dispatch.', 'danger');
       closeHitAndRunPanel();
     }
 
@@ -2934,6 +2954,7 @@
           }
         });
       }
+      updateChartsForTimeline(currentScrubMinutes);
     }
 
     function updateChartsForTimeline(scrubMinutes) {
@@ -2954,6 +2975,56 @@
       const camTime = document.getElementById('hud-cam-time');
       if (camTime) camTime.innerText = clockStr;
     }, 1000);
+
+    // AUDIO CONTEXT UNLOCK & WINDOW RESIZE
+    window.addEventListener('pointerdown', () => {
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }, { once: true });
+
+    window.addEventListener('resize', () => {
+      if (map) {
+        map.invalidateSize();
+      }
+    });
+
+    // WINDOW FUNCTION BINDINGS
+    window.clearSearchAndFilters = clearSearchAndFilters;
+    window.setViewTab = setViewTab;
+    window.selectBusDirectly = selectBusDirectly;
+    window.switchCameraAngle = switchCameraAngle;
+    window.toggleVideoPlay = toggleVideoPlay;
+    window.toggleVideoMute = toggleVideoMute;
+    window.toggleVideoFullscreen = toggleVideoFullscreen;
+    window.setIncidentFilter = setIncidentFilter;
+    window.filterDocketsByBus = filterDocketsByBus;
+    window.showAllDockets = showAllDockets;
+    window.handleGlobalSearch = handleGlobalSearch;
+    window.resolveIncidentDocket = resolveIncidentDocket;
+    window.handleTimeScrub = handleTimeScrub;
+    window.togglePlayback = togglePlayback;
+    window.setPlaybackSpeed = setPlaybackSpeed;
+    window.triggerHitAndRunSimulation = triggerHitAndRunSimulation;
+    window.transmitPoliceAlert = transmitPoliceAlert;
+    window.openIncidentDetail = openIncidentDetail;
+    window.closeIncidentModal = closeIncidentModal;
+    window.dispatchModalIncident = dispatchModalIncident;
+    window.openHitAndRunPanel = openHitAndRunPanel;
+    window.closeHitAndRunPanel = closeHitAndRunPanel;
+    window.openDriverLeaderboard = openDriverLeaderboard;
+    window.closeDriverModal = closeDriverModal;
+    window.openExportModal = openExportModal;
+    window.closeExportModal = closeExportModal;
+    window.downloadReport = downloadReport;
+    window.openBusInspector = openBusInspector;
+    window.closeBusInspector = closeBusInspector;
+    window.switchLiveCameraFromInspector = switchLiveCameraFromInspector;
+    window.focusMapFromInspector = focusMapFromInspector;
+    window.filterDocketsFromInspector = filterDocketsFromInspector;
+    window.toggleAudioAlerts = toggleAudioAlerts;
+    window.captureCameraSnapshot = captureCameraSnapshot;
+    window.bootDashboard = bootDashboard;
 
     // ROBUST INITIALIZATION
     function bootDashboard() {
