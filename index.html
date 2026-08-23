@@ -963,10 +963,10 @@
         
         <!-- Video Screen (8 Cols) -->
         <div class="lg:col-span-8 space-y-3.5">
-          <div class="relative bg-[#101412] rounded-[32px] overflow-hidden aspect-video border border-black/[0.08] shadow-2xl flex items-center justify-center group">
+          <div class="relative bg-[#101412] rounded-[32px] overflow-hidden aspect-video border border-black/[0.08] shadow-2xl block group">
             
-            <!-- Video & Overlaid Hardware Canvas -->
-            <video id="lab-video-element" class="w-full h-full object-cover hidden" playsinline muted loop></video>
+            <!-- Offscreen Hardware Video Decoder (Canvas is the Single Visual Viewport) -->
+            <video id="lab-video-element" class="hidden" style="display: none;" playsinline muted loop></video>
             <canvas id="lab-canvas-overlay" class="w-full h-full object-cover block"></canvas>
 
             <!-- Top Floating Live HUD -->
@@ -3496,7 +3496,6 @@
         vid.src = data.file;
         vid.muted = isLabMuted;
         vid.playbackRate = labPlaybackRate;
-        vid.classList.remove('hidden');
         vid.play().then(() => {
           isLabPlaying = true;
           updateLabPlayBtnIcon();
@@ -3543,7 +3542,6 @@
         vid.src = customUploadedVideoUrl;
         vid.muted = isLabMuted;
         vid.playbackRate = labPlaybackRate;
-        vid.classList.remove('hidden');
         vid.play().then(() => {
           isLabPlaying = true;
           updateLabPlayBtnIcon();
@@ -3582,7 +3580,7 @@
     function toggleLabVideoPlay() {
       const vid = document.getElementById('lab-video-element');
       isLabPlaying = !isLabPlaying;
-      if (vid && !vid.classList.contains('hidden')) {
+      if (vid && vid.src) {
         if (isLabPlaying) vid.play();
         else vid.pause();
       }
@@ -3696,7 +3694,7 @@
 
       function renderFrame() {
         const vid = document.getElementById('lab-video-element');
-        const hasCustomVideo = vid && !vid.classList.contains('hidden') && !vid.paused && vid.readyState >= 2;
+        const hasCustomVideo = vid && vid.src && !vid.paused && vid.readyState >= 2;
 
         if (hasCustomVideo) {
           ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
