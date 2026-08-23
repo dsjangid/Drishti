@@ -10,8 +10,9 @@ import os
 import sys
 import json
 import time
-import cgi
 from http.server import HTTPServer, SimpleHTTPRequestHandler
+
+sys.path.insert(0, os.path.dirname(__file__))
 from run_inference import DeepPotholeInferenceEngine
 
 
