@@ -1011,8 +1011,11 @@
                 class="flex-1 accent-[#4A62D6] h-1.5 bg-white/20 rounded-lg cursor-pointer"
               />
 
-              <!-- Speed & Fullscreen -->
+              <!-- Speed, Mirror & Fullscreen -->
               <div class="flex items-center gap-2">
+                <button onclick="toggleLabVideoMirror()" id="btn-lab-mirror" title="Flip / Mirror Horizontal Orientation" class="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all cursor-pointer">
+                  <span class="material-symbols-outlined text-base">swap_horiz</span>
+                </button>
                 <select onchange="setLabPlaybackSpeed(this.value)" id="lab-speed-select" class="bg-white/10 text-white border border-white/20 rounded-xl px-2 py-1 text-[11px] font-mono focus:outline-none cursor-pointer">
                   <option value="0.5" class="text-slate-900">0.5x</option>
                   <option value="1.0" selected class="text-slate-900">1.0x</option>
@@ -3625,6 +3628,19 @@
       }
     }
 
+    let isLabMirrored = false;
+
+    function toggleLabVideoMirror() {
+      isLabMirrored = !isLabMirrored;
+      const btn = document.getElementById('btn-lab-mirror');
+      if (btn) {
+        btn.className = isLabMirrored 
+          ? 'w-8 h-8 rounded-full bg-[#4A62D6] text-white flex items-center justify-center shadow-md transition-all cursor-pointer'
+          : 'w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-all cursor-pointer';
+      }
+      showToast('Video Orientation', isLabMirrored ? 'Horizontal Mirror Flipped (Inverted Left/Right)' : 'Standard Orientation Restored', 'info');
+    }
+
     function toggleLabLayer(layerName) {
       if (labLayers.hasOwnProperty(layerName)) {
         const chk = document.getElementById('layer-toggle-' + layerName);
@@ -3742,7 +3758,16 @@
         const hasCustomVideo = vid && vid.src && !vid.paused && vid.readyState >= 2;
 
         if (hasCustomVideo) {
-          ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+          if (isLabMirrored) {
+            ctx.save();
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+            ctx.restore();
+          } else {
+            ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+          }
+
           const timecode = document.getElementById('lab-video-timecode');
           if (timecode && vid.duration) {
             const cur = Math.floor(vid.currentTime);
@@ -3852,7 +3877,9 @@
           if (labLayers.defects) {
             const defW = 210, defH = 95;
             const defGrading = gradePotholeIWatchRoad(defW, defH, 0.94);
-            const defX = canvas.width * 0.54 + (Math.cos(curTime * 0.4) * 25);
+            const defX = isLabMirrored 
+              ? canvas.width * 0.22 - (Math.cos(curTime * 0.4) * 20)
+              : canvas.width * 0.48 + (Math.cos(curTime * 0.4) * 25);
             const defY = canvas.height * 0.60;
             drawYoloBox(
               defX, defY, defW, defH,
@@ -3863,7 +3890,9 @@
           }
 
           if (labLayers.vehicles) {
-            const vX = canvas.width * 0.26 + (Math.sin(curTime * 0.4) * 35);
+            const vX = isLabMirrored 
+              ? canvas.width * 0.58 - (Math.sin(curTime * 0.4) * 30)
+              : canvas.width * 0.18 + (Math.sin(curTime * 0.4) * 35);
             const vY = canvas.height * 0.46;
             drawYoloBox(
               vX, vY, 210, 145,
@@ -3874,7 +3903,9 @@
           }
 
           if (labLayers.anpr) {
-            const anprX = canvas.width * 0.32 + (Math.sin(curTime * 0.4) * 35);
+            const anprX = isLabMirrored 
+              ? canvas.width * 0.62 - (Math.sin(curTime * 0.4) * 30)
+              : canvas.width * 0.24 + (Math.sin(curTime * 0.4) * 35);
             const anprY = canvas.height * 0.55;
             drawYoloBox(
               anprX, anprY, 115, 36,
@@ -3973,6 +4004,7 @@
     window.setLabPlaybackSpeed = setLabPlaybackSpeed;
     window.handleLabVideoSeek = handleLabVideoSeek;
     window.toggleLabFullscreen = toggleLabFullscreen;
+    window.toggleLabVideoMirror = toggleLabVideoMirror;
     window.toggleLabLayer = toggleLabLayer;
     window.logLabDocketsToMunicipalMap = logLabDocketsToMunicipalMap;
     window.exportLabInspectionReport = exportLabInspectionReport;
