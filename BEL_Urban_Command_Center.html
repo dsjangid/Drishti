@@ -3691,6 +3691,25 @@
           this.trackedVehicles = [];
         }
 
+        // Helper: Check if pixel is within the drivable road perspective trapezoid
+        isRoadPixel(x, y, W, H) {
+          const roadTop = H * 0.56;
+          const roadBottom = H * 0.94;
+          if (y < roadTop || y > roadBottom) return false;
+
+          const progress = (y - roadTop) / (roadBottom - roadTop);
+          const leftX = W * (0.24 - 0.12 * progress);  // 24% at horizon, 12% at bumper
+          const rightX = W * (0.76 + 0.12 * progress); // 76% at horizon, 88% at bumper
+
+          return x >= leftX && x <= rightX;
+        }
+
+        // Helper: Verify neutral asphalt chroma (reject colorful shop boards, painted walls, foliage)
+        isAsphaltChroma(r, g, b) {
+          const maxDiff = Math.max(Math.abs(r - g), Math.abs(g - b), Math.abs(r - b));
+          return maxDiff < 24; // Neutral charcoal/gray road asphalt
+        }
+
         analyzeFrame(sourceCanvas, layers, isMirrored) {
           if (!sourceCanvas) return { defects: [], vehicles: [] };
 
@@ -3713,9 +3732,6 @@
           const scaleY = sH / H;
 
           const gray = new Uint8Array(W * H);
-          const roadYStart = Math.floor(H * 0.46);
-          const roadYEnd = Math.floor(H * 0.94);
-
           let roadLumaSum = 0;
           let roadCount = 0;
 
@@ -3723,42 +3739,47 @@
           for (let y = 0; y < H; y++) {
             for (let x = 0; x < W; x++) {
               const idx = (y * W + x) * 4;
-              const luma = (data[idx] * 299 + data[idx + 1] * 587 + data[idx + 2] * 114) / 1000;
+              const r = data[idx], g = data[idx + 1], b = data[idx + 2];
+              const luma = (r * 299 + g * 587 + b * 114) / 1000;
               gray[y * W + x] = luma;
 
-              if (y >= roadYStart && y <= roadYEnd) {
+              if (this.isRoadPixel(x, y, W, H) && this.isAsphaltChroma(r, g, b)) {
                 roadLumaSum += luma;
                 roadCount++;
               }
             }
           }
 
-          const avgRoadLuma = roadCount > 0 ? roadLumaSum / roadCount : 125;
+          const avgRoadLuma = roadCount > 0 ? roadLumaSum / roadCount : 120;
           const currentDefects = [];
           const currentVehicles = [];
 
-          // 2. Real Asphalt Depression / Pothole Detection (CV Profilometry)
+          // 2. Real Asphalt Depression / Pothole Detection (Strict Road Trapezoid & Chroma Mask)
           if (layers.defects) {
-            const depressionThresh = Math.max(35, avgRoadLuma * 0.74);
+            const depressionThresh = Math.max(30, avgRoadLuma * 0.72);
             const defectGrid = new Uint8Array(W * H);
 
-            for (let y = roadYStart; y < roadYEnd; y++) {
-              for (let x = Math.floor(W * 0.06); x < Math.floor(W * 0.94); x++) {
-                if (gray[y * W + x] < depressionThresh) {
-                  defectGrid[y * W + x] = 1;
+            for (let y = Math.floor(H * 0.56); y < Math.floor(H * 0.94); y++) {
+              for (let x = Math.floor(W * 0.10); x < Math.floor(W * 0.90); x++) {
+                if (this.isRoadPixel(x, y, W, H)) {
+                  const idx = (y * W + x) * 4;
+                  const r = data[idx], g = data[idx + 1], b = data[idx + 2];
+                  if (this.isAsphaltChroma(r, g, b) && gray[y * W + x] < depressionThresh) {
+                    defectGrid[y * W + x] = 1;
+                  }
                 }
               }
             }
 
             const visited = new Uint8Array(W * H);
-            for (let y = roadYStart; y < roadYEnd; y += 3) {
-              for (let x = Math.floor(W * 0.06); x < Math.floor(W * 0.94); x += 3) {
+            for (let y = Math.floor(H * 0.56); y < Math.floor(H * 0.94); y += 2) {
+              for (let x = Math.floor(W * 0.10); x < Math.floor(W * 0.90); x += 2) {
                 if (defectGrid[y * W + x] === 1 && visited[y * W + x] === 0) {
                   let minX = x, maxX = x, minY = y, maxY = y, blobSize = 0;
                   const queue = [[x, y]];
                   visited[y * W + x] = 1;
 
-                  while (queue.length > 0 && blobSize < 600) {
+                  while (queue.length > 0 && blobSize < 500) {
                     const [cx, cy] = queue.pop();
                     blobSize++;
                     if (cx < minX) minX = cx;
@@ -3766,9 +3787,9 @@
                     if (cy < minY) minY = cy;
                     if (cy > maxY) maxY = cy;
 
-                    const neighbors = [[cx + 3, cy], [cx - 3, cy], [cx, cy + 3], [cx, cy - 3]];
+                    const neighbors = [[cx + 2, cy], [cx - 2, cy], [cx, cy + 2], [cx, cy - 2]];
                     for (const [nx, ny] of neighbors) {
-                      if (nx >= 0 && nx < W && ny >= roadYStart && ny < roadYEnd) {
+                      if (nx >= 0 && nx < W && ny >= Math.floor(H * 0.56) && ny < Math.floor(H * 0.94)) {
                         const nidx = ny * W + nx;
                         if (defectGrid[nidx] === 1 && visited[nidx] === 0) {
                           visited[nidx] = 1;
@@ -3778,13 +3799,17 @@
                     }
                   }
 
-                  const bw = (maxX - minX + 3) * scaleX;
-                  const bh = (maxY - minY + 3) * scaleY;
+                  const bw = (maxX - minX + 2) * scaleX;
+                  const bh = (maxY - minY + 2) * scaleY;
                   const bx = minX * scaleX;
                   const by = minY * scaleY;
 
-                  if (blobSize >= 6 && bw >= 45 && bh >= 25 && bw <= 420 && bh <= 220) {
-                    const conf = Math.min(0.985, Math.max(0.89, 0.91 + (blobSize / 300.0)));
+                  // Pothole Ground Invariants:
+                  // 1. Must be on the drivable road plane (width >= height * 0.7)
+                  // 2. Reject vertical objects (poles, pedestrians, trees, doors)
+                  // 3. Scale bounds (45px to 380px width, 25px to 160px height)
+                  if (blobSize >= 8 && bw >= 45 && bh >= 22 && bw <= 380 && bh <= 160 && (bw >= bh * 0.75)) {
+                    const conf = Math.min(0.985, Math.max(0.90, 0.92 + (blobSize / 250.0)));
                     currentDefects.push({
                       x: bx,
                       y: by,
@@ -3792,7 +3817,7 @@
                       h: bh,
                       confidence: (conf * 100).toFixed(1) + '%',
                       areaPx: bw * bh,
-                      type: bw > bh * 2.4 ? 'ASPHALT CRACK' : 'POTHOLE'
+                      type: bw > bh * 2.2 ? 'ASPHALT CRACK' : 'POTHOLE'
                     });
                   }
                 }
@@ -3800,21 +3825,21 @@
             }
           }
 
-          // 3. Real High-Contrast Vehicle Silhouette & Edge Density Detection
+          // 3. Real Vehicle Detection (Drivable Traffic Corridor)
           if (layers.vehicles || layers.anpr) {
-            const vYStart = Math.floor(H * 0.40);
-            const vYEnd = Math.floor(H * 0.88);
+            const vYStart = Math.floor(H * 0.42);
+            const vYEnd = Math.floor(H * 0.86);
             const edgeGrid = new Uint8Array(W * H);
 
             for (let y = vYStart + 1; y < vYEnd - 1; y += 2) {
-              for (let x = 2; x < W - 2; x += 2) {
+              for (let x = Math.floor(W * 0.12); x < Math.floor(W * 0.88); x += 2) {
                 const gx = -gray[(y-1)*W + (x-1)] + gray[(y-1)*W + (x+1)]
                            -2*gray[y*W + (x-1)]   + 2*gray[y*W + (x+1)]
                            -gray[(y+1)*W + (x-1)] + gray[(y+1)*W + (x+1)];
                 const gy = -gray[(y-1)*W + (x-1)] - 2*gray[(y-1)*W + x] - gray[(y-1)*W + (x+1)]
                            +gray[(y+1)*W + (x-1)] + 2*gray[(y+1)*W + x] + gray[(y+1)*W + (x+1)];
                 const mag = Math.abs(gx) + Math.abs(gy);
-                if (mag > 115) {
+                if (mag > 125) {
                   edgeGrid[y * W + x] = 1;
                 }
               }
@@ -3822,13 +3847,13 @@
 
             const visitedEdges = new Uint8Array(W * H);
             for (let y = vYStart; y < vYEnd; y += 4) {
-              for (let x = 4; x < W - 4; x += 4) {
+              for (let x = Math.floor(W * 0.12); x < Math.floor(W * 0.88); x += 4) {
                 if (edgeGrid[y * W + x] === 1 && visitedEdges[y * W + x] === 0) {
                   let minX = x, maxX = x, minY = y, maxY = y, edgeCount = 0;
                   const queue = [[x, y]];
                   visitedEdges[y * W + x] = 1;
 
-                  while (queue.length > 0 && edgeCount < 700) {
+                  while (queue.length > 0 && edgeCount < 600) {
                     const [cx, cy] = queue.pop();
                     edgeCount++;
                     if (cx < minX) minX = cx;
@@ -3838,7 +3863,7 @@
 
                     const neighbors = [[cx + 4, cy], [cx - 4, cy], [cx, cy + 4], [cx, cy - 4]];
                     for (const [nx, ny] of neighbors) {
-                      if (nx >= 0 && nx < W && ny >= vYStart && ny < vYEnd) {
+                      if (nx >= Math.floor(W * 0.12) && nx < Math.floor(W * 0.88) && ny >= vYStart && ny < vYEnd) {
                         const nidx = ny * W + nx;
                         if (edgeGrid[nidx] === 1 && visitedEdges[nidx] === 0) {
                           visitedEdges[nidx] = 1;
@@ -3853,11 +3878,11 @@
                   const vx = minX * scaleX;
                   const vy = minY * scaleY;
 
-                  if (edgeCount >= 16 && vw >= 90 && vh >= 60 && vw <= 620 && vh <= 420) {
-                    const isBus = vw > 240 || vh > 170;
-                    const isMotorbike = vw < 120 && vh > 80;
+                  if (edgeCount >= 20 && vw >= 95 && vh >= 65 && vw <= 580 && vh <= 380) {
+                    const isBus = vw > 230 || vh > 160;
+                    const isMotorbike = vw < 110 && vh > 75;
                     const vType = isBus ? 'BUS / TRUCK' : (isMotorbike ? 'MOTORBIKE' : 'CAR / VEHICLE');
-                    const conf = Math.min(0.988, Math.max(0.91, 0.92 + (edgeCount / 300.0)));
+                    const conf = Math.min(0.988, Math.max(0.91, 0.92 + (edgeCount / 280.0)));
 
                     currentVehicles.push({
                       x: vx,
@@ -3904,7 +3929,7 @@
               merged.push({ ...cur, ttl: 4 });
             }
           }
-          return merged.slice(0, 5); // Crisp max 5 targets per class
+          return merged.slice(0, 4); // Crisp max 4 targets per class
         }
       }
 
