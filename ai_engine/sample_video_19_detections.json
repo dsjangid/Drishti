@@ -1,0 +1,35 @@
+{
+  "video": "/Users/meydivyansh/dashboard/sample_videos/19_10-07-2023.mp4",
+  "fps": 30.010000228881836,
+  "detections": [
+    {
+      "frame": 0,
+      "time_sec": 0.0,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "57.2%",
+          "bbox": [
+            702,
+            827,
+            260,
+            50
+          ],
+          "bbox_norm": [
+            0.3656,
+            0.7657,
+            0.1354,
+            0.0463
+          ],
+          "severity": "High Severity",
+          "color": "#E11D48",
+          "depth_cm": 19.0,
+          "repair_cost": "\u20b948,000",
+          "location": "Center Drivable Lane",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ],
+      "cluster_zone": null
+    }
+  ]
+}

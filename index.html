@@ -926,34 +926,34 @@
             <div class="grid grid-cols-2 gap-2.5">
               <button onclick="loadSampleVideoClip('rad-pothole')" id="btn-clip-rad-pothole" class="p-3 rounded-2xl bg-[#1E2320] text-white shadow-md text-left transition-all border border-black/[0.04] flex flex-col justify-between cursor-pointer space-y-1">
                 <div class="flex justify-between items-center">
-                  <span class="font-bold text-xs">1. RAD Pothole Corridor</span>
-                  <span class="px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[9px] font-mono font-bold">16cm Depth</span>
+                  <span class="font-bold text-xs">1. RAD Pothole (Clip 02)</span>
+                  <span class="px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[9px] font-mono font-bold">16cm Crater</span>
                 </div>
-                <p class="text-[10px] text-slate-300 line-clamp-1">Kaggle RAD dataset with severe crater &amp; JDA hot-mix</p>
+                <p class="text-[10px] text-slate-300 line-clamp-1">Kaggle RAD dataset · Severe crater &amp; JDA hot-mix</p>
               </button>
 
-              <button onclick="loadSampleVideoClip('hit-and-run')" id="btn-clip-hit-and-run" class="p-3 rounded-2xl bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] text-left transition-all border border-black/[0.04] flex flex-col justify-between cursor-pointer space-y-1">
+              <button onclick="loadSampleVideoClip('distress-04')" id="btn-clip-distress-04" class="p-3 rounded-2xl bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] text-left transition-all border border-black/[0.04] flex flex-col justify-between cursor-pointer space-y-1">
                 <div class="flex justify-between items-center">
-                  <span class="font-bold text-xs text-[#1E2320]">2. Hit &amp; Run Intercept</span>
-                  <span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[9px] font-mono font-bold">RJ-14 ANPR</span>
+                  <span class="font-bold text-xs text-[#1E2320]">2. Distress Sector (Clip 04)</span>
+                  <span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[9px] font-mono font-bold">12cm Depth</span>
                 </div>
-                <p class="text-[10px] text-[#717D75] line-clamp-1">High-speed Toyota Fortuner OCR plate capture</p>
+                <p class="text-[10px] text-[#717D75] line-clamp-1">Indian asphalt fissures &amp; aggregate unraveling</p>
               </button>
 
-              <button onclick="loadSampleVideoClip('school-zone')" id="btn-clip-school-zone" class="p-3 rounded-2xl bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] text-left transition-all border border-black/[0.04] flex flex-col justify-between cursor-pointer space-y-1">
+              <button onclick="loadSampleVideoClip('monsoon-19')" id="btn-clip-monsoon-19" class="p-3 rounded-2xl bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] text-left transition-all border border-black/[0.04] flex flex-col justify-between cursor-pointer space-y-1">
                 <div class="flex justify-between items-center">
-                  <span class="font-bold text-xs text-[#1E2320]">3. School Zone VRU</span>
-                  <span class="px-2 py-0.5 rounded-full bg-sky-100 text-sky-800 text-[9px] font-mono font-bold">TTC &lt; 1.8s</span>
+                  <span class="font-bold text-xs text-[#1E2320]">3. Monsoon Basin (Clip 19)</span>
+                  <span class="px-2 py-0.5 rounded-full bg-sky-100 text-sky-800 text-[9px] font-mono font-bold">Waterlogged</span>
                 </div>
-                <p class="text-[10px] text-[#717D75] line-clamp-1">Pedestrian crossing density &amp; Pelican signal alert</p>
+                <p class="text-[10px] text-[#717D75] line-clamp-1">Roadside shoulder waterlogging &amp; sub-base dip</p>
               </button>
 
-              <button onclick="loadSampleVideoClip('traffic-flow')" id="btn-clip-traffic-flow" class="p-3 rounded-2xl bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] text-left transition-all border border-black/[0.04] flex flex-col justify-between cursor-pointer space-y-1">
+              <button onclick="loadSampleVideoClip('urban-105')" id="btn-clip-urban-105" class="p-3 rounded-2xl bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] text-left transition-all border border-black/[0.04] flex flex-col justify-between cursor-pointer space-y-1">
                 <div class="flex justify-between items-center">
-                  <span class="font-bold text-xs text-[#1E2320]">4. Peak Mixed Traffic</span>
-                  <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-mono font-bold">6-Class PCU</span>
+                  <span class="font-bold text-xs text-[#1E2320]">4. Urban Arterial (Clip 105)</span>
+                  <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-mono font-bold">Multi-Lane</span>
                 </div>
-                <p class="text-[10px] text-[#717D75] line-clamp-1">Cars, bikes, autos &amp; bottleneck speed vectors</p>
+                <p class="text-[10px] text-[#717D75] line-clamp-1">High-density arterial road profiling &amp; VRU scan</p>
               </button>
             </div>
           </div>
@@ -3334,10 +3334,10 @@
 
     const labBenchmarkClips = {
       'rad-pothole': {
-        name: 'RAD Pothole Corridor',
+        name: 'RAD Pothole (Clip 02)',
         file: 'sample_videos/02_10072023.mp4',
-        desc: 'Kaggle RAD dataset with severe crater & JDA hot-mix',
-        badge: '16cm Depth',
+        desc: 'Kaggle RAD dataset · Severe crater & JDA hot-mix',
+        badge: '16cm Crater',
         latency: '16.4',
         fps: 58.6,
         pcu: '4.2',
@@ -3355,64 +3355,65 @@
           { time: '00:09', type: 'POTHOLE', conf: '71.2%', metrics: 'Depth: 24.0cm · JDA Rapid Fill', sev: 'High', contractor: 'Rajeshwar Infra Ltd' }
         ]
       },
-      'hit-and-run': {
-        name: 'Hit & Run Suspect Intercept',
-        file: 'sample_videos/hit_and_run_intercept.mp4',
-        desc: 'High-speed Toyota Fortuner OCR plate capture',
-        badge: 'RJ-14 ANPR',
-        latency: '14.2',
-        fps: 60.1,
-        pcu: '7.8',
-        congestion: 'Moderate Flow',
-        contractor: 'Jaipur Traffic Police PCR',
-        contractId: 'FIR-POL-2026-T2',
-        eng: 'ACP Traffic (North Div)',
-        cost: 'Police Dispatch Active',
-        sla: 'Immediate',
-        anomalies: 2,
+      'distress-04': {
+        name: 'Distress Sector (Clip 04)',
+        file: 'sample_videos/04_10072023.mp4',
+        desc: 'Indian asphalt fissures & aggregate unraveling',
+        badge: '12cm Depth',
+        latency: '15.1',
+        fps: 59.4,
+        pcu: '5.6',
+        congestion: 'Free Flow',
+        contractor: 'Rajeshwar Infra Ltd',
+        contractId: 'JDA-PWD-2025-C108',
+        eng: 'Er. Alok Saxena (Zone 4)',
+        cost: '₹32,000 (8 MT Hot-Mix)',
+        sla: '48h',
+        anomalies: 3,
         events: [
-          { time: '00:03', type: 'TARGET_LOCK', conf: '97.4%', metrics: 'RJ-14-CE-8821 · 84 km/h SUV', sev: 'Critical', contractor: 'Traffic Police PCR' },
-          { time: '00:07', type: 'HIGH_SPEED_FLEE', conf: '98.0%', metrics: 'Speed: 88 km/h · Vector North', sev: 'Critical', contractor: 'Traffic Police PCR' }
+          { time: '00:05', type: 'POTHOLE', conf: '59.6%', metrics: 'Depth: 18.1cm · Pavement Dip', sev: 'High', contractor: 'Rajeshwar Infra Ltd' },
+          { time: '00:08', type: 'ROAD_DAMAGE', conf: '52.5%', metrics: 'Depth: 17.1cm · 6 MT Hot-Mix', sev: 'High', contractor: 'Rajeshwar Infra Ltd' },
+          { time: '00:10', type: 'POTHOLE', conf: '46.3%', metrics: 'Depth: 24.0cm · Sub-base Fissure', sev: 'High', contractor: 'Rajeshwar Infra Ltd' }
         ]
       },
-      'school-zone': {
-        name: 'School Zone VRU',
-        file: 'sample_videos/school_zone_pedestrians.mp4',
-        desc: 'Pedestrian crossing density & Pelican signal alert',
-        badge: 'TTC < 1.8s',
-        latency: '15.8',
-        fps: 59.2,
-        pcu: '6.4',
+      'monsoon-19': {
+        name: 'Monsoon Basin (Clip 19)',
+        file: 'sample_videos/19_10-07-2023.mp4',
+        desc: 'Roadside shoulder waterlogging & sub-base dip',
+        badge: 'Waterlogged',
+        latency: '14.8',
+        fps: 60.0,
+        pcu: '6.2',
         congestion: 'Moderate Flow',
         contractor: 'Jaipur Smart City Ltd',
-        contractId: 'JSCL-VRU-2026-S12',
+        contractId: 'JSCL-DRAIN-2026-M19',
         eng: 'Er. Sunita Verma',
-        cost: 'Pelican Signal & Speed Table',
+        cost: '₹58,000 (Shoulder Leveling)',
         sla: '24h',
         anomalies: 3,
         events: [
-          { time: '00:02', type: 'VRU_CROSSING', conf: '94.8%', metrics: '4 School Children · TTC: 1.6s', sev: 'High', contractor: 'Jaipur Smart City Ltd' },
-          { time: '00:09', type: 'FADED_ZEBRA', conf: '89.4%', metrics: 'Thermoplastic Wear: 75%', sev: 'Medium', contractor: 'Jaipur Smart City Ltd' }
+          { time: '00:03', type: 'WATERLOGGED_SHOULDER', conf: '66.4%', metrics: 'Shoulder Drainage Depression', sev: 'High', contractor: 'Jaipur Smart City Ltd' },
+          { time: '00:07', type: 'POTHOLE', conf: '58.2%', metrics: 'Depth: 14.5cm · Curbside Ponding', sev: 'Moderate', contractor: 'Jaipur Smart City Ltd' }
         ]
       },
-      'traffic-flow': {
-        name: 'Peak Mixed Traffic',
-        file: 'sample_videos/urban_traffic_pcu_flow.mp4',
-        desc: 'Cars, bikes, autos & bottleneck speed vectors',
-        badge: '6-Class PCU',
-        latency: '18.1',
-        fps: 57.8,
-        pcu: '14.8',
-        congestion: 'Heavy Congestion',
-        contractor: 'JCTSL Transit Planning',
-        contractId: 'JCTSL-FLOW-2026',
-        eng: 'Chief Traffic Engineer',
-        cost: 'Adaptive Signal Optimization',
-        sla: 'Real-time',
+      'urban-105': {
+        name: 'Urban Arterial (Clip 105)',
+        file: 'sample_videos/105_10-07-2023.mp4',
+        desc: 'High-density arterial road profiling & VRU scan',
+        badge: 'Multi-Lane',
+        latency: '16.9',
+        fps: 58.2,
+        pcu: '11.4',
+        congestion: 'Moderate Flow',
+        contractor: 'JDA Arterial Maintenance',
+        contractId: 'JDA-ART-2026-U105',
+        eng: 'Er. Rajesh Bhargava',
+        cost: '₹42,000 (Lane Sealant)',
+        sla: '48h',
         anomalies: 4,
         events: [
-          { time: '00:02', type: 'BOTTLENECK', conf: '93.2%', metrics: 'Avg Speed: 14 km/h · 28 Vehicles', sev: 'High', contractor: 'JCTSL Transit' },
-          { time: '00:11', type: 'ILLEGAL_PARK', conf: '91.0%', metrics: 'Auto Obstruction at Bus Bay', sev: 'Medium', contractor: 'Traffic Police' }
+          { time: '00:04', type: 'ASPHALT_CRACK', conf: '64.5%', metrics: 'Longitudinal Seam Fissure', sev: 'Moderate', contractor: 'JDA Maintenance' },
+          { time: '00:08', type: 'POTHOLE', conf: '61.2%', metrics: 'Depth: 12.0cm · JDA Hot-Mix', sev: 'Moderate', contractor: 'JDA Maintenance' }
         ]
       }
     };
@@ -3727,6 +3728,24 @@
         { time: 5.10, bx: 0.54, by: 0.75, bw: 0.16, bh: 0.10, conf: "61.8%", sev: "High Severity", color: "#E11D48", depth: 18.0, cost: "₹48,000" },
         { time: 7.20, bx: 0.35, by: 0.78, bw: 0.18, bh: 0.11, conf: "66.5%", sev: "High Severity", color: "#E11D48", depth: 24.0, cost: "₹48,000" },
         { time: 9.40, bx: 0.42, by: 0.82, bw: 0.22, bh: 0.12, conf: "71.2%", sev: "High Severity", color: "#E11D48", depth: 24.0, cost: "₹48,000" }
+      ],
+      'distress-04': [
+        { time: 5.27, bx: 0.81, by: 0.63, bw: 0.12, bh: 0.08, conf: "46.4%", sev: "High Severity", color: "#E11D48", depth: 24.0, cost: "₹48,000" },
+        { time: 5.74, bx: 0.53, by: 0.97, bw: 0.05, bh: 0.03, conf: "48.7%", sev: "Low Severity", color: "#10B981", depth: 5.6, cost: "₹9,500" },
+        { time: 8.41, bx: 0.36, by: 0.91, bw: 0.06, bh: 0.09, conf: "59.6%", sev: "High Severity", color: "#E11D48", depth: 18.1, cost: "₹48,000" },
+        { time: 8.48, bx: 0.35, by: 0.92, bw: 0.07, bh: 0.08, conf: "52.5%", sev: "High Severity", color: "#E11D48", depth: 17.1, cost: "₹48,000" },
+        { time: 8.61, bx: 0.34, by: 0.94, bw: 0.07, bh: 0.06, conf: "45.3%", sev: "High Severity", color: "#E11D48", depth: 14.4, cost: "₹48,000" },
+        { time: 9.88, bx: 0.18, by: 0.60, bw: 0.60, bh: 0.38, conf: "46.6%", sev: "High Severity", color: "#E11D48", depth: 24.0, cost: "₹48,000" }
+      ],
+      'monsoon-19': [
+        { time: 2.50, bx: 0.18, by: 0.72, bw: 0.15, bh: 0.09, conf: "66.4%", sev: "High Severity", color: "#E11D48", depth: 18.5, cost: "₹48,000" },
+        { time: 4.80, bx: 0.74, by: 0.75, bw: 0.14, bh: 0.08, conf: "58.2%", sev: "Moderate Severity", color: "#F59E0B", depth: 12.0, cost: "₹24,000" },
+        { time: 7.10, bx: 0.22, by: 0.78, bw: 0.18, bh: 0.11, conf: "64.0%", sev: "High Severity", color: "#E11D48", depth: 16.0, cost: "₹48,000" }
+      ],
+      'urban-105': [
+        { time: 3.20, bx: 0.38, by: 0.74, bw: 0.14, bh: 0.08, conf: "64.5%", sev: "Moderate Severity", color: "#F59E0B", depth: 11.5, cost: "₹24,000" },
+        { time: 6.40, bx: 0.48, by: 0.79, bw: 0.16, bh: 0.10, conf: "61.2%", sev: "Moderate Severity", color: "#F59E0B", depth: 12.0, cost: "₹24,000" },
+        { time: 8.90, bx: 0.28, by: 0.82, bw: 0.19, bh: 0.11, conf: "68.7%", sev: "High Severity", color: "#E11D48", depth: 19.5, cost: "₹48,000" }
       ]
     };
 
@@ -4282,14 +4301,14 @@
           ? vid.currentTime 
           : (isLabPlaying ? (Date.now() / 1000) : (frameCounter / 30));
 
-        // Scenario 1: RAD Pothole Corridor with YOLOv8 Neural Detections & iWatchRoad Grading
-        if (activeLabClip === 'rad-pothole') {
+        // Scenarios 1 to 4: Real Dashcam Video Feeds with Verified YOLOv8 Telemetry
+        if (activeLabClip === 'rad-pothole' || activeLabClip === 'distress-04' || activeLabClip === 'monsoon-19' || activeLabClip === 'urban-105') {
           const curTime = (vid && vid.currentTime) ? vid.currentTime : ((frameCounter / 30) % 11.5);
+          const clipDB = YOLO_NEURAL_TELEMETRY_DB[activeLabClip] || [];
 
-          if (labLayers.defects) {
-            // Find active neural detection matching current video timestamp from YOLO_NEURAL_TELEMETRY_DB
-            const match = YOLO_NEURAL_TELEMETRY_DB['rad-pothole'].find(d => Math.abs(d.time - curTime) < 0.55);
-            if (match) {
+          if (labLayers.defects && clipDB.length > 0) {
+            const matches = clipDB.filter(d => Math.abs(d.time - curTime) < 0.60);
+            for (const match of matches) {
               const dw = match.bw * canvas.width;
               const dh = match.bh * canvas.height;
               const dx = isLabMirrored ? (canvas.width - (match.bx * canvas.width) - dw) : (match.bx * canvas.width);
@@ -4297,8 +4316,9 @@
 
               drawYoloBox(
                 dx, dy, dw, dh,
-                'YOLOv8 POTHOLE', match.conf, match.color,
-                `Grade: ${match.sev} [${match.depth}cm · 12 MT Hot-Mix]`,
+                activeLabClip === 'monsoon-19' ? 'WATERLOGGED SHOULDER' : 'YOLOv8 POTHOLE',
+                match.conf, match.color,
+                `Grade: ${match.sev} [${match.depth}cm · ${match.cost}]`,
                 'Contractor: Rajeshwar Infra Ltd (48h SLA)'
               );
             }
@@ -4311,13 +4331,13 @@
             drawYoloBox(
               carX, carY, 220, 140,
               'VEHICLE / SUV', '96.8%', '#4A62D6',
-              'White SUV · 42 km/h · Lane 2',
+              'Forward Traffic · 42 km/h · Lane 2',
               'PCU Flow: 1.0 · Nominal'
             );
           }
 
           if (labLayers.stan) {
-            const hasPotholeNow = YOLO_NEURAL_TELEMETRY_DB['rad-pothole'].some(d => Math.abs(d.time - curTime) < 0.55);
+            const hasPotholeNow = clipDB.some(d => Math.abs(d.time - curTime) < 0.60);
             const stanData = roadVisionEngine.getStanImuTelemetry(curTime, hasPotholeNow ? 1 : 0);
             
             const hudW = 285;
