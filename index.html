@@ -56,7 +56,7 @@
 
     /* Glassmorphic Surfaces */
     .glass-card {
-      background: rgba(255, 255, 255, 0.90);
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-radius: 28px;
@@ -145,9 +145,9 @@
       transition: transform 0.2s;
     }
     .bus-marker-icon.active-bus {
-      background: #4A62D6;
-      box-shadow: 0 0 0 5px rgba(74, 98, 214, 0.35);
-      transform: scale(1.3);
+      background: #4A62D6 !important;
+      box-shadow: 0 0 0 5px rgba(74, 98, 214, 0.4) !important;
+      transform: scale(1.35) !important;
     }
     .incident-marker-pothole {
       background: #D97706;
@@ -193,7 +193,7 @@
     
     <!-- Top Flame Logo & Nav -->
     <div class="space-y-7 flex flex-col items-center">
-      <button onclick="setViewTab('command-center')" title="JUCC Command" class="w-11 h-11 rounded-full bg-[#1E2320] text-white flex items-center justify-center shadow-lg hover:scale-105 transition-all">
+      <button onclick="setViewTab('command-center')" title="JUCC Command" class="w-11 h-11 rounded-full bg-[#1E2320] text-white flex items-center justify-center shadow-lg hover:scale-105 transition-all cursor-pointer">
         <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
       </button>
 
@@ -239,7 +239,7 @@
   </aside>
 
   <!-- ========================================================================= -->
-  <!-- MAIN WORKSPACE (FULL-WIDTH BORDERLESS MODERN LAYOUT) -->
+  <!-- MAIN WORKSPACE -->
   <!-- ========================================================================= -->
   <main class="flex-1 flex flex-col p-6 sm:p-9 overflow-y-auto gap-6">
     
@@ -259,14 +259,14 @@
       <!-- Top Right Search & User Profile Pill -->
       <div class="flex items-center gap-3">
         
-        <!-- Omni Search Input (Active on all screens) -->
+        <!-- Omni Search Input -->
         <div class="relative">
           <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
           <input 
             type="text" 
             id="global-search-input" 
             oninput="handleGlobalSearch(this.value)" 
-            placeholder="Search bus, road, defect, or driver..." 
+            placeholder="Search bus (e.g. BUS-005), road, driver..." 
             class="w-56 sm:w-72 pl-10 pr-4 py-2.5 bg-white/90 backdrop-blur-md rounded-full text-xs text-[#1E2320] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E2320]/15 font-mono shadow-sm"
           />
         </div>
@@ -280,7 +280,7 @@
           <span class="w-2 h-2 rounded-full bg-rose-500 absolute top-2.5 right-2.5"></span>
         </button>
 
-        <!-- User Profile Pill (Exact Screenshot) -->
+        <!-- User Profile Pill -->
         <div class="flex items-center gap-2.5 bg-white/90 backdrop-blur-md rounded-full px-4 py-2 shadow-sm">
           <div class="w-6 h-6 rounded-full bg-[#1E2320] text-white flex items-center justify-center text-[10px] font-bold">
             JM
@@ -324,7 +324,7 @@
 
       </div>
 
-      <!-- Floating Notification Pill (Exact Screenshot) -->
+      <!-- Floating Notification Pill -->
       <div id="live-action-banner" class="hidden sm:flex items-center gap-3 bg-white/95 backdrop-blur-md rounded-2xl px-5 py-2.5 shadow-sm">
         <div class="w-8 h-8 rounded-full bg-[#E8F8EE] text-[#1E8A44] flex items-center justify-center">
           <span class="material-symbols-outlined text-base">check</span>
@@ -342,9 +342,9 @@
       <div class="flex justify-between items-center text-xs">
         <span class="font-bold text-[#1E2320] flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider">
           <span class="material-symbols-outlined text-base text-[#4A62D6]">directions_bus</span>
-          <span>10-Bus Fleet Telemetry &amp; Camera Switcher (Click any bus to inspect)</span>
+          <span>Select Fleet Bus (Click any bus below to switch context &amp; cameras)</span>
         </span>
-        <span class="text-[11px] text-[#717D75] font-mono">100% Online · 4G LTE Edge Mesh</span>
+        <span class="text-[11px] text-[#717D75] font-mono">10 Units Online · 4G LTE Edge Mesh</span>
       </div>
 
       <div id="fleet-selector-strip" class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2.5 font-mono text-xs">
@@ -370,7 +370,7 @@
               <span class="px-2.5 py-0.5 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-mono text-[10px] font-bold">100% Telemetry Active</span>
             </div>
             <p class="text-xs text-[#717D75] mt-0.5 font-mono" id="hud-selected-bus-meta">
-              Driver: Manoj Meena · Speed: 22 km/h · Safety Score: 78/100 · Latency: 44ms
+              Driver: Manoj Meena · Speed: 22 km/h · Safety Score: 78/100 · Latency: 44ms · Tonk Road Corridor
             </p>
           </div>
         </div>
@@ -382,7 +382,7 @@
           </button>
           <button onclick="filterDocketsByBus(selectedBusId)" id="btn-filter-dockets-bus" class="btn-pill-ghost">
             <span class="material-symbols-outlined text-sm">filter_alt</span>
-            <span>Show Dockets Detected By Bus</span>
+            <span id="btn-filter-bus-label">Show Dockets Detected By BUS-003</span>
           </button>
           <button onclick="showAllDockets()" id="btn-show-all-dockets" class="btn-pill-ghost hidden">
             <span>Show All Dockets (18)</span>
@@ -437,7 +437,7 @@
         <span class="text-xs text-[#717D75] font-mono" id="dockets-count-label">Showing 18 dockets</span>
       </div>
 
-      <!-- BENTO DOCKETS GRID (EXACT SCREENSHOT 2-BOX METADATA DESIGN) -->
+      <!-- BENTO DOCKETS GRID -->
       <div id="bento-incident-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Dynamically populated with 18 cards matching the exact screenshot design -->
       </div>
@@ -451,7 +451,7 @@
       
       <!-- Camera Bus Switcher Strip in Tab 2 -->
       <div class="glass-card p-4 flex flex-wrap items-center justify-between gap-3">
-        <span class="font-bold text-[#1E2320] text-xs font-mono uppercase tracking-wider">Select Onboard Camera Unit:</span>
+        <span class="font-bold text-[#1E2320] text-xs font-mono uppercase tracking-wider">Switch Onboard Camera Unit:</span>
         <div id="camera-tab-bus-selector" class="flex flex-wrap gap-2 font-mono text-xs">
           <!-- Dynamically populated with 10 bus buttons -->
         </div>
@@ -480,35 +480,7 @@
 
           <!-- Bounding Boxes Container (Dynamically updated per bus) -->
           <div id="camera-bounding-boxes-container" class="absolute inset-0">
-            <!-- Box 1 -->
-            <div class="absolute left-[30%] top-[34%] w-44 h-28 border-2 border-blue-400 rounded-2xl bg-blue-500/10 p-1.5 flex flex-col justify-between shadow-lg">
-              <div class="bg-[#4A62D6] text-white text-[9px] px-2 py-0.5 rounded-full font-mono font-bold self-start">
-                Automobile: Sedan (96.4%)
-              </div>
-              <div class="text-[8px] text-blue-200 font-mono self-end bg-black/60 px-2 py-0.5 rounded-full">
-                Dist: 12.8m
-              </div>
-            </div>
-
-            <!-- Box 2 -->
-            <div class="absolute right-[22%] bottom-[16%] w-36 h-20 border-2 border-amber-400 rounded-2xl bg-amber-500/20 p-1.5 flex flex-col justify-between animate-pulse shadow-lg">
-              <div class="bg-amber-500 text-slate-900 text-[9px] px-2 py-0.5 rounded-full font-mono font-bold self-start">
-                ⚠️ Pothole (16cm) · 94.1%
-              </div>
-              <div class="text-[8px] text-amber-200 font-mono self-end bg-black/70 px-2 py-0.5 rounded-full">
-                JDA #DEF-892
-              </div>
-            </div>
-
-            <!-- Box 3 -->
-            <div class="absolute left-[10%] top-[40%] w-24 h-36 border-2 border-rose-500 rounded-2xl bg-rose-500/15 p-1.5 flex flex-col justify-between shadow-lg">
-              <div class="bg-rose-600 text-white text-[8px] px-2 py-0.5 rounded-full font-mono font-bold self-start">
-                🚶 Pedestrian (94.2%)
-              </div>
-              <div class="text-[8px] text-rose-200 font-mono bg-black/80 px-2 py-0.5 rounded-full">
-                &lt; 1.5m Flagged
-              </div>
-            </div>
+            <!-- Dynamically populated per bus -->
           </div>
 
           <!-- Top HUD Bar -->
@@ -920,18 +892,128 @@
     let currentModalIncidentId = null;
     let chartInstances = {};
 
-    // 10 Jaipur Fleet Dataset with rich bus-specific camera detections
+    // 10 Jaipur Fleet Dataset with rich bus-specific camera detections and bounding boxes
     const jaipurFleet = [
-      { id: 'BUS-001', route: 'Route 1: JLN Marg', lat: 26.8920, lng: 75.8150, baseLat: 26.8920, baseLng: 75.8150, speed: 28, driver: 'Rajesh Sharma', status: 'ONLINE', score: 96, cam: 'Front 1080p', temp: 46, fps: 18.6, lat_ms: 41, scene: 'Passing Rajasthan University Gate · Pedestrian Crossings Monitored' },
-      { id: 'BUS-002', route: 'Route 2: Ajmer Road', lat: 26.8850, lng: 75.7450, baseLat: 26.8850, baseLng: 75.7450, speed: 34, driver: 'Vikram Singh', status: 'ONLINE', score: 92, cam: 'Front 1080p', temp: 48, fps: 18.4, lat_ms: 42, scene: 'Approaching 200ft Bypass Underpass · Waterlogging Inundation Risk' },
-      { id: 'BUS-003', route: 'Route 3: Tonk Road', lat: 26.8520, lng: 75.7920, baseLat: 26.8520, baseLng: 75.7920, speed: 22, driver: 'Manoj Meena', status: 'INCIDENT', score: 78, cam: 'Front 1080p', temp: 52, fps: 18.2, lat_ms: 44, scene: 'Tonk Road Corridor · Severe 16cm Pothole Crater Detected' },
-      { id: 'BUS-004', route: 'Route 4: Sikar Road', lat: 26.9600, lng: 75.7750, baseLat: 26.9600, baseLng: 75.7750, speed: 31, driver: 'Ramesh Kumar', status: 'ONLINE', score: 88, cam: 'Front 1080p', temp: 47, fps: 18.5, lat_ms: 41, scene: 'Sikar Road KM 7.1 · Asphalt Fracture & Surface Depression' },
-      { id: 'BUS-005', route: 'Route 5: Airport Link', lat: 26.8280, lng: 75.8050, baseLat: 26.8280, baseLng: 75.8050, speed: 42, driver: 'Suresh Saini', status: 'ONLINE', score: 94, cam: 'Front 1080p', temp: 47, fps: 18.8, lat_ms: 40, scene: 'Airport T2 Junction · Hit-and-Run Intercept Plate OCR Target Lock' },
-      { id: 'BUS-006', route: 'Route 6: Agra Road', lat: 26.9050, lng: 75.8650, baseLat: 26.9050, baseLng: 75.8650, speed: 26, driver: 'Anil Yadav', status: 'ONLINE', score: 90, cam: 'Front 1080p', temp: 49, fps: 18.1, lat_ms: 43, scene: 'Transport Nagar Flyover · Expansion Joint Dip Flagged' },
-      { id: 'BUS-007', route: 'Route 7: Mansarovar', lat: 26.8550, lng: 75.7600, baseLat: 26.8550, baseLng: 75.7600, speed: 29, driver: 'Dinesh Gurjar', status: 'ONLINE', score: 89, cam: 'Front 1080p', temp: 48, fps: 18.3, lat_ms: 42, scene: 'Mansarovar Metro Pillar 84 · Road Shoulder Drop-off' },
-      { id: 'BUS-008', route: 'Route 8: Jagatpura', lat: 26.8350, lng: 75.8400, baseLat: 26.8350, baseLng: 75.8400, speed: 35, driver: 'Sunil Verma', status: 'ONLINE', score: 91, cam: 'Front 1080p', temp: 46, fps: 18.7, lat_ms: 40, scene: 'Jagatpura 7 No. Stand · Municipal Drain Overflow Pool' },
-      { id: 'BUS-009', route: 'Route 9: VKI Industrial', lat: 26.9750, lng: 75.7600, baseLat: 26.9750, baseLng: 75.7600, speed: 18, driver: 'Praveen Gurjar', status: 'CAUTION', score: 58, cam: 'Front 1080p', temp: 58, fps: 16.4, lat_ms: 49, scene: 'VKI Road No. 9 · Industrial Crater Cluster & High Vibration' },
-      { id: 'BUS-010', route: 'Route 10: Walled City', lat: 26.9260, lng: 75.8240, baseLat: 26.9260, baseLng: 75.8240, speed: 14, driver: 'Mahesh Sharma', status: 'ONLINE', score: 95, cam: 'Front 1080p', temp: 45, fps: 18.9, lat_ms: 39, scene: 'Choti Chaupar Heritage Arc · Tourist Density & E-Rickshaw Flow' },
+      { 
+        id: 'BUS-001', 
+        route: 'Route 1: JLN Marg', 
+        lat: 26.8920, lng: 75.8150, baseLat: 26.8920, baseLng: 75.8150, 
+        speed: 28, driver: 'Rajesh Sharma', status: 'ONLINE', score: 96, 
+        cam: 'Front 1080p', temp: 46, fps: 18.6, lat_ms: 41, 
+        scene: 'Passing Rajasthan University Gate · Pedestrian Crossings Monitored',
+        boxes: [
+          { label: 'Automobile: Hatchback (97.1%)', dist: '14.2m', color: 'blue', left: '28%', top: '36%', width: '160px', height: '100px' },
+          { label: '🚶 Student Crossing (94.2%)', dist: '< 1.8m Flagged', color: 'rose', left: '12%', top: '42%', width: '90px', height: '140px' }
+        ]
+      },
+      { 
+        id: 'BUS-002', 
+        route: 'Route 2: Ajmer Road', 
+        lat: 26.8850, lng: 75.7450, baseLat: 26.8850, baseLng: 75.7450, 
+        speed: 34, driver: 'Vikram Singh', status: 'ONLINE', score: 92, 
+        cam: 'Front 1080p', temp: 48, fps: 18.4, lat_ms: 42, 
+        scene: 'Approaching 200ft Bypass Underpass · Waterlogging Inundation Risk',
+        boxes: [
+          { label: 'Automobile: Delivery Van (95.8%)', dist: '18.5m', color: 'blue', left: '32%', top: '34%', width: '180px', height: '110px' },
+          { label: '🌊 Waterlogging 25cm (96.2%)', dist: 'Drain Inundation', color: 'sky', left: '60%', top: '65%', width: '150px', height: '70px' }
+        ]
+      },
+      { 
+        id: 'BUS-003', 
+        route: 'Route 3: Tonk Road', 
+        lat: 26.8520, lng: 75.7920, baseLat: 26.8520, baseLng: 75.7920, 
+        speed: 22, driver: 'Manoj Meena', status: 'INCIDENT', score: 78, 
+        cam: 'Front 1080p', temp: 52, fps: 18.2, lat_ms: 44, 
+        scene: 'Tonk Road Corridor · Severe 16cm Pothole Crater Detected',
+        boxes: [
+          { label: 'Automobile: Sedan (96.4%)', dist: '12.8m', color: 'blue', left: '30%', top: '34%', width: '170px', height: '105px' },
+          { label: '⚠️ Pothole (16cm) · 94.1%', dist: 'JDA Alert #DEF-892', color: 'amber', left: '62%', top: '68%', width: '140px', height: '75px' },
+          { label: '🚶 Pedestrian (94.2%)', dist: '< 1.5m Flagged', color: 'rose', left: '10%', top: '40%', width: '90px', height: '135px' }
+        ]
+      },
+      { 
+        id: 'BUS-004', 
+        route: 'Route 4: Sikar Road', 
+        lat: 26.9600, lng: 75.7750, baseLat: 26.9600, baseLng: 75.7750, 
+        speed: 31, driver: 'Ramesh Kumar', status: 'ONLINE', score: 88, 
+        cam: 'Front 1080p', temp: 47, fps: 18.5, lat_ms: 41, 
+        scene: 'Sikar Road KM 7.1 · Asphalt Fracture & Surface Depression',
+        boxes: [
+          { label: 'Automobile: SUV (96.0%)', dist: '15.1m', color: 'blue', left: '35%', top: '35%', width: '165px', height: '105px' },
+          { label: '⚠️ Pothole Cluster (92.4%)', dist: 'Depth 12cm', color: 'amber', left: '55%', top: '70%', width: '130px', height: '65px' }
+        ]
+      },
+      { 
+        id: 'BUS-005', 
+        route: 'Route 5: Airport Link', 
+        lat: 26.8280, lng: 75.8050, baseLat: 26.8280, baseLng: 75.8050, 
+        speed: 42, driver: 'Suresh Saini', status: 'ONLINE', score: 94, 
+        cam: 'Front 1080p', temp: 47, fps: 18.8, lat_ms: 40, 
+        scene: 'Airport T2 Junction · Hit-and-Run Intercept Plate OCR Target Lock',
+        boxes: [
+          { label: '🚨 TARGET LOCK: RJ-14-CE-8821 (97.2%)', dist: 'White Fortuner SUV', color: 'rose', left: '25%', top: '30%', width: '220px', height: '130px' }
+        ]
+      },
+      { 
+        id: 'BUS-006', 
+        route: 'Route 6: Agra Road', 
+        lat: 26.9050, lng: 75.8650, baseLat: 26.9050, baseLng: 75.8650, 
+        speed: 26, driver: 'Anil Yadav', status: 'ONLINE', score: 90, 
+        cam: 'Front 1080p', temp: 49, fps: 18.1, lat_ms: 43, 
+        scene: 'Transport Nagar Flyover · Expansion Joint Dip Flagged',
+        boxes: [
+          { label: 'Heavy Truck (95.4%)', dist: '22.0m', color: 'blue', left: '25%', top: '28%', width: '200px', height: '140px' },
+          { label: '⚠️ Expansion Joint Dip (93.1%)', dist: 'Impact 2.8g', color: 'amber', left: '58%', top: '72%', width: '140px', height: '60px' }
+        ]
+      },
+      { 
+        id: 'BUS-007', 
+        route: 'Route 7: Mansarovar', 
+        lat: 26.8550, lng: 75.7600, baseLat: 26.8550, baseLng: 75.7600, 
+        speed: 29, driver: 'Dinesh Gurjar', status: 'ONLINE', score: 89, 
+        cam: 'Front 1080p', temp: 48, fps: 18.3, lat_ms: 42, 
+        scene: 'Mansarovar Metro Pillar 84 · Road Shoulder Drop-off',
+        boxes: [
+          { label: 'Motorcycle: Two-Wheeler (94.1%)', dist: '8.4m', color: 'blue', left: '18%', top: '45%', width: '80px', height: '110px' },
+          { label: '⚠️ Shoulder Drop-off (88.4%)', dist: 'Depth 9cm', color: 'amber', left: '68%', top: '65%', width: '120px', height: '70px' }
+        ]
+      },
+      { 
+        id: 'BUS-008', 
+        route: 'Route 8: Jagatpura', 
+        lat: 26.8350, lng: 75.8400, baseLat: 26.8350, baseLng: 75.8400, 
+        speed: 35, driver: 'Sunil Verma', status: 'ONLINE', score: 91, 
+        cam: 'Front 1080p', temp: 46, fps: 18.7, lat_ms: 40, 
+        scene: 'Jagatpura 7 No. Stand · Municipal Drain Overflow Pool',
+        boxes: [
+          { label: 'Automobile: Compact (96.2%)', dist: '16.4m', color: 'blue', left: '32%', top: '35%', width: '160px', height: '100px' },
+          { label: '🌊 Drain Overflow (90.2%)', dist: 'Pool 14cm', color: 'sky', left: '55%', top: '68%', width: '140px', height: '70px' }
+        ]
+      },
+      { 
+        id: 'BUS-009', 
+        route: 'Route 9: VKI Industrial', 
+        lat: 26.9750, lng: 75.7600, baseLat: 26.9750, baseLng: 75.7600, 
+        speed: 18, driver: 'Praveen Gurjar', status: 'CAUTION', score: 58, 
+        cam: 'Front 1080p', temp: 58, fps: 16.4, lat_ms: 49, 
+        scene: 'VKI Road No. 9 · Industrial Crater Cluster & High Vibration',
+        boxes: [
+          { label: 'Commercial Vehicle (93.7%)', dist: '11.0m', color: 'blue', left: '26%', top: '32%', width: '175px', height: '115px' },
+          { label: '⚠️ Severe Crater Cluster (95.0%)', dist: 'Impact >3.4g', color: 'rose', left: '58%', top: '65%', width: '160px', height: '80px' }
+        ]
+      },
+      { 
+        id: 'BUS-010', 
+        route: 'Route 10: Walled City', 
+        lat: 26.9260, lng: 75.8240, baseLat: 26.9260, baseLng: 75.8240, 
+        speed: 14, driver: 'Mahesh Sharma', status: 'ONLINE', score: 95, 
+        cam: 'Front 1080p', temp: 45, fps: 18.9, lat_ms: 39, 
+        scene: 'Choti Chaupar Heritage Arc · Tourist Density & E-Rickshaw Flow',
+        boxes: [
+          { label: 'E-Rickshaw Fleet (96.7%)', dist: '6.2m', color: 'blue', left: '20%', top: '38%', width: '130px', height: '110px' },
+          { label: '🚶 Tourist Group (93.4%)', dist: '< 2.0m Density', color: 'amber', left: '60%', top: '42%', width: '120px', height: '130px' }
+        ]
+      },
     ];
 
     // 18 Road Incidents Dataset
@@ -1010,7 +1092,7 @@
       }, 3500);
     }
 
-    // 10 BUS SELECTOR STRIP
+    // POPULATE 10 BUS SELECTOR BUTTONS
     function populateBusSelectorStrip() {
       const strip = document.getElementById('fleet-selector-strip');
       const camStrip = document.getElementById('camera-tab-bus-selector');
@@ -1020,7 +1102,7 @@
       jaipurFleet.forEach(b => {
         const isSel = (b.id === selectedBusId);
         
-        // 1. Main Top Strip Button
+        // 1. Top Strip Button
         if (strip) {
           const btn = document.createElement('button');
           btn.id = `bus-pill-${b.id}`;
@@ -1058,7 +1140,7 @@
       const bus = jaipurFleet.find(b => b.id === busId);
       if (!bus) return;
 
-      // Update Top Selector Pills
+      // Update Top Selector Pills Active Classes
       jaipurFleet.forEach(b => {
         const p = document.getElementById(`bus-pill-${b.id}`);
         const cp = document.getElementById(`cam-bus-pill-${b.id}`);
@@ -1069,6 +1151,8 @@
           }`;
           const sub = p.querySelector('span.text-\[10px\]');
           if (sub) sub.className = `text-[10px] truncate ${isSel ? 'text-slate-300' : 'text-[#717D75]'}`;
+          const dot = p.querySelector('span.w-2');
+          if (dot) dot.className = `w-2 h-2 rounded-full ${isSel ? 'bg-white' : 'bg-[#1E8A44]'}`;
         }
         if (cp) {
           cp.className = `px-3.5 py-1.5 rounded-full text-xs font-mono font-bold transition-all cursor-pointer ${
@@ -1084,8 +1168,10 @@
       if (hudRoute) hudRoute.innerText = bus.route;
       const hudMeta = document.getElementById('hud-selected-bus-meta');
       if (hudMeta) hudMeta.innerText = `Driver: ${bus.driver} · Speed: ${bus.speed} km/h · Safety Score: ${bus.score}/100 · Latency: ${bus.lat_ms}ms · ${bus.scene}`;
+      const btnFilterLabel = document.getElementById('btn-filter-bus-label');
+      if (btnFilterLabel) btnFilterLabel.innerText = `Show Dockets Detected By ${bus.id}`;
 
-      // Update Camera Feed Tab Text & Bounding Boxes
+      // Update Camera Feed Tab Text
       const camTitle = document.getElementById('edge-cam-title');
       if (camTitle) camTitle.innerText = `${bus.id} · FRONT 1080p WINDSHIELD CAMERA`;
       const camSub = document.getElementById('edge-cam-subtitle');
@@ -1093,7 +1179,41 @@
       const hudTag = document.getElementById('hud-cam-bus-tag');
       if (hudTag) hudTag.innerText = `FRAME #4029 • ${bus.id}`;
 
-      // Fly Map to selected bus
+      // Render Dynamic Bounding Boxes inside the camera stream
+      const boxContainer = document.getElementById('camera-bounding-boxes-container');
+      if (boxContainer) {
+        boxContainer.innerHTML = '';
+        if (bus.boxes && bus.boxes.length > 0) {
+          bus.boxes.forEach(bx => {
+            const bDiv = document.createElement('div');
+            const borderCol = bx.color === 'rose' ? 'border-rose-500 bg-rose-500/15' :
+                              bx.color === 'amber' ? 'border-amber-400 bg-amber-500/20' :
+                              bx.color === 'sky' ? 'border-sky-400 bg-sky-500/20' : 'border-blue-400 bg-blue-500/10';
+            const tagBg = bx.color === 'rose' ? 'bg-rose-600 text-white' :
+                          bx.color === 'amber' ? 'bg-amber-500 text-slate-900' :
+                          bx.color === 'sky' ? 'bg-sky-600 text-white' : 'bg-[#4A62D6] text-white';
+
+            bDiv.style.position = 'absolute';
+            bDiv.style.left = bx.left;
+            bDiv.style.top = bx.top;
+            bDiv.style.width = bx.width;
+            bDiv.style.height = bx.height;
+            bDiv.className = `border-2 ${borderCol} rounded-2xl p-1.5 flex flex-col justify-between shadow-lg animate-pulse`;
+
+            bDiv.innerHTML = `
+              <div class="${tagBg} text-[9px] px-2 py-0.5 rounded-full font-mono font-bold self-start truncate max-w-full">
+                ${bx.label}
+              </div>
+              <div class="text-[8px] text-slate-200 font-mono self-end bg-black/70 px-2 py-0.5 rounded-full">
+                ${bx.dist}
+              </div>
+            `;
+            boxContainer.appendChild(bDiv);
+          });
+        }
+      }
+
+      // Fly Map to selected bus & update active marker state
       if (map && triggerMapFly) {
         map.flyTo([bus.lat, bus.lng], 14, { duration: 0.8 });
       }
@@ -1109,6 +1229,7 @@
       document.getElementById('btn-show-all-dockets')?.classList.remove('hidden');
       document.getElementById('dockets-section-heading').innerText = `Dockets Detected by ${busId}`;
       populateBentoIncidentGrid(currentSearchQuery, currentFilter);
+      renderMarkers(currentFilter);
       playBeep(640);
       showToast('Filtered By Bus', `Showing only dockets logged by ${busId}.`, 'info');
     }
@@ -1119,6 +1240,7 @@
       document.getElementById('btn-show-all-dockets')?.classList.add('hidden');
       document.getElementById('dockets-section-heading').innerText = 'Active Municipal Dockets';
       populateBentoIncidentGrid(currentSearchQuery, currentFilter);
+      renderMarkers(currentFilter);
       playBeep(640);
     }
 
@@ -1301,7 +1423,7 @@
 
       if (val && val.trim() !== '') {
         const q = val.toUpperCase().trim();
-        // Match bus by ID or partial number (e.g. "005", "BUS-005")
+        // Match bus by ID or partial number (e.g. "005", "BUS-005") or driver
         const busMatch = jaipurFleet.find(b => b.id.toUpperCase().includes(q) || b.driver.toUpperCase().includes(q) || b.route.toUpperCase().includes(q));
         if (busMatch) {
           selectBusDirectly(busMatch.id, true);
