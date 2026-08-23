@@ -38,6 +38,20 @@ class DeepPotholeInferenceEngine:
         else:
             print(f"[!] Model weights not found at {model_path}")
 
+    def is_within_road_horizontal_bounds(self, cx: float, cy: float, w: int, h: int) -> bool:
+        """Calculates dynamic horizontal road boundaries [x_left(y), x_right(y)] from perspective trapezoid."""
+        y_top = int(h * 0.50)
+        y_bottom = int(h * 0.98)
+        if cy < y_top or cy > y_bottom:
+            return False
+
+        progress = (cy - y_top) / max(1, (y_bottom - y_top))
+        # Centered Drivable Asphalt Corridor: 20% at horizon -> 8% at bumper
+        left_bound = int(w * (0.20 - 0.12 * progress))
+        right_bound = int(w * (0.80 + 0.12 * progress))
+
+        return left_bound <= cx <= right_bound
+
     def process_frame(self, frame: np.ndarray):
         """Run deep learning neural inference on a single frame."""
         if frame is None:
@@ -69,15 +83,17 @@ class DeepPotholeInferenceEngine:
                     y1 = int((cy - bh / 2) * (h / 640.0))
                     box_w = int(bw * (w / 640.0))
                     box_h = int(bh * (h / 640.0))
+                    center_x = x1 + box_w / 2.0
+                    center_y = y1 + box_h / 2.0
 
-                    # Strict Pothole Ground Invariants:
-                    # 1. Must be on the drivable road asphalt (y1 >= 0.55 * h)
-                    # 2. Reject elevated objects (cars, trucks, shop signs, trees)
-                    # 3. Reject tall vertical bounding boxes (car sides, pedestrians): box_w >= box_h * 0.75
-                    # 4. Reject giant vehicle-sized bounding boxes: box_w <= 0.40 * w and box_h <= 0.28 * h
-                    if (y1 >= int(h * 0.52) and 
+                    # 1. HORIZONTAL ROAD BOUNDARY MASK (Eliminates off-road shops, sidewalks, trees)
+                    if not self.is_within_road_horizontal_bounds(center_x, center_y, w, h):
+                        continue
+
+                    # 2. Strict Physical Ground-Plane Geometry Invariant
+                    if (y1 >= int(h * 0.50) and 
                         y1 + box_h <= int(h * 0.98) and 
-                        box_w >= int(box_h * 0.75) and 
+                        box_w >= int(box_h * 0.70) and 
                         box_w <= int(w * 0.40) and 
                         box_h <= int(h * 0.28)):
                         boxes.append([x1, y1, box_w, box_h])
@@ -90,7 +106,12 @@ class DeepPotholeInferenceEngine:
                     bx, by, bw, bh = boxes[idx]
                     score = confidences[idx]
                     area_px = bw * bh
+                    rel_x = (bx + bw / 2.0) / w
                     
+                    # Side shoulder waterlogging detection logic (monsoon edge depressions)
+                    is_shoulder = (rel_x < 0.28 or rel_x > 0.72)
+                    defect_type = "WATERLOGGED_SHOULDER_POTHOLE" if is_shoulder else "POTHOLE"
+
                     # NISER iWatchRoad Severity Classification
                     if area_px < 6000:
                         sev = "Low Severity"
@@ -109,7 +130,7 @@ class DeepPotholeInferenceEngine:
                         cost = "₹48,000"
 
                     results.append({
-                        "class": "POTHOLE",
+                        "class": defect_type,
                         "confidence": f"{score * 100:.1f}%",
                         "bbox": [bx, by, bw, bh],
                         "bbox_norm": [round(bx / max(1, w), 4), round(by / max(1, h), 4), round(bw / max(1, w), 4), round(bh / max(1, h), 4)],
@@ -117,13 +138,14 @@ class DeepPotholeInferenceEngine:
                         "color": color,
                         "depth_cm": depth_cm,
                         "repair_cost": cost,
+                        "location": "Roadside Shoulder (Drainage Dip)" if is_shoulder else "Center Drivable Lane",
                         "contractor": "Rajeshwar Infra Ltd (48h SLA)"
                     })
             return results
         return []
 
     def process_video(self, video_path: str, output_json: str = None):
-        """Process an entire video file and export frame-by-frame JSON telemetry."""
+        """Process video at 0.5s temporal sampling intervals and compute cluster repair zones."""
         if not os.path.exists(video_path):
             print(f"[!] Video not found: {video_path}")
             return None
@@ -131,7 +153,8 @@ class DeepPotholeInferenceEngine:
         cap = cv2.VideoCapture(video_path)
         fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
         total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        print(f"[*] Processing {video_path} ({total_frames} frames @ {fps:.1f} FPS)...")
+        step_frames = max(1, int(fps * 0.5))  # Sample every 0.5 second (2 Hz)
+        print(f"[*] Processing {video_path} ({total_frames} frames @ {fps:.1f} FPS, 0.5s sample step: {step_frames} frames)...")
 
         detections = []
         frame_idx = 0
@@ -142,14 +165,28 @@ class DeepPotholeInferenceEngine:
             if not ret:
                 break
 
-            # Process every 2nd frame for 60 FPS speed
-            if frame_idx % 2 == 0:
+            # Sample strictly every 0.5 seconds
+            if frame_idx % step_frames == 0:
                 frame_results = self.process_frame(frame)
                 if len(frame_results) > 0:
+                    time_sec = round(frame_idx / fps, 2)
+                    
+                    # Severe Distress Zone: When multiple potholes are found on the road section
+                    has_cluster = len(frame_results) >= 2
+                    cluster_meta = None
+                    if has_cluster:
+                        cluster_meta = {
+                            "status": "CRITICAL_CLUSTER",
+                            "alert": "EMERGENCY: SEVERE ROAD DISTRESS ZONE - SUDDEN RESURFACING REQUIRED",
+                            "pothole_count": len(frame_results),
+                            "action": "Immediate 20 MT Hot-Mix Asphalt Overlay (24h SOS SLA)"
+                        }
+
                     detections.append({
                         "frame": frame_idx,
-                        "time_sec": round(frame_idx / fps, 2),
-                        "objects": frame_results
+                        "time_sec": time_sec,
+                        "objects": frame_results,
+                        "cluster_zone": cluster_meta
                     })
 
             frame_idx += 1
@@ -157,7 +194,7 @@ class DeepPotholeInferenceEngine:
         cap.release()
         elapsed = time.time() - start_t
         print(f"[✓] Processed {frame_idx} frames in {elapsed:.2f}s ({frame_idx/max(0.1, elapsed):.1f} FPS).")
-        print(f"[✓] Total anomaly frames detected: {len(detections)}")
+        print(f"[✓] Total 0.5s anomaly intervals detected: {len(detections)}")
 
         if output_json:
             with open(output_json, "w") as f:

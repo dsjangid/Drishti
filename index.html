@@ -4406,8 +4406,10 @@
             const cvResults = roadVisionEngine.analyzeFrame(canvas, labLayers, isLabMirrored, curTime);
 
             // 1. Draw YOLOv8 Deep Learning Detections or Vision Profilometry
+            let activeDetectionsCount = 0;
             if (YOLO_NEURAL_TELEMETRY_DB['custom-upload'] && YOLO_NEURAL_TELEMETRY_DB['custom-upload'].length > 0) {
               const matches = YOLO_NEURAL_TELEMETRY_DB['custom-upload'].filter(d => Math.abs(d.time - curTime) < 0.60);
+              activeDetectionsCount = matches.length;
               if (matches.length > 0 && labLayers.defects) {
                 for (const match of matches) {
                   const dw = match.bw * canvas.width;
@@ -4424,6 +4426,7 @@
                 }
               }
             } else if (labLayers.defects && cvResults.defects && cvResults.defects.length > 0) {
+              activeDetectionsCount = cvResults.defects.length;
               for (const defect of cvResults.defects) {
                 const defGrading = gradePotholeIWatchRoad(defect.w, defect.h, 0.95);
                 drawYoloBox(
@@ -4433,6 +4436,28 @@
                   'Contractor: Rajeshwar Infra Ltd (48h SLA)'
                 );
               }
+            }
+
+            // Severe Road Distress Cluster Alert Banner: When multiple potholes are detected
+            if (activeDetectionsCount >= 2 && labLayers.defects) {
+              ctx.save();
+              ctx.fillStyle = 'rgba(225, 29, 72, 0.92)';
+              ctx.strokeStyle = '#FFFFFF';
+              ctx.lineWidth = 2;
+              const bannerW = 680;
+              const bannerH = 46;
+              const bannerX = (canvas.width - bannerW) / 2;
+              const bannerY = 85;
+              ctx.beginPath();
+              ctx.roundRect(bannerX, bannerY, bannerW, bannerH, 10);
+              ctx.fill();
+              ctx.stroke();
+
+              ctx.fillStyle = '#FFFFFF';
+              ctx.font = 'bold 13px JetBrains Mono, monospace';
+              ctx.textAlign = 'center';
+              ctx.fillText('CRITICAL ROAD REPAIR ZONE · SUDDEN OVERLAY REPAIRS REQUIRED (24h SOS SLA)', canvas.width / 2, bannerY + 28);
+              ctx.restore();
             }
 
             // 2. Draw Real Detected Vehicles & Transit Units
