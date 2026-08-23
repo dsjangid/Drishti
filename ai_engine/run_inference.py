@@ -20,7 +20,7 @@ MODEL_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "models/wei
 
 
 class DeepPotholeInferenceEngine:
-    def __init__(self, model_path: str = MODEL_PATH, conf_thresh: float = 0.35, iou_thresh: float = 0.45):
+    def __init__(self, model_path: str = MODEL_PATH, conf_thresh: float = 0.55, iou_thresh: float = 0.45):
         self.model_path = model_path
         self.conf_thresh = conf_thresh
         self.iou_thresh = iou_thresh
@@ -70,8 +70,16 @@ class DeepPotholeInferenceEngine:
                     box_w = int(bw * (w / 640.0))
                     box_h = int(bh * (h / 640.0))
 
-                    # Ground perspective filter: must be in bottom 50% road region
-                    if y1 + box_h >= int(h * 0.48):
+                    # Strict Pothole Ground Invariants:
+                    # 1. Must be on the drivable road asphalt (y1 >= 0.55 * h)
+                    # 2. Reject elevated objects (cars, trucks, shop signs, trees)
+                    # 3. Reject tall vertical bounding boxes (car sides, pedestrians): box_w >= box_h * 0.75
+                    # 4. Reject giant vehicle-sized bounding boxes: box_w <= 0.40 * w and box_h <= 0.28 * h
+                    if (y1 >= int(h * 0.52) and 
+                        y1 + box_h <= int(h * 0.98) and 
+                        box_w >= int(box_h * 0.75) and 
+                        box_w <= int(w * 0.40) and 
+                        box_h <= int(h * 0.28)):
                         boxes.append([x1, y1, box_w, box_h])
                         confidences.append(conf)
 
