@@ -22,15 +22,11 @@
             mono: ['"JetBrains Mono"', 'monospace'],
           },
           colors: {
-            app: {
-              bg: '#EFF2EA',
-              canvas: '#E5EAE0',
-              card: '#FFFFFF',
-              box: '#F5F8F2',
-              dark: '#1E2320',
-              muted: '#727B75',
-              border: '#DCE3D6',
-            }
+            canvas: '#EFF3EA',
+            surface: '#FFFFFF',
+            subbox: '#F4F7F0',
+            dark: '#1E2320',
+            muted: '#717D75',
           }
         }
       }
@@ -47,54 +43,51 @@
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #EDF1E8;
+      background: linear-gradient(135deg, #EFF4EB 0%, #E9EFE4 50%, #EFF4EB 100%);
       color: #1E2320;
+      min-height: 100vh;
       overflow-x: hidden;
     }
 
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #EFF2EA; }
+    ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #CBD5C8; border-radius: 9999px; }
     ::-webkit-scrollbar-thumb:hover { background: #A4B2A0; }
 
-    #main-gis-map {
-      height: 100% !important;
-      min-height: 480px !important;
-      width: 100% !important;
-      background-color: #EFF2EA !important;
-      border-radius: 16px;
-    }
-
-    .leaflet-container {
-      font-family: 'Plus Jakarta Sans', sans-serif !important;
-    }
-
-    .app-window-frame {
-      border: 3px solid #1E2320;
+    /* Glassmorphic Surfaces */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-radius: 28px;
-      background-color: #EFF2EA;
-      box-shadow: 0 20px 40px -15px rgba(30, 35, 32, 0.15);
+      box-shadow: 0 8px 30px -4px rgba(30, 35, 32, 0.04), 0 2px 8px -2px rgba(30, 35, 32, 0.02);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-card:hover {
+      box-shadow: 0 16px 40px -6px rgba(30, 35, 32, 0.07), 0 4px 12px -2px rgba(30, 35, 32, 0.03);
+      transform: translateY(-2px);
     }
 
-    .bento-card {
-      background-color: #FFFFFF;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 2px 6px rgba(30, 35, 32, 0.03);
-      transition: all 0.2s ease;
+    .glass-pill-bar {
+      background: rgba(226, 232, 220, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 9999px;
     }
-    .bento-card:hover {
-      box-shadow: 0 8px 16px -4px rgba(30, 35, 32, 0.06);
-      transform: translateY(-2px);
+
+    .glass-sidebar {
+      background: rgba(239, 243, 234, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
 
     .btn-pill-ghost {
       border-radius: 9999px;
-      background-color: #F5F8F2;
+      background-color: #F4F7F0;
       color: #1E2320;
       font-size: 12px;
       font-weight: 600;
-      padding: 8px 16px;
+      padding: 9px 18px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -111,15 +104,29 @@
       color: #FFFFFF;
       font-size: 12px;
       font-weight: 600;
-      padding: 8px 18px;
+      padding: 9px 20px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
+      box-shadow: 0 4px 12px rgba(30, 35, 32, 0.15);
       transition: all 0.15s ease;
     }
     .btn-pill-solid:hover {
-      background-color: #38423C;
+      background-color: #353D38;
+      box-shadow: 0 6px 16px rgba(30, 35, 32, 0.22);
+    }
+
+    #main-gis-map {
+      height: 100% !important;
+      min-height: 480px !important;
+      width: 100% !important;
+      background-color: #EFF4EB !important;
+      border-radius: 22px;
+    }
+
+    .leaflet-container {
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
     }
 
     .bus-marker-icon {
@@ -127,7 +134,7 @@
       color: white;
       border: 2px solid white;
       border-radius: 50%;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -137,15 +144,15 @@
     }
     .bus-marker-icon.active-bus {
       background: #4A62D6;
-      box-shadow: 0 0 0 4px rgba(74, 98, 214, 0.35);
-      transform: scale(1.2);
+      box-shadow: 0 0 0 5px rgba(74, 98, 214, 0.35);
+      transform: scale(1.25);
     }
     .incident-marker-pothole {
       background: #D97706;
       color: white;
       border: 2px solid white;
       border-radius: 50%;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -155,7 +162,7 @@
       color: white;
       border: 2px solid white;
       border-radius: 50%;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 8px rgba(211, 56, 56, 0.35);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -165,523 +172,516 @@
       color: white;
       border: 2px solid white;
       border-radius: 50%;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
       display: flex;
       align-items: center;
       justify-content: center;
     }
   </style>
 </head>
-<body class="p-3 sm:p-6 min-h-screen flex flex-col items-center justify-center">
+<body class="flex min-h-screen">
 
-  <!-- Toast Notification Container (Matching Screenshot Style) -->
-  <div id="toast-container" class="fixed top-8 right-8 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
-
-  <!-- Top Window Bar Breadcrumb & Number -->
-  <div class="w-full max-w-[1580px] flex justify-between items-center mb-2 px-2 text-xs font-mono text-slate-500 font-bold uppercase tracking-wider">
-    <span>/JUCC: JAIPUR URBAN COMMAND CENTER · JMC &amp; BEL</span>
-    <span>06 · SIH-26124</span>
-  </div>
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed top-6 right-6 z-[9999] flex flex-col gap-2.5 pointer-events-none"></div>
 
   <!-- ========================================================================= -->
-  <!-- MAIN APP WINDOW CONTAINER (EXACT SCREENSHOT CHROME) -->
+  <!-- SLIM ICON SIDEBAR (EXACT MATCHING SCREENSHOT) -->
   <!-- ========================================================================= -->
-  <div class="app-window-frame w-full max-w-[1580px] flex overflow-hidden min-h-[860px]">
+  <aside class="w-16 sm:w-20 glass-sidebar flex flex-col items-center justify-between py-6 px-2 shrink-0 select-none border-r border-black/[0.04]">
     
-    <!-- ========================================================================= -->
-    <!-- SLIM ICON SIDEBAR (LEFT RAIL) -->
-    <!-- ========================================================================= -->
-    <aside class="w-16 sm:w-20 bg-[#EFF2EA] border-r border-[#DCE3D6] p-3 flex flex-col items-center justify-between shrink-0 select-none">
-      
-      <!-- Top Flame Logo -->
-      <div class="space-y-6 flex flex-col items-center">
-        <button onclick="setViewTab('command-center')" title="JUCC Command" class="w-11 h-11 rounded-full bg-[#1E2320] text-white flex items-center justify-center shadow-md hover:scale-105 transition-all">
-          <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+    <!-- Top Flame Logo & Nav -->
+    <div class="space-y-7 flex flex-col items-center">
+      <button onclick="setViewTab('command-center')" title="JUCC Command" class="w-11 h-11 rounded-full bg-[#1E2320] text-white flex items-center justify-center shadow-lg hover:scale-105 transition-all">
+        <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+      </button>
+
+      <!-- Main Navigation Rail -->
+      <nav class="flex flex-col gap-3.5">
+        <button onclick="setViewTab('command-center')" id="rail-btn-command-center" title="GIS Map & Fleet Console" class="w-10 h-10 rounded-full bg-[#1E2320] text-white flex items-center justify-center shadow-sm transition-all">
+          <span class="material-symbols-outlined text-xl">map</span>
         </button>
 
-        <!-- Main Nav Rail Buttons -->
-        <nav class="flex flex-col gap-3">
-          <button onclick="setViewTab('command-center')" id="rail-btn-command-center" title="GIS Map & Fleet Console" class="w-10 h-10 rounded-full bg-[#1E2320] text-white flex items-center justify-center shadow-sm transition-all">
-            <span class="material-symbols-outlined text-xl">map</span>
-          </button>
+        <button onclick="setViewTab('edge-vision')" id="rail-btn-edge-vision" title="Onboard Edge AI Cameras" class="w-10 h-10 rounded-full text-[#717D75] hover:bg-black/5 hover:text-[#1E2320] flex items-center justify-center transition-all">
+          <span class="material-symbols-outlined text-xl">videocam</span>
+        </button>
 
-          <button onclick="setViewTab('edge-vision')" id="rail-btn-edge-vision" title="Onboard Edge AI Cameras" class="w-10 h-10 rounded-full text-slate-600 hover:bg-[#E2E8DC] hover:text-[#1E2320] flex items-center justify-center transition-all">
-            <span class="material-symbols-outlined text-xl">videocam</span>
-          </button>
+        <button onclick="setViewTab('work-orders')" id="rail-btn-work-orders" title="Incident Dockets & Work Orders" class="w-10 h-10 rounded-full text-[#717D75] hover:bg-black/5 hover:text-[#1E2320] flex items-center justify-center transition-all">
+          <span class="material-symbols-outlined text-xl">assignment</span>
+        </button>
 
-          <button onclick="setViewTab('work-orders')" id="rail-btn-work-orders" title="Incident Dockets & Work Orders" class="w-10 h-10 rounded-full text-slate-600 hover:bg-[#E2E8DC] hover:text-[#1E2320] flex items-center justify-center transition-all">
-            <span class="material-symbols-outlined text-xl">assignment</span>
-          </button>
+        <button onclick="setViewTab('analytics')" id="rail-btn-analytics" title="Traffic Flow & City Analytics" class="w-10 h-10 rounded-full text-[#717D75] hover:bg-black/5 hover:text-[#1E2320] flex items-center justify-center transition-all">
+          <span class="material-symbols-outlined text-xl">monitoring</span>
+        </button>
 
-          <button onclick="setViewTab('analytics')" id="rail-btn-analytics" title="Traffic Flow & City Analytics" class="w-10 h-10 rounded-full text-slate-600 hover:bg-[#E2E8DC] hover:text-[#1E2320] flex items-center justify-center transition-all">
-            <span class="material-symbols-outlined text-xl">monitoring</span>
-          </button>
+        <button onclick="openHitAndRunPanel()" title="Hit-and-Run Multi-Camera Trail" class="w-10 h-10 rounded-full text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-all">
+          <span class="material-symbols-outlined text-xl">shield</span>
+        </button>
+      </nav>
+    </div>
 
-          <button onclick="openHitAndRunPanel()" title="Hit-and-Run Multi-Camera Trail" class="w-10 h-10 rounded-full text-slate-600 hover:bg-rose-100 hover:text-rose-700 flex items-center justify-center transition-all">
-            <span class="material-symbols-outlined text-xl text-rose-600">shield</span>
-          </button>
-        </nav>
+    <!-- Bottom System Utilities -->
+    <div class="flex flex-col gap-3 items-center">
+      <button onclick="toggleAudioAlerts()" id="rail-btn-audio" title="Toggle Audio Alerts" class="w-9 h-9 rounded-full text-[#717D75] hover:bg-black/5 flex items-center justify-center transition-all">
+        <span class="material-symbols-outlined text-lg">volume_up</span>
+      </button>
+
+      <button onclick="openExportModal()" title="Export Municipal Report" class="w-9 h-9 rounded-full text-[#717D75] hover:bg-black/5 flex items-center justify-center transition-all">
+        <span class="material-symbols-outlined text-lg">download</span>
+      </button>
+
+      <button onclick="openDriverLeaderboard()" title="Driver Safety Index" class="w-9 h-9 rounded-full text-[#717D75] hover:bg-black/5 flex items-center justify-center transition-all">
+        <span class="material-symbols-outlined text-lg">person</span>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN WORKSPACE (FULL-WIDTH BORDERLESS MODERN LAYOUT) -->
+  <!-- ========================================================================= -->
+  <main class="flex-1 flex flex-col p-6 sm:p-9 overflow-y-auto gap-6">
+    
+    <!-- Top Context Bar (Matching Screenshot Breadcrumb & Counter) -->
+    <div class="flex justify-between items-center text-xs font-mono text-[#717D75] font-bold uppercase tracking-wider">
+      <span>/JUCC: JAIPUR URBAN COMMAND CENTER · JMC &amp; BEL</span>
+      <span>06 · SIH-26124</span>
+    </div>
+
+    <!-- Top Title & Profile Header -->
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-[#1E2320] tracking-tight" id="main-view-title">Incident Dockets</h1>
+        <p class="text-xs text-[#717D75] mt-1">Real-time edge-AI transit sensing across 10 municipal buses · Nagar Nigam Jaipur</p>
       </div>
 
-      <!-- Bottom System Actions -->
-      <div class="flex flex-col gap-3 items-center">
-        <button onclick="toggleAudioAlerts()" id="rail-btn-audio" title="Toggle Audio Alerts" class="w-9 h-9 rounded-full text-slate-600 hover:bg-[#E2E8DC] flex items-center justify-center transition-all">
-          <span class="material-symbols-outlined text-lg">volume_up</span>
+      <!-- Top Right Actions & User Pill (Exact Screenshot) -->
+      <div class="flex items-center gap-3">
+        
+        <!-- Search Input -->
+        <div class="relative hidden md:block">
+          <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+          <input 
+            type="text" 
+            id="global-search-input" 
+            oninput="handleGlobalSearch(this.value)" 
+            placeholder="Search docket, bus, road..." 
+            class="w-64 pl-10 pr-4 py-2.5 bg-white/90 backdrop-blur-md rounded-full text-xs text-[#1E2320] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E2320]/15 font-mono shadow-sm"
+          />
+        </div>
+
+        <button onclick="openExportModal()" class="w-10 h-10 rounded-full bg-white/90 backdrop-blur-md text-[#1E2320] hover:bg-white flex items-center justify-center shadow-sm transition-all">
+          <span class="material-symbols-outlined text-base">help</span>
         </button>
 
-        <button onclick="openExportModal()" title="Export Municipal Report" class="w-9 h-9 rounded-full text-slate-600 hover:bg-[#E2E8DC] flex items-center justify-center transition-all">
-          <span class="material-symbols-outlined text-lg">download</span>
+        <button onclick="showToast('Active Alerts', '18 road defects monitored across 32 wards.', 'info')" class="w-10 h-10 rounded-full bg-white/90 backdrop-blur-md text-[#1E2320] hover:bg-white flex items-center justify-center shadow-sm relative transition-all">
+          <span class="material-symbols-outlined text-base">notifications</span>
+          <span class="w-2 h-2 rounded-full bg-rose-500 absolute top-2.5 right-2.5"></span>
         </button>
 
-        <button onclick="openDriverLeaderboard()" title="Driver Safety Index" class="w-9 h-9 rounded-full text-slate-600 hover:bg-[#E2E8DC] flex items-center justify-center transition-all">
-          <span class="material-symbols-outlined text-lg">person</span>
+        <!-- User Profile Pill (Exact Screenshot) -->
+        <div class="flex items-center gap-2.5 bg-white/90 backdrop-blur-md rounded-full px-4 py-2 shadow-sm">
+          <div class="w-6 h-6 rounded-full bg-[#1E2320] text-white flex items-center justify-center text-[10px] font-bold">
+            JM
+          </div>
+          <span class="text-xs font-semibold text-[#1E2320]">Jaipur Municipal</span>
+          <span class="material-symbols-outlined text-xs text-slate-400">expand_more</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Segmented Filter Pills & Floating Notification Toast (Exact Screenshot) -->
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Filter Tabs Strip -->
+      <div class="flex flex-wrap items-center gap-2 glass-pill-bar p-1.5 text-xs font-medium">
+        
+        <button onclick="setIncidentFilter('ALL')" id="pill-filter-all" class="px-5 py-2 rounded-full bg-white text-[#1E2320] font-bold shadow-sm flex items-center gap-2.5 transition-all">
+          <span class="material-symbols-outlined text-sm">dashboard</span>
+          <span>All Dockets</span>
+          <span class="px-2 py-0.5 bg-[#EFF4EB] rounded-full text-[10px] font-mono" id="badge-count-all">18</span>
         </button>
+
+        <button onclick="setIncidentFilter('PENDING')" id="pill-filter-pending" class="px-5 py-2 rounded-full text-[#717D75] hover:text-[#1E2320] flex items-center gap-2.5 transition-all">
+          <span class="material-symbols-outlined text-sm text-amber-600">hourglass_top</span>
+          <span>Pending Review</span>
+          <span class="px-2 py-0.5 bg-[#EFF4EB] rounded-full text-[10px] font-mono text-amber-800 font-bold" id="badge-count-pending">12</span>
+        </button>
+
+        <button onclick="setIncidentFilter('CRITICAL')" id="pill-filter-critical" class="px-5 py-2 rounded-full text-[#717D75] hover:text-[#1E2320] flex items-center gap-2.5 transition-all">
+          <span class="material-symbols-outlined text-sm text-rose-600">shield</span>
+          <span>Active Pursuits</span>
+          <span class="px-2 py-0.5 bg-rose-100 rounded-full text-[10px] font-mono font-bold text-rose-700" id="badge-count-critical">1</span>
+        </button>
+
+        <button onclick="setIncidentFilter('RESOLVED')" id="pill-filter-resolved" class="px-5 py-2 rounded-full text-[#717D75] hover:text-[#1E2320] flex items-center gap-2.5 transition-all">
+          <span class="material-symbols-outlined text-sm text-emerald-600">check_circle</span>
+          <span>Resolved Today</span>
+          <span class="px-2 py-0.5 bg-emerald-100 rounded-full text-[10px] font-mono font-bold text-emerald-800" id="badge-count-resolved">5</span>
+        </button>
+
       </div>
 
-    </aside>
-
-    <!-- ========================================================================= -->
-    <!-- RIGHT MAIN WORKSPACE CONTENT -->
-    <!-- ========================================================================= -->
-    <main class="flex-1 flex flex-col p-5 sm:p-7 overflow-y-auto gap-6 bg-[#EFF2EA]">
-      
-      <!-- Top Title & Operator Profile Header -->
-      <div class="flex flex-wrap items-center justify-between gap-4">
+      <!-- Floating Notification Pill (Exact Screenshot) -->
+      <div id="live-action-banner" class="hidden sm:flex items-center gap-3 bg-white/95 backdrop-blur-md rounded-2xl px-5 py-2.5 shadow-sm">
+        <div class="w-8 h-8 rounded-full bg-[#E8F8EE] text-[#1E8A44] flex items-center justify-center">
+          <span class="material-symbols-outlined text-base">check</span>
+        </div>
         <div>
-          <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1E2320] tracking-tight" id="main-view-title">Incident Dockets &amp; Fleet</h1>
-          <p class="text-xs text-slate-500 mt-0.5">Real-time edge-AI transit sensing across 10 municipal buses · Nagar Nigam Jaipur</p>
-        </div>
-
-        <!-- Top Right Controls & Operator Pill -->
-        <div class="flex items-center gap-2.5">
-          
-          <!-- Search Bar -->
-          <div class="relative hidden lg:block">
-            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
-            <input 
-              type="text" 
-              id="global-search-input" 
-              oninput="handleGlobalSearch(this.value)" 
-              placeholder="Search docket, bus, or road..." 
-              class="w-64 pl-9 pr-3 py-2 bg-white border border-[#DCE3D6] rounded-full text-xs text-[#1E2320] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E2320]/20 font-mono shadow-sm"
-            />
-          </div>
-
-          <button onclick="openExportModal()" class="w-9 h-9 rounded-full bg-white border border-[#DCE3D6] text-slate-600 hover:bg-[#E2E8DC] flex items-center justify-center shadow-sm">
-            <span class="material-symbols-outlined text-base">help</span>
-          </button>
-
-          <button onclick="showToast('Active Alerts', '18 road defects monitored across 32 wards.', 'info')" class="w-9 h-9 rounded-full bg-white border border-[#DCE3D6] text-slate-600 hover:bg-[#E2E8DC] flex items-center justify-center shadow-sm relative">
-            <span class="material-symbols-outlined text-base">notifications</span>
-            <span class="w-2 h-2 rounded-full bg-rose-500 absolute top-2 right-2"></span>
-          </button>
-
-          <!-- User Profile Pill (Matching Screenshot) -->
-          <div class="flex items-center gap-2 bg-white border border-[#DCE3D6] rounded-full px-3 py-1.5 shadow-sm">
-            <div class="w-6 h-6 rounded-full bg-[#1E2320] text-white flex items-center justify-center text-[10px] font-bold">
-              JM
-            </div>
-            <span class="text-xs font-semibold text-[#1E2320]">Jaipur Municipal</span>
-            <span class="material-symbols-outlined text-xs text-slate-400">expand_more</span>
-          </div>
-
+          <strong class="text-xs font-bold text-[#1E2320] block" id="banner-action-title">Docket resolved</strong>
+          <span class="text-[11px] text-[#717D75] block" id="banner-action-sub">Moved to "Resolved Today"</span>
         </div>
       </div>
 
-      <!-- Segmented Filter Pills & Live Success Toast Bar (Matching Screenshot) -->
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        
-        <!-- Filter Tabs Strip -->
-        <div class="flex flex-wrap items-center gap-2 bg-[#E2E8DC] p-1.5 rounded-full text-xs font-medium">
-          
-          <button onclick="setIncidentFilter('ALL')" id="pill-filter-all" class="px-4 py-1.5 rounded-full bg-white text-[#1E2320] font-bold shadow-sm flex items-center gap-2 transition-all">
-            <span class="material-symbols-outlined text-sm">dashboard</span>
-            <span>All Dockets</span>
-            <span class="px-1.5 py-0.2 bg-[#EFF2EA] rounded-full text-[10px] font-mono" id="badge-count-all">18</span>
-          </button>
+    </div>
 
-          <button onclick="setIncidentFilter('PENDING')" id="pill-filter-pending" class="px-4 py-1.5 rounded-full text-slate-600 hover:text-[#1E2320] flex items-center gap-2 transition-all">
-            <span class="material-symbols-outlined text-sm text-amber-600">hourglass_top</span>
-            <span>Pending Review</span>
-            <span class="px-1.5 py-0.2 bg-[#EFF2EA] rounded-full text-[10px] font-mono text-amber-800" id="badge-count-pending">12</span>
-          </button>
-
-          <button onclick="setIncidentFilter('CRITICAL')" id="pill-filter-critical" class="px-4 py-1.5 rounded-full text-slate-600 hover:text-[#1E2320] flex items-center gap-2 transition-all">
-            <span class="material-symbols-outlined text-sm text-rose-600">shield</span>
-            <span>Active Pursuits</span>
-            <span class="px-1.5 py-0.2 bg-rose-100 rounded-full text-[10px] font-mono font-bold text-rose-700" id="badge-count-critical">1</span>
-          </button>
-
-          <button onclick="setIncidentFilter('RESOLVED')" id="pill-filter-resolved" class="px-4 py-1.5 rounded-full text-slate-600 hover:text-[#1E2320] flex items-center gap-2 transition-all">
-            <span class="material-symbols-outlined text-sm text-emerald-600">check_circle</span>
-            <span>Resolved Today</span>
-            <span class="px-1.5 py-0.2 bg-emerald-100 rounded-full text-[10px] font-mono font-bold text-emerald-800" id="badge-count-resolved">5</span>
-          </button>
-
-        </div>
-
-        <!-- Floating Action Notification Banner (Matching Screenshot) -->
-        <div id="live-action-banner" class="hidden sm:flex items-center gap-3 bg-white border border-[#DCE3D6] rounded-2xl px-4 py-2 shadow-sm">
-          <div class="w-8 h-8 rounded-full bg-[#E8F8EE] text-[#1E8A44] flex items-center justify-center">
-            <span class="material-symbols-outlined text-base">check</span>
-          </div>
-          <div>
-            <strong class="text-xs font-bold text-[#1E2320] block" id="banner-action-title">Work order active</strong>
-            <span class="text-[11px] text-slate-500 block" id="banner-action-sub">Crew JDA-04 assigned to Tonk Rd</span>
-          </div>
-        </div>
-
+    <!-- 10-Bus Direct Access Selector Strip (Glassmorphic) -->
+    <div class="glass-card p-4 space-y-2.5">
+      <div class="flex justify-between items-center text-xs">
+        <span class="font-bold text-[#1E2320] flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider">
+          <span class="material-symbols-outlined text-base text-[#4A62D6]">directions_bus</span>
+          <span>10-Bus Fleet Telemetry &amp; Camera Switcher (Click any bus to inspect)</span>
+        </span>
+        <span class="text-[11px] text-[#717D75] font-mono">100% Online · 4G LTE Edge Mesh</span>
       </div>
 
-      <!-- 10-Bus Direct Access Selector Strip -->
-      <div class="bg-white rounded-2xl p-3.5 border border-[#DCE3D6] space-y-2">
-        <div class="flex justify-between items-center text-xs">
-          <span class="font-bold text-[#1E2320] flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider">
-            <span class="material-symbols-outlined text-base text-blue-600">directions_bus</span>
-            <span>10-Bus Fleet Telemetry &amp; Camera Switcher (Click any bus to inspect)</span>
-          </span>
-          <span class="text-[11px] text-slate-400 font-mono">100% Online · 4G LTE</span>
-        </div>
-
-        <div id="fleet-selector-strip" class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2 font-mono text-xs">
-          <!-- Dynamically populated with BUS-001 to BUS-010 -->
-        </div>
+      <div id="fleet-selector-strip" class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2.5 font-mono text-xs">
+        <!-- Dynamically populated with BUS-001 to BUS-010 -->
       </div>
+    </div>
 
-      <!-- ===================================================================== -->
-      <!-- VIEW 1: COMMAND CENTER (BENTO DOCKETS GRID + INTEGRATED GIS MAP) -->
-      <!-- ===================================================================== -->
-      <div id="tab-view-command-center" class="space-y-6">
-        
-        <!-- GIS Map Card with 24H Playback Scrubber -->
-        <div class="bento-card space-y-3">
-          <div class="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h3 class="font-bold text-[#1E2320] text-sm flex items-center gap-2">
-                <span class="material-symbols-outlined text-base text-blue-600">map</span>
-                <span>Jaipur Dynamic Fleet &amp; Defect Cartography</span>
-              </h3>
-              <p class="text-xs text-slate-500">Live coordinates, road hazard mesh, and multi-bus spatial telemetry</p>
-            </div>
-
-            <!-- 24H Time Playback Controller -->
-            <div class="flex items-center gap-2 bg-[#F5F8F2] border border-[#DCE3D6] px-3 py-1.5 rounded-full font-mono text-xs">
-              <button onclick="togglePlayback()" id="btn-playback" class="text-[#1E2320] hover:text-blue-600 flex items-center gap-1 font-bold">
-                <span class="material-symbols-outlined text-base">play_arrow</span>
-                <span>Play</span>
-              </button>
-              
-              <input 
-                type="range" 
-                id="time-scrubber" 
-                min="0" 
-                max="1439" 
-                value="1002" 
-                oninput="handleTimeScrub(this.value)" 
-                class="w-28 sm:w-36 accent-[#1E2320] cursor-pointer"
-              />
-
-              <span id="scrub-time-label" class="font-bold text-[#1E2320] text-xs">16:42 IST</span>
-
-              <div class="flex items-center gap-1 pl-1 border-l border-[#DCE3D6]">
-                <button onclick="setPlaybackSpeed(1)" id="btn-speed-1" class="px-2 py-0.5 rounded-full bg-[#1E2320] text-white text-[10px] font-bold">1x</button>
-                <button onclick="setPlaybackSpeed(2)" id="btn-speed-2" class="px-2 py-0.5 rounded-full bg-[#E2E8DC] hover:bg-[#D5DDCF] text-slate-700 text-[10px] font-bold">2x</button>
-                <button onclick="setPlaybackSpeed(4)" id="btn-speed-4" class="px-2 py-0.5 rounded-full bg-[#E2E8DC] hover:bg-[#D5DDCF] text-slate-700 text-[10px] font-bold">4x</button>
-              </div>
-            </div>
-          </div>
-
-          <div id="main-gis-map" class="border border-[#DCE3D6]"></div>
-        </div>
-
-        <!-- Section Title: Incident Dockets -->
-        <div class="flex justify-between items-center">
-          <h2 class="text-lg font-bold text-[#1E2320] tracking-tight">Active Municipal Dockets &amp; Defect Grid</h2>
-          <span class="text-xs text-slate-500 font-mono" id="dockets-count-label">Showing 18 dockets</span>
-        </div>
-
-        <!-- BENTO INCIDENT DOCKETS GRID (EXACT SCREENSHOT CARD LAYOUT) -->
-        <div id="bento-incident-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          <!-- Dynamically populated with 18 cards matching the exact screenshot design -->
-        </div>
-
-      </div>
-
-      <!-- ===================================================================== -->
-      <!-- VIEW 2: ONBOARD EDGE AI VISION (ALL 10 BUS CAMERAS) -->
-      <!-- ===================================================================== -->
-      <div id="tab-view-edge-vision" class="hidden space-y-5">
-        
-        <div class="bento-card space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#DCE3D6] pb-3">
-            <div>
-              <h3 class="font-bold text-[#1E2320] text-base" id="edge-cam-title">BUS-003 · FRONT 1080p WINDSHIELD CAMERA</h3>
-              <p class="text-xs text-slate-500">YOLOv8-Nano + License Plate OCR local inference @ 18.4 FPS on NVIDIA Jetson Orin</p>
-            </div>
-
-            <div class="flex items-center gap-2 font-mono text-xs">
-              <span class="px-3 py-1 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-bold">18.4 FPS Local</span>
-              <span class="px-3 py-1 rounded-full bg-[#EEF1FD] text-[#4A62D6] font-bold">82.4% Bandwidth Saved</span>
-            </div>
-          </div>
-
-          <!-- Video Viewport Frame -->
-          <div class="relative w-full h-88 bg-[#181C1A] rounded-2xl overflow-hidden flex items-center justify-center select-none shadow-inner">
-            <div class="absolute inset-0 bg-gradient-to-b from-[#181C1A] via-[#222825] to-[#121514] opacity-90">
-              <div class="w-full h-full opacity-20 bg-[radial-gradient(#4A62D6_1px,transparent_1px)] [background-size:16px_16px]"></div>
-            </div>
-
-            <div class="absolute inset-x-0 bottom-0 top-1/2 border-t border-dashed border-slate-700/50 pointer-events-none"></div>
-
-            <!-- Bounding Box 1: Preceding Vehicle -->
-            <div class="absolute left-[30%] top-[34%] w-44 h-28 border-2 border-blue-400 rounded-xl bg-blue-500/10 p-1 flex flex-col justify-between shadow-lg">
-              <div class="bg-[#4A62D6] text-white text-[9px] px-2 py-0.5 rounded-full font-mono font-bold self-start">
-                Automobile: Sedan (96.4%)
-              </div>
-              <div class="text-[8px] text-blue-200 font-mono self-end bg-black/60 px-1.5 py-0.5 rounded-full">
-                Dist: 12.8m
-              </div>
-            </div>
-
-            <!-- Bounding Box 2: Severe Pothole Crater -->
-            <div class="absolute right-[22%] bottom-[16%] w-36 h-20 border-2 border-amber-400 rounded-xl bg-amber-500/20 p-1 flex flex-col justify-between animate-pulse shadow-lg">
-              <div class="bg-amber-500 text-slate-900 text-[9px] px-2 py-0.5 rounded-full font-mono font-bold self-start">
-                ⚠️ Pothole (16cm) · 94.1%
-              </div>
-              <div class="text-[8px] text-amber-200 font-mono self-end bg-black/70 px-1.5 py-0.5 rounded-full">
-                JDA #DEF-892
-              </div>
-            </div>
-
-            <!-- Bounding Box 3: Pedestrian Proximity -->
-            <div class="absolute left-[10%] top-[40%] w-24 h-36 border-2 border-rose-500 rounded-xl bg-rose-500/15 p-1 flex flex-col justify-between shadow-lg">
-              <div class="bg-rose-600 text-white text-[8px] px-2 py-0.5 rounded-full font-mono font-bold self-start">
-                🚶 Pedestrian (94.2%)
-              </div>
-              <div class="text-[8px] text-rose-200 font-mono bg-black/80 px-1.5 py-0.5 rounded-full">
-                &lt; 1.5m Flagged
-              </div>
-            </div>
-
-            <!-- Top HUD Bar -->
-            <div class="absolute top-3 left-4 right-4 flex justify-between items-center text-[10px] font-mono text-slate-300 bg-black/70 px-3 py-1.5 rounded-full border border-slate-700/60 backdrop-blur-sm">
-              <span class="text-white font-bold" id="hud-cam-bus-tag">FRAME #4029 • BUS-003</span>
-              <span class="text-emerald-400 font-semibold">AI TELEMETRY STREAMING</span>
-              <span class="text-slate-300" id="hud-cam-time">16:42:00 IST</span>
-            </div>
-
-            <!-- Target Lock Banner -->
-            <div id="target-lock-hud" class="absolute inset-0 bg-rose-900/30 border-4 border-rose-500 hidden flex-col items-center justify-center p-4 backdrop-blur-[2px]">
-              <div class="bg-white border-2 border-rose-600 p-5 rounded-2xl text-center space-y-2 max-w-sm shadow-2xl">
-                <span class="material-symbols-outlined text-4xl text-rose-600 animate-bounce">targeted</span>
-                <strong class="text-rose-700 font-mono text-sm block tracking-widest uppercase">TARGET LOCK: RJ-14-CE-8821</strong>
-                <p class="text-xs text-slate-700">White Toyota Fortuner SUV · High-Speed Collision &amp; Flee</p>
-                <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-mono text-xs font-bold inline-block">
-                  OCR Confidence: 97.2% Match
-                </span>
-              </div>
-            </div>
-
-          </div>
-
-          <!-- Video Controls & Angle Switcher -->
-          <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
-            <div class="flex items-center gap-2 text-xs">
-              <span class="text-slate-500 font-medium">Camera Angle:</span>
-              <button onclick="switchCameraAngle('Front 1080p')" id="btn-angle-front" class="px-3 py-1.5 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold">Front 1080p</button>
-              <button onclick="switchCameraAngle('Downward Asphalt')" id="btn-angle-asphalt" class="px-3 py-1.5 rounded-full bg-[#F5F8F2] hover:bg-[#E2E8DC] text-[#1E2320] font-mono text-xs font-semibold">Downward Road</button>
-              <button onclick="switchCameraAngle('Left Blindspot')" id="btn-angle-blindspot" class="px-3 py-1.5 rounded-full bg-[#F5F8F2] hover:bg-[#E2E8DC] text-[#1E2320] font-mono text-xs font-semibold">Left Blindspot</button>
-            </div>
-
-            <div class="flex items-center gap-2">
-              <button onclick="triggerHitAndRunSimulation()" class="btn-pill-solid bg-rose-600 hover:bg-rose-700">
-                <span class="material-symbols-outlined text-sm">shield</span>
-                <span>Simulate Hit &amp; Run ⚡</span>
-              </button>
-              <button onclick="captureCameraSnapshot()" class="btn-pill-ghost">
-                <span class="material-symbols-outlined text-sm text-emerald-600">photo_camera</span>
-                <span>Save Frame</span>
-              </button>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- ===================================================================== -->
-      <!-- VIEW 3: DEFECT REGISTRY & MERGED REPAIR ROI -->
-      <!-- ===================================================================== -->
-      <div id="tab-view-work-orders" class="hidden space-y-6">
-        
-        <div class="bento-card space-y-4">
-          <div class="flex justify-between items-center border-b border-[#DCE3D6] pb-3">
-            <div>
-              <h3 class="font-bold text-[#1E2320] text-base">Municipal Defect Registry &amp; PWD Work Orders</h3>
-              <p class="text-xs text-slate-500">1,284 total defects logged across 32 Jaipur wards · 50.6% resolution rate</p>
-            </div>
-            <button onclick="downloadReport('CSV')" class="btn-pill-solid">Export CSV ↓</button>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs border-collapse font-mono">
-              <thead>
-                <tr class="bg-[#F5F8F2] border-b border-[#DCE3D6] text-slate-500 text-[11px] uppercase">
-                  <th class="py-3 px-4">DOCKET</th>
-                  <th class="py-3 px-4">LOCATION</th>
-                  <th class="py-3 px-4">DEFECT TYPE</th>
-                  <th class="py-3 px-4">DETECTED BY</th>
-                  <th class="py-3 px-4">AI CONFIDENCE</th>
-                  <th class="py-3 px-4">STATUS</th>
-                  <th class="py-3 px-4">EST. COST</th>
-                  <th class="py-3 px-4 text-right">ACTION</th>
-                </tr>
-              </thead>
-              <tbody id="defect-table-body" class="divide-y divide-[#DCE3D6]">
-                <!-- Dynamically populated -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Merged Repair ROI Verification Card -->
-        <div class="bento-card border-2 border-emerald-200 space-y-4">
-          <div class="flex justify-between items-center border-b border-[#DCE3D6] pb-3">
-            <div>
-              <h3 class="font-bold text-[#1E2320] text-base flex items-center gap-2">
-                <span class="material-symbols-outlined text-emerald-600">verified</span>
-                <span>Before &amp; After Infrastructure Repair Verification &amp; Municipal ROI</span>
-              </h3>
-              <p class="text-xs text-slate-500">Algorithmic vibration reduction verification and municipal cost payoff calculation</p>
-            </div>
-            <span class="px-3 py-1 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-mono text-xs font-bold">4.4x ROI in 24 Days</span>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div class="p-4 rounded-2xl bg-[#FDECEC] border border-rose-200 space-y-2">
-              <span class="text-[10px] font-bold text-rose-800 uppercase font-mono">BEFORE REPAIR (July 2026) · Tonk Road KM 8.2</span>
-              <strong class="text-slate-900 text-xs block font-bold">6 Major Pothole Craters (Avg Depth 16cm)</strong>
-              <p class="text-[11px] text-slate-600">Bus suspension impact shock &gt;3.2g · Vehicle Damage Cost: ~₹2,00,000 / month</p>
-            </div>
-
-            <div class="p-4 rounded-2xl bg-[#E8F8EE] border border-emerald-200 space-y-2">
-              <span class="text-[10px] font-bold text-emerald-800 uppercase font-mono">AFTER JDA HOT-MIX REPAIR (August 2026) · ✅ VERIFIED</span>
-              <strong class="text-slate-900 text-xs block font-bold">0 Potholes Detected in Last 14 Days</strong>
-              <p class="text-[11px] text-slate-600">Vibration shock normal (&lt;0.4g) · JDA Hot-mix Cost: ₹45,000 · <strong>4.4x Payoff in 24 Days</strong></p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ===================================================================== -->
-      <!-- VIEW 4: TRAFFIC FLOW, PEDESTRIAN RISK & HARDWARE PIPELINE -->
-      <!-- ===================================================================== -->
-      <div id="tab-view-analytics" class="hidden space-y-6">
-        
-        <!-- Charts Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          <div class="lg:col-span-8 bento-card flex flex-col justify-between">
-            <div class="mb-3">
-              <h3 class="font-bold text-[#1E2320] text-sm">Traffic Volume vs Average Speed (24h)</h3>
-              <p class="text-xs text-slate-500">Hourly vehicle count scanned across Jaipur arterial roads</p>
-            </div>
-            <div class="h-64 w-full">
-              <canvas id="chart-traffic-light"></canvas>
-            </div>
-          </div>
-
-          <div class="lg:col-span-4 bento-card flex flex-col justify-between">
-            <div class="mb-3">
-              <h3 class="font-bold text-[#1E2320] text-sm">Vehicle Classification</h3>
-              <p class="text-xs text-slate-500">6 AI Object Detection Classes</p>
-            </div>
-            <div class="h-64 w-full flex items-center justify-center">
-              <canvas id="chart-vehicles-light"></canvas>
-            </div>
-          </div>
-        </div>
-
-        <!-- Vulnerable Pedestrian & School Zone Safety -->
-        <div class="bento-card space-y-3">
-          <div class="flex justify-between items-center border-b border-[#DCE3D6] pb-3">
-            <div>
-              <h3 class="font-bold text-[#1E2320] text-sm flex items-center gap-2">
-                <span class="material-symbols-outlined text-rose-600">directions_walk</span>
-                <span>Vulnerable Pedestrian &amp; School Zone Risk Index</span>
-              </h3>
-              <p class="text-xs text-slate-500">14 near-misses logged across 18 school zones · Automated Pelican Signal recommendations</p>
-            </div>
-            <span class="px-3 py-1 rounded-full bg-[#FDECEC] text-rose-800 font-mono text-xs font-bold">14 Near-Misses</span>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            <div class="p-3.5 rounded-2xl bg-[#F5F8F2] border border-[#DCE3D6] space-y-1.5">
-              <strong class="text-[#1E2320] font-bold block">1. St. Xavier School (Bhagwan Das Rd) · Risk: 87/100</strong>
-              <p class="text-slate-600">Peak Student Surge: 07:30 - 08:15 &amp; 13:45 - 14:30. Recommended: Install automated Pelican Signal.</p>
-            </div>
-
-            <div class="p-3.5 rounded-2xl bg-[#F5F8F2] border border-[#DCE3D6] space-y-1.5">
-              <strong class="text-[#1E2320] font-bold block">2. Rajasthan University Main Gate (JLN Marg) · Risk: 82/100</strong>
-              <p class="text-slate-600">Peak Student Surge: 09:00 - 10:30 &amp; 16:00 - 17:30. Recommended: Deploy raised speed calming table.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- 10-Bus Hardware Pipeline Health Matrix -->
-        <div class="bento-card space-y-3">
-          <div class="flex justify-between items-center border-b border-[#DCE3D6] pb-3">
-            <div>
-              <h3 class="font-bold text-[#1E2320] text-sm flex items-center gap-2">
-                <span class="material-symbols-outlined text-blue-600">memory</span>
-                <span>10-Bus Edge Hardware &amp; NPU Telemetry Matrix</span>
-              </h3>
-              <p class="text-xs text-slate-500">Live Jetson Orin thermals, inference FPS, latency, and camera operational health</p>
-            </div>
-            <span class="px-3 py-1 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-mono text-xs font-bold">49/50 Cameras Active</span>
-          </div>
-
-          <div class="overflow-x-auto font-mono text-xs">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="bg-[#F5F8F2] border-b border-[#DCE3D6] text-slate-500 text-[10px] uppercase">
-                  <th class="py-2.5 px-3">BUS ID</th>
-                  <th class="py-2.5 px-3">PROCESSOR</th>
-                  <th class="py-2.5 px-3">TEMP (°C)</th>
-                  <th class="py-2.5 px-3">FPS</th>
-                  <th class="py-2.5 px-3">LATENCY</th>
-                  <th class="py-2.5 px-3">4G SIGNAL</th>
-                  <th class="py-2.5 px-3">CAMERA HEALTH</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-[#DCE3D6]" id="hardware-matrix-body">
-                <!-- Dynamically populated -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-      </div>
-
-    </main>
-
-  </div>
-
-  <!-- ========================================================================= -->
-  <!-- MODAL 1: HIT AND RUN FORENSICS (MATCHING SCREENSHOT MODAL STYLE) -->
-  <!-- ========================================================================= -->
-  <div id="hitandrun-modal" class="fixed inset-0 z-50 bg-[#1E2320]/60 hidden items-center justify-center p-4 backdrop-blur-sm">
-    <div class="bg-white border border-[#DCE3D6] max-w-2xl w-full rounded-[28px] p-6 text-xs space-y-4 shadow-2xl">
+    <!-- ======================================================================= -->
+    <!-- VIEW 1: COMMAND CENTER (BENTO INCIDENT DOCKETS + INTEGRATED GIS MAP) -->
+    <!-- ======================================================================= -->
+    <div id="tab-view-command-center" class="space-y-7">
       
-      <div class="flex justify-between items-center border-b border-[#DCE3D6] pb-3">
+      <!-- GIS Map Card with 24H Playback Scrubber -->
+      <div class="glass-card p-5 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h3 class="font-bold text-[#1E2320] text-base flex items-center gap-2">
+              <span class="material-symbols-outlined text-base text-[#4A62D6]">map</span>
+              <span>Jaipur Dynamic Fleet &amp; Defect Cartography</span>
+            </h3>
+            <p class="text-xs text-[#717D75]">Live coordinates, road hazard mesh, and multi-bus spatial telemetry</p>
+          </div>
+
+          <!-- 24H Time Playback Controller Strip -->
+          <div class="flex items-center gap-2.5 bg-[#F4F7F0] px-4 py-2 rounded-full font-mono text-xs">
+            <button onclick="togglePlayback()" id="btn-playback" class="text-[#1E2320] hover:text-blue-600 flex items-center gap-1.5 font-bold">
+              <span class="material-symbols-outlined text-base">play_arrow</span>
+              <span>Play</span>
+            </button>
+            
+            <input 
+              type="range" 
+              id="time-scrubber" 
+              min="0" 
+              max="1439" 
+              value="1002" 
+              oninput="handleTimeScrub(this.value)" 
+              class="w-28 sm:w-40 accent-[#1E2320] cursor-pointer"
+            />
+
+            <span id="scrub-time-label" class="font-bold text-[#1E2320] text-xs">16:42 IST</span>
+
+            <div class="flex items-center gap-1.5 pl-1.5 border-l border-black/10">
+              <button onclick="setPlaybackSpeed(1)" id="btn-speed-1" class="px-2.5 py-0.5 rounded-full bg-[#1E2320] text-white text-[10px] font-bold">1x</button>
+              <button onclick="setPlaybackSpeed(2)" id="btn-speed-2" class="px-2.5 py-0.5 rounded-full bg-[#E2E8DC] hover:bg-[#D5DDCF] text-slate-700 text-[10px] font-bold">2x</button>
+              <button onclick="setPlaybackSpeed(4)" id="btn-speed-4" class="px-2.5 py-0.5 rounded-full bg-[#E2E8DC] hover:bg-[#D5DDCF] text-slate-700 text-[10px] font-bold">4x</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="main-gis-map"></div>
+      </div>
+
+      <!-- Section Title: Incident Dockets -->
+      <div class="flex justify-between items-center">
+        <h2 class="text-xl font-bold text-[#1E2320] tracking-tight">Active Municipal Dockets</h2>
+        <span class="text-xs text-[#717D75] font-mono" id="dockets-count-label">Showing 18 dockets</span>
+      </div>
+
+      <!-- BENTO DOCKETS GRID (EXACT SCREENSHOT 2-BOX METADATA DESIGN) -->
+      <div id="bento-incident-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Dynamically populated with 18 cards matching the exact screenshot design -->
+      </div>
+
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- VIEW 2: ONBOARD EDGE AI VISION (ALL 10 BUS CAMERAS) -->
+    <!-- ======================================================================= -->
+    <div id="tab-view-edge-vision" class="hidden space-y-6">
+      
+      <div class="glass-card p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-black/[0.05] pb-4">
+          <div>
+            <h3 class="font-bold text-[#1E2320] text-lg" id="edge-cam-title">BUS-003 · FRONT 1080p WINDSHIELD CAMERA</h3>
+            <p class="text-xs text-[#717D75]">YOLOv8-Nano + License Plate OCR local inference @ 18.4 FPS on NVIDIA Jetson Orin</p>
+          </div>
+
+          <div class="flex items-center gap-2 font-mono text-xs">
+            <span class="px-3.5 py-1 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-bold">18.4 FPS Local</span>
+            <span class="px-3.5 py-1 rounded-full bg-[#EEF1FD] text-[#4A62D6] font-bold">82.4% Bandwidth Saved</span>
+          </div>
+        </div>
+
+        <!-- Video Viewport Frame -->
+        <div class="relative w-full h-88 bg-[#181C1A] rounded-3xl overflow-hidden flex items-center justify-center select-none shadow-inner">
+          <div class="absolute inset-0 bg-gradient-to-b from-[#181C1A] via-[#222825] to-[#121514] opacity-90">
+            <div class="w-full h-full opacity-20 bg-[radial-gradient(#4A62D6_1px,transparent_1px)] [background-size:16px_16px]"></div>
+          </div>
+
+          <div class="absolute inset-x-0 bottom-0 top-1/2 border-t border-dashed border-slate-700/50 pointer-events-none"></div>
+
+          <!-- Bounding Box 1: Preceding Vehicle -->
+          <div class="absolute left-[30%] top-[34%] w-44 h-28 border-2 border-blue-400 rounded-2xl bg-blue-500/10 p-1.5 flex flex-col justify-between shadow-lg">
+            <div class="bg-[#4A62D6] text-white text-[9px] px-2 py-0.5 rounded-full font-mono font-bold self-start">
+              Automobile: Sedan (96.4%)
+            </div>
+            <div class="text-[8px] text-blue-200 font-mono self-end bg-black/60 px-2 py-0.5 rounded-full">
+              Dist: 12.8m
+            </div>
+          </div>
+
+          <!-- Bounding Box 2: Severe Pothole Crater -->
+          <div class="absolute right-[22%] bottom-[16%] w-36 h-20 border-2 border-amber-400 rounded-2xl bg-amber-500/20 p-1.5 flex flex-col justify-between animate-pulse shadow-lg">
+            <div class="bg-amber-500 text-slate-900 text-[9px] px-2 py-0.5 rounded-full font-mono font-bold self-start">
+              ⚠️ Pothole (16cm) · 94.1%
+            </div>
+            <div class="text-[8px] text-amber-200 font-mono self-end bg-black/70 px-2 py-0.5 rounded-full">
+              JDA #DEF-892
+            </div>
+          </div>
+
+          <!-- Bounding Box 3: Pedestrian Proximity -->
+          <div class="absolute left-[10%] top-[40%] w-24 h-36 border-2 border-rose-500 rounded-2xl bg-rose-500/15 p-1.5 flex flex-col justify-between shadow-lg">
+            <div class="bg-rose-600 text-white text-[8px] px-2 py-0.5 rounded-full font-mono font-bold self-start">
+              🚶 Pedestrian (94.2%)
+            </div>
+            <div class="text-[8px] text-rose-200 font-mono bg-black/80 px-2 py-0.5 rounded-full">
+              &lt; 1.5m Flagged
+            </div>
+          </div>
+
+          <!-- Top HUD Bar -->
+          <div class="absolute top-4 left-5 right-5 flex justify-between items-center text-[10px] font-mono text-slate-300 bg-black/70 px-4 py-2 rounded-full border border-slate-700/60 backdrop-blur-sm">
+            <span class="text-white font-bold" id="hud-cam-bus-tag">FRAME #4029 • BUS-003</span>
+            <span class="text-emerald-400 font-semibold">AI TELEMETRY STREAMING</span>
+            <span class="text-slate-300" id="hud-cam-time">16:42:00 IST</span>
+          </div>
+
+          <!-- Target Lock Banner -->
+          <div id="target-lock-hud" class="absolute inset-0 bg-rose-900/30 border-4 border-rose-500 hidden flex-col items-center justify-center p-4 backdrop-blur-[2px]">
+            <div class="bg-white border-2 border-rose-600 p-6 rounded-3xl text-center space-y-2.5 max-w-sm shadow-2xl">
+              <span class="material-symbols-outlined text-4xl text-rose-600 animate-bounce">targeted</span>
+              <strong class="text-rose-700 font-mono text-sm block tracking-widest uppercase">TARGET LOCK: RJ-14-CE-8821</strong>
+              <p class="text-xs text-slate-700">White Toyota Fortuner SUV · High-Speed Collision &amp; Flee</p>
+              <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-mono text-xs font-bold inline-block">
+                OCR Confidence: 97.2% Match
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Video Controls & Angle Switcher -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+          <div class="flex items-center gap-2 text-xs">
+            <span class="text-[#717D75] font-medium">Camera Angle:</span>
+            <button onclick="switchCameraAngle('Front 1080p')" id="btn-angle-front" class="px-3.5 py-1.5 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold">Front 1080p</button>
+            <button onclick="switchCameraAngle('Downward Asphalt')" id="btn-angle-asphalt" class="btn-pill-ghost font-mono text-xs font-semibold">Downward Road</button>
+            <button onclick="switchCameraAngle('Left Blindspot')" id="btn-angle-blindspot" class="btn-pill-ghost font-mono text-xs font-semibold">Left Blindspot</button>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <button onclick="triggerHitAndRunSimulation()" class="btn-pill-solid bg-rose-600 hover:bg-rose-700">
+              <span class="material-symbols-outlined text-sm">shield</span>
+              <span>Simulate Hit &amp; Run ⚡</span>
+            </button>
+            <button onclick="captureCameraSnapshot()" class="btn-pill-ghost">
+              <span class="material-symbols-outlined text-sm text-emerald-600">photo_camera</span>
+              <span>Save Frame</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- VIEW 3: DEFECT REGISTRY & MERGED REPAIR ROI -->
+    <!-- ======================================================================= -->
+    <div id="tab-view-work-orders" class="hidden space-y-6">
+      
+      <div class="glass-card p-6 space-y-4">
+        <div class="flex justify-between items-center border-b border-black/[0.05] pb-4">
+          <div>
+            <h3 class="font-bold text-[#1E2320] text-lg">Municipal Defect Registry &amp; PWD Work Orders</h3>
+            <p class="text-xs text-[#717D75]">1,284 total defects logged across 32 Jaipur wards · 50.6% resolution rate</p>
+          </div>
+          <button onclick="downloadReport('CSV')" class="btn-pill-solid">Export CSV ↓</button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse font-mono">
+            <thead>
+              <tr class="bg-[#F4F7F0] text-[#717D75] text-[11px] uppercase">
+                <th class="py-3 px-4 rounded-l-xl">DOCKET</th>
+                <th class="py-3 px-4">LOCATION</th>
+                <th class="py-3 px-4">DEFECT TYPE</th>
+                <th class="py-3 px-4">DETECTED BY</th>
+                <th class="py-3 px-4">AI CONFIDENCE</th>
+                <th class="py-3 px-4">STATUS</th>
+                <th class="py-3 px-4">EST. COST</th>
+                <th class="py-3 px-4 text-right rounded-r-xl">ACTION</th>
+              </tr>
+            </thead>
+            <tbody id="defect-table-body" class="divide-y divide-black/[0.03]">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Merged Repair ROI Verification Card -->
+      <div class="glass-card p-6 space-y-4">
+        <div class="flex justify-between items-center border-b border-black/[0.05] pb-4">
+          <div>
+            <h3 class="font-bold text-[#1E2320] text-lg flex items-center gap-2">
+              <span class="material-symbols-outlined text-emerald-600">verified</span>
+              <span>Before &amp; After Infrastructure Repair Verification &amp; Municipal ROI</span>
+            </h3>
+            <p class="text-xs text-[#717D75]">Algorithmic vibration reduction verification and municipal cost payoff calculation</p>
+          </div>
+          <span class="px-3.5 py-1 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-mono text-xs font-bold">4.4x ROI in 24 Days</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="p-5 rounded-3xl bg-[#FDECEC] space-y-2.5">
+            <span class="text-[10px] font-bold text-rose-800 uppercase font-mono">BEFORE REPAIR (July 2026) · Tonk Road KM 8.2</span>
+            <strong class="text-slate-900 text-xs block font-bold">6 Major Pothole Craters (Avg Depth 16cm)</strong>
+            <p class="text-[11px] text-slate-600">Bus suspension impact shock &gt;3.2g · Vehicle Damage Cost: ~₹2,00,000 / month</p>
+          </div>
+
+          <div class="p-5 rounded-3xl bg-[#E8F8EE] space-y-2.5">
+            <span class="text-[10px] font-bold text-emerald-800 uppercase font-mono">AFTER JDA HOT-MIX REPAIR (August 2026) · ✅ VERIFIED</span>
+            <strong class="text-slate-900 text-xs block font-bold">0 Potholes Detected in Last 14 Days</strong>
+            <p class="text-[11px] text-slate-600">Vibration shock normal (&lt;0.4g) · JDA Hot-mix Cost: ₹45,000 · <strong>4.4x Payoff in 24 Days</strong></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================================= -->
+    <!-- VIEW 4: TRAFFIC FLOW, PEDESTRIAN RISK & HARDWARE PIPELINE -->
+    <!-- ======================================================================= -->
+    <div id="tab-view-analytics" class="hidden space-y-6">
+      
+      <!-- Charts Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-8 glass-card p-6 flex flex-col justify-between">
+          <div class="mb-3">
+            <h3 class="font-bold text-[#1E2320] text-base">Traffic Volume vs Average Speed (24h)</h3>
+            <p class="text-xs text-[#717D75]">Hourly vehicle count scanned across Jaipur arterial roads</p>
+          </div>
+          <div class="h-64 w-full">
+            <canvas id="chart-traffic-light"></canvas>
+          </div>
+        </div>
+
+        <div class="lg:col-span-4 glass-card p-6 flex flex-col justify-between">
+          <div class="mb-3">
+            <h3 class="font-bold text-[#1E2320] text-base">Vehicle Classification</h3>
+            <p class="text-xs text-[#717D75]">6 AI Object Detection Classes</p>
+          </div>
+          <div class="h-64 w-full flex items-center justify-center">
+            <canvas id="chart-vehicles-light"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vulnerable Pedestrian & School Zone Safety -->
+      <div class="glass-card p-6 space-y-4">
+        <div class="flex justify-between items-center border-b border-black/[0.05] pb-4">
+          <div>
+            <h3 class="font-bold text-[#1E2320] text-base flex items-center gap-2">
+              <span class="material-symbols-outlined text-rose-600">directions_walk</span>
+              <span>Vulnerable Pedestrian &amp; School Zone Risk Index</span>
+            </h3>
+            <p class="text-xs text-[#717D75]">14 near-misses logged across 18 school zones · Automated Pelican Signal recommendations</p>
+          </div>
+          <span class="px-3.5 py-1 rounded-full bg-[#FDECEC] text-rose-800 font-mono text-xs font-bold">14 Near-Misses</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs">
+          <div class="p-4 rounded-2xl bg-[#F4F7F0] space-y-1.5">
+            <strong class="text-[#1E2320] font-bold block">1. St. Xavier School (Bhagwan Das Rd) · Risk: 87/100</strong>
+            <p class="text-slate-600">Peak Student Surge: 07:30 - 08:15 &amp; 13:45 - 14:30. Recommended: Install automated Pelican Signal.</p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-[#F4F7F0] space-y-1.5">
+            <strong class="text-[#1E2320] font-bold block">2. Rajasthan University Main Gate (JLN Marg) · Risk: 82/100</strong>
+            <p class="text-slate-600">Peak Student Surge: 09:00 - 10:30 &amp; 16:00 - 17:30. Recommended: Deploy raised speed calming table.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10-Bus Hardware Pipeline Health Matrix -->
+      <div class="glass-card p-6 space-y-4">
+        <div class="flex justify-between items-center border-b border-black/[0.05] pb-4">
+          <div>
+            <h3 class="font-bold text-[#1E2320] text-base flex items-center gap-2">
+              <span class="material-symbols-outlined text-[#4A62D6]">memory</span>
+              <span>10-Bus Edge Hardware &amp; NPU Telemetry Matrix</span>
+            </h3>
+            <p class="text-xs text-[#717D75]">Live Jetson Orin thermals, inference FPS, latency, and camera operational health</p>
+          </div>
+          <span class="px-3.5 py-1 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-mono text-xs font-bold">49/50 Cameras Active</span>
+        </div>
+
+        <div class="overflow-x-auto font-mono text-xs">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-[#F4F7F0] text-[#717D75] text-[10px] uppercase">
+                <th class="py-2.5 px-3 rounded-l-xl">BUS ID</th>
+                <th class="py-2.5 px-3">PROCESSOR</th>
+                <th class="py-2.5 px-3">TEMP (°C)</th>
+                <th class="py-2.5 px-3">FPS</th>
+                <th class="py-2.5 px-3">LATENCY</th>
+                <th class="py-2.5 px-3">4G SIGNAL</th>
+                <th class="py-2.5 px-3 rounded-r-xl">CAMERA HEALTH</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-black/[0.03]" id="hardware-matrix-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 1: HIT AND RUN FORENSICS (GLASSMORPHIC) -->
+  <!-- ========================================================================= -->
+  <div id="hitandrun-modal" class="fixed inset-0 z-50 bg-[#1E2320]/40 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="bg-white/95 backdrop-blur-2xl max-w-2xl w-full rounded-[32px] p-7 text-xs space-y-4 shadow-2xl">
+      
+      <div class="flex justify-between items-center border-b border-black/[0.05] pb-3.5">
         <div class="flex items-center gap-2.5">
           <span class="material-symbols-outlined text-rose-600 text-xl">shield</span>
           <h3 class="font-bold text-[#1E2320] text-base">Hit-and-Run Forensics &amp; Multi-Camera Trail</h3>
         </div>
-        <button onclick="closeHitAndRunPanel()" class="w-8 h-8 rounded-full bg-[#F5F8F2] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold">✕</button>
+        <button onclick="closeHitAndRunPanel()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold">✕</button>
       </div>
 
-      <div class="border border-rose-200 bg-[#FDECEC] rounded-2xl p-4 space-y-3">
+      <div class="bg-[#FDECEC] rounded-3xl p-5 space-y-3">
         <div class="flex justify-between items-start">
           <div>
             <span class="font-mono text-base text-slate-900 font-bold tracking-wider">RJ-14-CE-8821</span>
@@ -691,17 +691,17 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 font-mono text-xs">
-          <div class="p-3 rounded-xl bg-white border border-rose-200 space-y-1">
+          <div class="p-3.5 rounded-2xl bg-white space-y-1 shadow-sm">
             <span class="text-[10px] text-rose-600 font-bold block uppercase">15:20 IST · IMPACT</span>
             <strong class="text-slate-900 block text-xs">BUS-005 (Airport T2)</strong>
             <p class="text-[11px] text-slate-500 font-sans">Front Camera · 84 km/h crash</p>
           </div>
-          <div class="p-3 rounded-xl bg-white border border-[#DCE3D6] space-y-1">
+          <div class="p-3.5 rounded-2xl bg-white space-y-1 shadow-sm">
             <span class="text-[10px] text-amber-600 font-bold block uppercase">15:26 IST · INTERCEPT</span>
             <strong class="text-slate-900 block text-xs">BUS-003 (Tonk Rd)</strong>
             <p class="text-[11px] text-slate-500 font-sans">Left Blindspot Camera</p>
           </div>
-          <div class="p-3 rounded-xl bg-white border border-[#DCE3D6] space-y-1">
+          <div class="p-3.5 rounded-2xl bg-white space-y-1 shadow-sm">
             <span class="text-[10px] text-emerald-600 font-bold block uppercase">15:34 IST · LAST FIX</span>
             <strong class="text-slate-900 block text-xs">BUS-001 (JLN Marg)</strong>
             <p class="text-[11px] text-slate-500 font-sans">Rear Camera · B2 Bypass</p>
@@ -709,7 +709,7 @@
         </div>
       </div>
 
-      <div class="flex justify-end gap-2 pt-3 border-t border-[#DCE3D6]">
+      <div class="flex justify-end gap-2.5 pt-3 border-t border-black/[0.05]">
         <button onclick="downloadReport('PDF')" class="btn-pill-ghost">Export FIR Docket ↓</button>
         <button onclick="transmitPoliceAlert()" class="btn-pill-solid bg-rose-600 hover:bg-rose-700">Transmit to Police PCR &rarr;</button>
       </div>
@@ -720,29 +720,29 @@
   <!-- ========================================================================= -->
   <!-- MODAL 2: DRIVER SAFETY LEADERBOARD -->
   <!-- ========================================================================= -->
-  <div id="driver-modal" class="fixed inset-0 z-50 bg-[#1E2320]/60 hidden items-center justify-center p-4 backdrop-blur-sm">
-    <div class="bg-white border border-[#DCE3D6] max-w-2xl w-full rounded-[28px] p-6 text-xs space-y-4 shadow-2xl">
+  <div id="driver-modal" class="fixed inset-0 z-50 bg-[#1E2320]/40 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="bg-white/95 backdrop-blur-2xl max-w-2xl w-full rounded-[32px] p-7 text-xs space-y-4 shadow-2xl">
       
-      <div class="flex justify-between items-center border-b border-[#DCE3D6] pb-3">
+      <div class="flex justify-between items-center border-b border-black/[0.05] pb-3.5">
         <div class="flex items-center gap-2.5">
           <span class="material-symbols-outlined text-emerald-600 text-xl">person</span>
           <h3 class="font-bold text-[#1E2320] text-base">JCTSL Driver Safety Index &amp; Telemetry</h3>
         </div>
-        <button onclick="closeDriverModal()" class="w-8 h-8 rounded-full bg-[#F5F8F2] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold">✕</button>
+        <button onclick="closeDriverModal()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold">✕</button>
       </div>
 
       <div class="overflow-x-auto font-mono">
         <table class="w-full text-left text-xs border-collapse">
           <thead>
-            <tr class="bg-[#F5F8F2] border-b border-[#DCE3D6] text-slate-500 text-[10px] uppercase">
-              <th class="py-2.5 px-3">DRIVER</th>
+            <tr class="bg-[#F4F7F0] text-[#717D75] text-[10px] uppercase">
+              <th class="py-2.5 px-3 rounded-l-xl">DRIVER</th>
               <th class="py-2.5 px-3">ASSIGNED BUS</th>
               <th class="py-2.5 px-3">SAFETY SCORE</th>
               <th class="py-2.5 px-3">HARSH BRAKING</th>
-              <th class="py-2.5 px-3">TRAINING STATUS</th>
+              <th class="py-2.5 px-3 rounded-r-xl">TRAINING STATUS</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-[#DCE3D6]">
+          <tbody class="divide-y divide-black/[0.03]">
             <tr>
               <td class="py-2.5 px-3 font-bold text-[#1E2320]">Rajesh Sharma</td>
               <td class="py-2.5 px-3">BUS-001</td>
@@ -769,7 +769,7 @@
               <td class="py-2.5 px-3">BUS-009</td>
               <td class="py-2.5 px-3 text-rose-700 font-bold">58 / 100</td>
               <td class="py-2.5 px-3">5</td>
-              <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-rose-50 text-rose-700 font-bold text-[10px]">Mandatory Training</span></td>
+              <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 font-bold text-[10px]">Mandatory Training</span></td>
             </tr>
           </tbody>
         </table>
@@ -781,43 +781,43 @@
   <!-- ========================================================================= -->
   <!-- MODAL 3: EXPORT REPORT BUILDER -->
   <!-- ========================================================================= -->
-  <div id="export-modal" class="fixed inset-0 z-50 bg-[#1E2320]/60 hidden items-center justify-center p-4 backdrop-blur-sm">
-    <div class="bg-white border border-[#DCE3D6] max-w-2xl w-full rounded-[28px] p-6 text-xs space-y-4 shadow-2xl">
+  <div id="export-modal" class="fixed inset-0 z-50 bg-[#1E2320]/40 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="bg-white/95 backdrop-blur-2xl max-w-2xl w-full rounded-[32px] p-7 text-xs space-y-4 shadow-2xl">
       
-      <div class="flex justify-between items-center border-b border-[#DCE3D6] pb-3">
+      <div class="flex justify-between items-center border-b border-black/[0.05] pb-3.5">
         <div class="flex items-center gap-2.5">
           <span class="material-symbols-outlined text-[#1E2320] text-xl">summarize</span>
           <h3 class="font-bold text-[#1E2320] text-base">Municipal Report &amp; GIS Export Engine</h3>
         </div>
-        <button onclick="closeExportModal()" class="w-8 h-8 rounded-full bg-[#F5F8F2] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold">✕</button>
+        <button onclick="closeExportModal()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold">✕</button>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div class="p-3 bg-[#F5F8F2] border border-[#DCE3D6] rounded-2xl space-y-2">
-          <strong class="text-[#1E2320] text-xs block">1. Report Type</strong>
-          <div class="space-y-1.5 text-[11px] text-slate-700">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+        <div class="p-4 bg-[#F4F7F0] rounded-2xl space-y-2">
+          <strong class="text-[#1E2320] text-xs block font-bold">1. Report Type</strong>
+          <div class="space-y-2 text-[11px] text-[#717D75]">
             <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="rep" checked class="accent-[#1E2320]"/><span>Daily PWD Briefing</span></label>
             <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="rep" class="accent-[#1E2320]"/><span>Weekly Road Health</span></label>
             <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="rep" class="accent-[#1E2320]"/><span>Police Hit-and-Run FIR</span></label>
           </div>
         </div>
 
-        <div class="p-3 bg-[#F5F8F2] border border-[#DCE3D6] rounded-2xl space-y-2">
-          <strong class="text-[#1E2320] text-xs block">2. Inclusions</strong>
-          <div class="space-y-1.5 text-[11px] text-slate-700">
+        <div class="p-4 bg-[#F4F7F0] rounded-2xl space-y-2">
+          <strong class="text-[#1E2320] text-xs block font-bold">2. Inclusions</strong>
+          <div class="space-y-2 text-[11px] text-[#717D75]">
             <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked class="accent-[#1E2320]"/><span>Severe Potholes (&gt;12cm)</span></label>
             <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked class="accent-[#1E2320]"/><span>Waterlogged Spots</span></label>
             <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked class="accent-[#1E2320]"/><span>OCR Extracted Plates</span></label>
           </div>
         </div>
 
-        <div class="p-3 bg-[#F5F8F2] border border-[#DCE3D6] rounded-2xl space-y-2">
-          <strong class="text-[#1E2320] text-xs block">3. Export Formats</strong>
-          <div class="grid grid-cols-2 gap-1.5">
-            <button onclick="downloadReport('PDF')" class="btn-pill-solid text-[11px] py-1.5">PDF Report ↓</button>
-            <button onclick="downloadReport('CSV')" class="btn-pill-ghost text-[11px] py-1.5">CSV Data ↓</button>
-            <button onclick="downloadReport('GEOJSON')" class="btn-pill-ghost text-[11px] py-1.5 text-[#1E8A44]">GeoJSON ↓</button>
-            <button onclick="downloadReport('SHAPEFILE')" class="btn-pill-ghost text-[11px] py-1.5 text-[#4A62D6]">Shapefile ↓</button>
+        <div class="p-4 bg-[#F4F7F0] rounded-2xl space-y-2">
+          <strong class="text-[#1E2320] text-xs block font-bold">3. Export Formats</strong>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="downloadReport('PDF')" class="btn-pill-solid text-[11px] py-2">PDF Report ↓</button>
+            <button onclick="downloadReport('CSV')" class="btn-pill-ghost text-[11px] py-2">CSV Data ↓</button>
+            <button onclick="downloadReport('GEOJSON')" class="btn-pill-ghost text-[11px] py-2 text-[#1E8A44]">GeoJSON ↓</button>
+            <button onclick="downloadReport('SHAPEFILE')" class="btn-pill-ghost text-[11px] py-2 text-[#4A62D6]">Shapefile ↓</button>
           </div>
         </div>
       </div>
@@ -828,27 +828,27 @@
   <!-- ========================================================================= -->
   <!-- MODAL 4: INCIDENT INSPECTOR DETAIL MODAL -->
   <!-- ========================================================================= -->
-  <div id="incident-modal" class="fixed inset-0 z-50 bg-[#1E2320]/60 hidden items-center justify-center p-4 backdrop-blur-sm">
-    <div class="bg-white border border-[#DCE3D6] max-w-xl w-full rounded-[28px] p-6 text-xs space-y-4 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-[#DCE3D6] pb-3">
+  <div id="incident-modal" class="fixed inset-0 z-50 bg-[#1E2320]/40 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="bg-white/95 backdrop-blur-2xl max-w-xl w-full rounded-[32px] p-7 text-xs space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-black/[0.05] pb-3.5">
         <div class="flex items-center gap-2">
-          <span id="modal-badge-type" class="px-2.5 py-1 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-bold font-mono text-[10px]">POTHOLE</span>
+          <span id="modal-badge-type" class="px-3 py-1 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-bold font-mono text-[10px]">POTHOLE</span>
           <h3 class="font-bold text-[#1E2320] text-base" id="modal-inc-title">Severe Pothole Crater</h3>
         </div>
-        <button onclick="closeIncidentModal()" class="w-8 h-8 rounded-full bg-[#F5F8F2] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold">✕</button>
+        <button onclick="closeIncidentModal()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold">✕</button>
       </div>
 
       <div class="space-y-3 font-mono">
-        <div class="p-3.5 bg-[#F5F8F2] rounded-2xl space-y-1.5">
-          <div class="flex justify-between"><span class="text-slate-500">Location:</span><strong class="text-[#1E2320]" id="modal-inc-loc">Tonk Road KM 4.2</strong></div>
-          <div class="flex justify-between"><span class="text-slate-500">Detected By:</span><strong class="text-blue-700" id="modal-inc-bus">BUS-003</strong></div>
-          <div class="flex justify-between"><span class="text-slate-500">AI Confidence:</span><strong class="text-emerald-700" id="modal-inc-conf">94.8%</strong></div>
-          <div class="flex justify-between"><span class="text-slate-500">Est. Repair Cost:</span><strong class="text-[#1E2320]" id="modal-inc-cost">₹45,000</strong></div>
-          <div class="flex justify-between"><span class="text-slate-500">Asphalt Required:</span><strong class="text-[#1E2320]" id="modal-inc-asphalt">12 MT</strong></div>
+        <div class="p-4 bg-[#F4F7F0] rounded-2xl space-y-2">
+          <div class="flex justify-between"><span class="text-[#717D75]">Location:</span><strong class="text-[#1E2320]" id="modal-inc-loc">Tonk Road KM 4.2</strong></div>
+          <div class="flex justify-between"><span class="text-[#717D75]">Detected By:</span><strong class="text-[#4A62D6]" id="modal-inc-bus">BUS-003</strong></div>
+          <div class="flex justify-between"><span class="text-[#717D75]">AI Confidence:</span><strong class="text-[#1E8A44]" id="modal-inc-conf">94.8%</strong></div>
+          <div class="flex justify-between"><span class="text-[#717D75]">Est. Repair Cost:</span><strong class="text-[#1E2320]" id="modal-inc-cost">₹45,000</strong></div>
+          <div class="flex justify-between"><span class="text-[#717D75]">Asphalt Required:</span><strong class="text-[#1E2320]" id="modal-inc-asphalt">12 MT</strong></div>
         </div>
       </div>
 
-      <div class="flex justify-end gap-2 pt-3 border-t border-[#DCE3D6]">
+      <div class="flex justify-end gap-2.5 pt-3 border-t border-black/[0.05]">
         <button onclick="closeIncidentModal()" class="btn-pill-ghost">Close</button>
         <button onclick="dispatchModalIncident()" class="btn-pill-solid">✓ Dispatch PWD Crew</button>
       </div>
@@ -885,7 +885,7 @@
       { id: 'BUS-010', route: 'Route 10: Walled City', lat: 26.9260, lng: 75.8240, baseLat: 26.9260, baseLng: 75.8240, speed: 14, driver: 'Mahesh Sharma', status: 'ONLINE', score: 95, cam: 'Front 1080p', temp: 45, fps: 18.9, lat_ms: 39 },
     ];
 
-    // 18 Road Incidents Dataset with Severity Badges matching screenshot
+    // 18 Road Incidents Dataset with exact screenshot severity styling
     const roadIncidents = [
       { id: 'INC_001', type: 'POTHOLE', title: 'Severe Pothole Crater (16cm)', loc: 'Tonk Rd KM 4.2', lat: 26.8540, lng: 75.7940, bus: 'BUS-003', time: '15 December 2026', conf: 94.8, status: 'Pending', cost: '₹45,000', asphalt: '12 MT', severity: 'High 8/10', sevColor: 'emerald', logo: 'construction' },
       { id: 'INC_002', type: 'WATERLOGGING', title: 'Underpass Waterlogging (25cm)', loc: 'Ajmer Rd 200ft Bypass', lat: 26.8820, lng: 75.7480, bus: 'BUS-002', time: '15 December 2026', conf: 96.2, status: 'In Progress', cost: '₹80,000', asphalt: 'Drainage Seal', severity: 'Medium 5/10', sevColor: 'blue', logo: 'water_drop' },
@@ -932,7 +932,7 @@
       if (!container) return;
 
       const toast = document.createElement('div');
-      toast.className = `pointer-events-auto flex items-center gap-3 p-4 bg-white border border-[#DCE3D6] rounded-2xl shadow-xl text-xs transition-all transform duration-300 translate-y-2 opacity-0 max-w-sm`;
+      toast.className = `pointer-events-auto flex items-center gap-3 p-4 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl text-xs transition-all transform duration-300 translate-y-2 opacity-0 max-w-sm`;
       
       const icon = type === 'success' ? 'check' : type === 'danger' ? 'warning' : 'info';
       const iconColor = type === 'success' ? 'bg-[#E8F8EE] text-[#1E8A44]' : type === 'danger' ? 'bg-[#FDECEC] text-[#D33838]' : 'bg-[#EEF1FD] text-[#4A62D6]';
@@ -943,7 +943,7 @@
         </div>
         <div>
           <strong class="font-bold text-[#1E2320] block">${title}</strong>
-          <span class="text-slate-500 text-[11px]">${msg}</span>
+          <span class="text-[#717D75] text-[11px]">${msg}</span>
         </div>
       `;
 
@@ -955,7 +955,7 @@
       }, 3500);
     }
 
-    // 10 BUS SELECTOR STRIP
+    // POPULATE 10 BUS SELECTOR STRIP
     function populateBusSelectorStrip() {
       const strip = document.getElementById('fleet-selector-strip');
       if (!strip) return;
@@ -966,15 +966,15 @@
         const btn = document.createElement('button');
         btn.id = `bus-pill-${b.id}`;
         btn.onclick = () => selectBusDirectly(b.id);
-        btn.className = `p-2 rounded-xl border text-left transition-all flex flex-col justify-between ${
-          isSel ? 'bg-[#1E2320] text-white border-[#1E2320] shadow-sm' : 'bg-[#F5F8F2] hover:bg-[#E2E8DC] border-[#DCE3D6] text-[#1E2320]'
+        btn.className = `p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between ${
+          isSel ? 'bg-[#1E2320] text-white shadow-md' : 'bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]'
         }`;
         btn.innerHTML = `
           <div class="flex justify-between items-center">
             <span class="font-bold text-[11px]">${b.id}</span>
-            <span class="w-1.5 h-1.5 rounded-full ${isSel ? 'bg-white' : 'bg-[#1E8A44]'}"></span>
+            <span class="w-2 h-2 rounded-full ${isSel ? 'bg-white' : 'bg-[#1E8A44]'}"></span>
           </div>
-          <span class="text-[10px] truncate ${isSel ? 'text-slate-300' : 'text-slate-500'}">${b.speed} km/h · ${b.driver.split(' ')[0]}</span>
+          <span class="text-[10px] truncate ${isSel ? 'text-slate-300' : 'text-[#717D75]'}">${b.speed} km/h · ${b.driver.split(' ')[0]}</span>
         `;
         strip.appendChild(btn);
       });
@@ -989,10 +989,10 @@
         const p = document.getElementById(`bus-pill-${b.id}`);
         const isSel = (b.id === busId);
         if (p) {
-          p.className = `p-2 rounded-xl border text-left transition-all flex flex-col justify-between ${
-            isSel ? 'bg-[#1E2320] text-white border-[#1E2320] shadow-sm' : 'bg-[#F5F8F2] hover:bg-[#E2E8DC] border-[#DCE3D6] text-[#1E2320]'
+          p.className = `p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between ${
+            isSel ? 'bg-[#1E2320] text-white shadow-md' : 'bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]'
           }`;
-          p.querySelector('span.text-\[10px\]').className = `text-[10px] truncate ${isSel ? 'text-slate-300' : 'text-slate-500'}`;
+          p.querySelector('span.text-\[10px\]').className = `text-[10px] truncate ${isSel ? 'text-slate-300' : 'text-[#717D75]'}`;
         }
       });
 
@@ -1008,7 +1008,7 @@
       showToast('Bus Inspected', `${bus.id} (${bus.route}) selected · ${bus.driver}`, 'info');
     }
 
-    // BENTO INCIDENT DOCKETS GRID (EXACT SCREENSHOT STYLE)
+    // BENTO INCIDENT DOCKETS GRID (EXACT SCREENSHOT MATCH)
     function populateBentoIncidentGrid(query = '', filter = 'ALL') {
       const grid = document.getElementById('bento-incident-grid');
       if (!grid) return;
@@ -1030,52 +1030,51 @@
 
       filtered.forEach(inc => {
         const card = document.createElement('div');
-        card.className = 'bento-card flex flex-col justify-between space-y-4';
+        card.className = 'glass-card p-6 flex flex-col justify-between space-y-4';
 
-        // Severity Pill Tag
         const badgeBg = inc.sevColor === 'emerald' ? 'bg-[#E8F8EE] text-[#1E8A44]' :
                         inc.sevColor === 'rose' ? 'bg-[#FDECEC] text-[#D33838]' : 'bg-[#EEF1FD] text-[#4A62D6]';
 
         card.innerHTML = `
           <!-- Top Row: Icon + Name + Severity Badge -->
           <div class="flex justify-between items-center">
-            <div class="flex items-center gap-2">
-              <div class="w-7 h-7 rounded-full bg-[#1E2320] text-white flex items-center justify-center text-xs">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-full bg-[#1E2320] text-white flex items-center justify-center text-xs shadow-sm">
                 <span class="material-symbols-outlined text-sm">${inc.logo}</span>
               </div>
-              <strong class="text-[#1E2320] font-bold text-xs">${inc.bus} · ${inc.loc.split(' ')[0]}</strong>
+              <strong class="text-[#1E2320] font-bold text-sm">${inc.bus} · ${inc.loc.split(' ')[0]}</strong>
             </div>
-            <span class="px-2.5 py-0.5 rounded-full font-mono text-[11px] font-bold ${badgeBg}">
+            <span class="px-3 py-1 rounded-full font-mono text-[11px] font-bold ${badgeBg}">
               ⚑ ${inc.severity}
             </span>
           </div>
 
           <!-- Two Sub-Boxes (Type & Extracted Date) -->
-          <div class="grid grid-cols-2 gap-2 text-xs">
-            <div class="bg-[#F5F8F2] rounded-xl p-2.5">
-              <span class="text-slate-400 text-[10px] block mb-0.5 flex items-center gap-1">
+          <div class="grid grid-cols-2 gap-2.5 text-xs">
+            <div class="bg-[#F4F7F0] rounded-2xl p-3">
+              <span class="text-[#717D75] text-[10px] block mb-1 flex items-center gap-1">
                 <span class="material-symbols-outlined text-xs">assignment</span> Type
               </span>
-              <strong class="text-[#1E2320] text-xs truncate block">${inc.type}</strong>
+              <strong class="text-[#1E2320] text-xs truncate block font-bold">${inc.type}</strong>
             </div>
-            <div class="bg-[#F5F8F2] rounded-xl p-2.5">
-              <span class="text-slate-400 text-[10px] block mb-0.5 flex items-center gap-1">
+            <div class="bg-[#F4F7F0] rounded-2xl p-3">
+              <span class="text-[#717D75] text-[10px] block mb-1 flex items-center gap-1">
                 <span class="material-symbols-outlined text-xs">calendar_today</span> Extracted date
               </span>
-              <strong class="text-[#1E2320] text-xs truncate block">${inc.time}</strong>
+              <strong class="text-[#1E2320] text-xs truncate block font-bold">${inc.time}</strong>
             </div>
           </div>
 
           <!-- Title & Narrative -->
           <div>
             <h4 class="font-bold text-[#1E2320] text-sm leading-snug">${inc.title}</h4>
-            <p class="text-slate-500 text-xs mt-1 leading-relaxed line-clamp-2">
+            <p class="text-[#717D75] text-xs mt-1.5 leading-relaxed line-clamp-2">
               Detected at ${inc.loc}. AI Confidence: ${inc.conf}%. Est. Cost: ${inc.cost}. Action: ${inc.asphalt}.
             </p>
           </div>
 
           <!-- Bottom Two Action Buttons -->
-          <div class="grid grid-cols-2 gap-2 pt-2 border-t border-[#F0F4EC]">
+          <div class="grid grid-cols-2 gap-2.5 pt-2">
             <button onclick="openIncidentDetail('${inc.id}')" class="btn-pill-ghost w-full">
               <span class="material-symbols-outlined text-sm">info</span>
               <span>View details</span>
@@ -1099,7 +1098,6 @@
       inc.status = 'Resolved';
       playBeep(920);
 
-      // Update Floating Banner
       const banner = document.getElementById('live-action-banner');
       if (banner) {
         document.getElementById('banner-action-title').innerText = 'Docket resolved';
@@ -1127,12 +1125,12 @@
       currentFilter = filter;
       ['all', 'pending', 'critical', 'resolved'].forEach(f => {
         const btn = document.getElementById('pill-filter-' + f);
-        if (btn) btn.className = 'px-4 py-1.5 rounded-full text-slate-600 hover:text-[#1E2320] flex items-center gap-2 transition-all font-medium';
+        if (btn) btn.className = 'px-5 py-2 rounded-full text-[#717D75] hover:text-[#1E2320] flex items-center gap-2.5 transition-all font-medium';
       });
 
       const activeBtn = document.getElementById('pill-filter-' + filter.toLowerCase());
       if (activeBtn) {
-        activeBtn.className = 'px-4 py-1.5 rounded-full bg-white text-[#1E2320] font-bold shadow-sm flex items-center gap-2 transition-all';
+        activeBtn.className = 'px-5 py-2 rounded-full bg-white text-[#1E2320] font-bold shadow-sm flex items-center gap-2.5 transition-all';
       }
 
       populateBentoIncidentGrid('', filter);
@@ -1153,7 +1151,7 @@
 
       filtered.forEach(inc => {
         const tr = document.createElement('tr');
-        tr.className = 'hover:bg-[#F5F8F2] transition-colors';
+        tr.className = 'hover:bg-[#F4F7F0] transition-colors';
 
         const statusPill = inc.status === 'Resolved' ? 'bg-[#E8F8EE] text-[#1E8A44]' :
                            inc.status === 'In Progress' ? 'bg-[#EEF1FD] text-[#4A62D6]' : 'bg-[#FDECEC] text-[#D33838]';
@@ -1162,10 +1160,10 @@
           <td class="py-3 px-4 font-bold text-[#1E2320]">${inc.id}</td>
           <td class="py-3 px-4 font-bold text-[#1E2320]">${inc.loc}</td>
           <td class="py-3 px-4">${inc.title}</td>
-          <td class="py-3 px-4 font-bold text-blue-700">${inc.bus}</td>
-          <td class="py-3 px-4 font-bold text-emerald-700">${inc.conf}%</td>
-          <td class="py-3 px-4"><span class="px-2.5 py-0.5 rounded-full font-semibold text-[10px] ${statusPill}">${inc.status}</span></td>
-          <td class="py-3 px-4 text-slate-600">${inc.cost}</td>
+          <td class="py-3 px-4 font-bold text-[#4A62D6]">${inc.bus}</td>
+          <td class="py-3 px-4 font-bold text-[#1E8A44]">${inc.conf}%</td>
+          <td class="py-3 px-4"><span class="px-3 py-1 rounded-full font-semibold text-[10px] ${statusPill}">${inc.status}</span></td>
+          <td class="py-3 px-4 text-[#717D75]">${inc.cost}</td>
           <td class="py-3 px-4 text-right">
             <button onclick="resolveIncidentDocket('${inc.id}')" class="btn-pill-ghost py-1 px-3 text-[11px]">
               Dispatch ⚡
@@ -1183,14 +1181,14 @@
 
       jaipurFleet.forEach(b => {
         const tr = document.createElement('tr');
-        tr.className = 'hover:bg-[#F5F8F2] transition-colors';
+        tr.className = 'hover:bg-[#F4F7F0] transition-colors';
         tr.innerHTML = `
           <td class="py-2.5 px-3 font-bold text-[#1E2320]">${b.id}</td>
-          <td class="py-2.5 px-3 text-blue-600">Jetson Orin Nano</td>
-          <td class="py-2.5 px-3 text-emerald-700 font-bold">${b.temp}°C</td>
+          <td class="py-2.5 px-3 text-[#4A62D6]">Jetson Orin Nano</td>
+          <td class="py-2.5 px-3 text-[#1E8A44] font-bold">${b.temp}°C</td>
           <td class="py-2.5 px-3 font-bold">${b.fps}</td>
           <td class="py-2.5 px-3">${b.lat_ms} ms</td>
-          <td class="py-2.5 px-3 text-emerald-700 font-bold">98% (LTE)</td>
+          <td class="py-2.5 px-3 text-[#1E8A44] font-bold">98% (LTE)</td>
           <td class="py-2.5 px-3"><span class="text-[#1E8A44] font-bold">✅ Active</span></td>
         `;
         tbody.appendChild(tr);
@@ -1205,7 +1203,7 @@
         const railBtn = document.getElementById('rail-btn-' + t);
         if (view) view.classList.add('hidden');
         if (railBtn) {
-          railBtn.className = 'w-10 h-10 rounded-full text-slate-600 hover:bg-[#E2E8DC] hover:text-[#1E2320] flex items-center justify-center transition-all';
+          railBtn.className = 'w-10 h-10 rounded-full text-[#717D75] hover:bg-black/5 hover:text-[#1E2320] flex items-center justify-center transition-all';
         }
       });
 
@@ -1318,7 +1316,7 @@
       playbackSpeed = spd;
       [1, 2, 4].forEach(s => {
         const b = document.getElementById('btn-speed-' + s);
-        if (b) b.className = s === spd ? 'px-2 py-0.5 rounded-full bg-[#1E2320] text-white text-[10px] font-bold' : 'px-2 py-0.5 rounded-full bg-[#E2E8DC] hover:bg-[#D5DDCF] text-slate-700 text-[10px] font-bold';
+        if (b) b.className = s === spd ? 'px-2.5 py-0.5 rounded-full bg-[#1E2320] text-white text-[10px] font-bold' : 'px-2.5 py-0.5 rounded-full bg-[#E2E8DC] hover:bg-[#D5DDCF] text-slate-700 text-[10px] font-bold';
       });
       playBeep(640);
     }
@@ -1426,12 +1424,12 @@
     function switchCameraAngle(angle) {
       ['front', 'asphalt', 'blindspot'].forEach(a => {
         const b = document.getElementById('btn-angle-' + a);
-        if (b) b.className = 'px-3 py-1.5 rounded-full bg-[#F5F8F2] hover:bg-[#E2E8DC] text-[#1E2320] font-mono text-xs font-semibold';
+        if (b) b.className = 'btn-pill-ghost font-mono text-xs font-semibold';
       });
 
-      if (angle === 'Front 1080p') document.getElementById('btn-angle-front').className = 'px-3 py-1.5 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold';
-      else if (angle === 'Downward Asphalt') document.getElementById('btn-angle-asphalt').className = 'px-3 py-1.5 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold';
-      else if (angle === 'Left Blindspot') document.getElementById('btn-angle-blindspot').className = 'px-3 py-1.5 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold';
+      if (angle === 'Front 1080p') document.getElementById('btn-angle-front').className = 'px-3.5 py-1.5 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold';
+      else if (angle === 'Downward Asphalt') document.getElementById('btn-angle-asphalt').className = 'px-3.5 py-1.5 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold';
+      else if (angle === 'Left Blindspot') document.getElementById('btn-angle-blindspot').className = 'px-3.5 py-1.5 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold';
 
       showToast('Camera Angle Switched', `Viewing ${angle} stream.`, 'info');
       playBeep(640);
@@ -1468,11 +1466,6 @@
       } else {
         btn.innerHTML = '<span class="material-symbols-outlined text-lg text-slate-400">volume_off</span>';
       }
-    }
-
-    function handleRoleChange(role) {
-      playBeep(640);
-      showToast('Agency Preset Switched', `Active Console View: ${role}`, 'info');
     }
 
     function downloadReport(format) {
@@ -1536,8 +1529,8 @@
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
-              x: { grid: { color: '#E2E8DC' }, ticks: { color: '#727B75', font: { family: 'Plus Jakarta Sans', size: 10 } } },
-              y: { grid: { color: '#E2E8DC' }, ticks: { color: '#727B75', font: { family: 'Plus Jakarta Sans', size: 10 } } }
+              x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { color: '#717D75', font: { family: 'Plus Jakarta Sans', size: 10 } } },
+              y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { color: '#717D75', font: { family: 'Plus Jakarta Sans', size: 10 } } }
             }
           }
         });
@@ -1552,8 +1545,7 @@
             datasets: [{
               data: [42, 28, 14, 8, 5, 3],
               backgroundColor: ['#1E2320', '#4A62D6', '#1E8A44', '#D97706', '#D33838', '#A4B2A0'],
-              borderWidth: 2,
-              borderColor: '#FFFFFF'
+              borderWidth: 0,
             }]
           },
           options: {
@@ -1566,15 +1558,6 @@
         });
       }
     }
-
-    // LIVE CLOCK & ONLOAD
-    setInterval(() => {
-      const now = new Date();
-      const clockElem = document.getElementById('live-clock');
-      if (clockElem) clockElem.innerText = now.toLocaleTimeString('en-US', { hour12: false }) + ' IST';
-      const camTime = document.getElementById('hud-cam-time');
-      if (camTime) camTime.innerText = now.toLocaleTimeString('en-US', { hour12: false }) + ' IST';
-    }, 1000);
 
     window.onload = function() {
       initMap();
