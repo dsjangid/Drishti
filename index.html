@@ -12,88 +12,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
   <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com">
-    // BUS INSPECTOR MODAL & OPERATOR FUNCTIONS
-    function openBusInspector(busId) {
-      const bus = jaipurFleet.find(b => b.id === busId) || jaipurFleet[0];
-      selectedBusId = bus.id;
-
-      const icon = document.getElementById('inspector-bus-icon');
-      if (icon) icon.innerText = bus.id.split('-')[1];
-
-      const idElem = document.getElementById('inspector-bus-id');
-      if (idElem) idElem.innerText = `${bus.id} TELEMETRY & OPERATIONS`;
-
-      const statusElem = document.getElementById('inspector-bus-status');
-      if (statusElem) {
-        statusElem.innerText = `${bus.status} · 1080p STREAM ACTIVE`;
-        statusElem.className = `px-2.5 py-0.5 rounded-full font-mono text-[10px] font-bold ${
-          bus.status === 'ONLINE' ? 'bg-[#E8F8EE] text-[#1E8A44]' :
-          bus.status === 'INCIDENT' ? 'bg-[#FDECEC] text-[#D33838]' : 'bg-amber-100 text-amber-800'
-        }`;
-      }
-
-      const routeElem = document.getElementById('inspector-bus-route');
-      if (routeElem) routeElem.innerText = `${bus.route} · JCTSL Municipal Fleet`;
-
-      const driverElem = document.getElementById('inspector-driver-name');
-      if (driverElem) driverElem.innerText = bus.driver;
-
-      const speedElem = document.getElementById('inspector-bus-speed');
-      if (speedElem) speedElem.innerText = `${bus.speed} km/h`;
-
-      const scoreElem = document.getElementById('inspector-safety-score');
-      if (scoreElem) {
-        scoreElem.innerText = `${bus.score} / 100`;
-        scoreElem.className = `text-sm block font-bold ${bus.score > 90 ? 'text-[#1E8A44]' : 'text-amber-700'}`;
-      }
-
-      const tempElem = document.getElementById('inspector-npu-temp');
-      if (tempElem) tempElem.innerText = `${bus.temp}°C ${bus.temp > 55 ? '⚠️ High' : 'Normal'}`;
-
-      const fpsElem = document.getElementById('inspector-npu-fps');
-      if (fpsElem) fpsElem.innerText = `${bus.fps} FPS`;
-
-      const latElem = document.getElementById('inspector-npu-lat');
-      if (latElem) latElem.innerText = `${bus.lat_ms} ms`;
-
-      const sigElem = document.getElementById('inspector-npu-sig');
-      if (sigElem) sigElem.innerText = `${bus.signal || '98% LTE'}`;
-
-      const descElem = document.getElementById('inspector-spatial-desc');
-      if (descElem) descElem.innerText = bus.scene;
-
-      openModal('bus-inspector-modal');
-    }
-
-    function closeBusInspector() {
-      closeModal('bus-inspector-modal');
-    }
-
-    function switchLiveCameraFromInspector() {
-      closeBusInspector();
-      setViewTab('edge-vision');
-      renderActiveCameraView();
-      showToast('Camera Switched', `Viewing 1080p stream for ${selectedBusId}`, 'info');
-    }
-
-    function focusMapFromInspector() {
-      closeBusInspector();
-      setViewTab('command-center');
-      const bus = jaipurFleet.find(b => b.id === selectedBusId);
-      if (bus && map) {
-        map.flyTo([bus.lat, bus.lng], 15, { duration: 0.8 });
-      }
-      showToast('Map Focused', `Centered map on ${selectedBusId}`, 'info');
-    }
-
-    function filterDocketsFromInspector() {
-      closeBusInspector();
-      setViewTab('command-center');
-      filterDocketsByBus(selectedBusId);
-    }
-
-  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -112,257 +31,14 @@
         }
       }
     }
-  
-    // BUS INSPECTOR MODAL & OPERATOR FUNCTIONS
-    function openBusInspector(busId) {
-      const bus = jaipurFleet.find(b => b.id === busId) || jaipurFleet[0];
-      selectedBusId = bus.id;
-
-      const icon = document.getElementById('inspector-bus-icon');
-      if (icon) icon.innerText = bus.id.split('-')[1];
-
-      const idElem = document.getElementById('inspector-bus-id');
-      if (idElem) idElem.innerText = `${bus.id} TELEMETRY & OPERATIONS`;
-
-      const statusElem = document.getElementById('inspector-bus-status');
-      if (statusElem) {
-        statusElem.innerText = `${bus.status} · 1080p STREAM ACTIVE`;
-        statusElem.className = `px-2.5 py-0.5 rounded-full font-mono text-[10px] font-bold ${
-          bus.status === 'ONLINE' ? 'bg-[#E8F8EE] text-[#1E8A44]' :
-          bus.status === 'INCIDENT' ? 'bg-[#FDECEC] text-[#D33838]' : 'bg-amber-100 text-amber-800'
-        }`;
-      }
-
-      const routeElem = document.getElementById('inspector-bus-route');
-      if (routeElem) routeElem.innerText = `${bus.route} · JCTSL Municipal Fleet`;
-
-      const driverElem = document.getElementById('inspector-driver-name');
-      if (driverElem) driverElem.innerText = bus.driver;
-
-      const speedElem = document.getElementById('inspector-bus-speed');
-      if (speedElem) speedElem.innerText = `${bus.speed} km/h`;
-
-      const scoreElem = document.getElementById('inspector-safety-score');
-      if (scoreElem) {
-        scoreElem.innerText = `${bus.score} / 100`;
-        scoreElem.className = `text-sm block font-bold ${bus.score > 90 ? 'text-[#1E8A44]' : 'text-amber-700'}`;
-      }
-
-      const tempElem = document.getElementById('inspector-npu-temp');
-      if (tempElem) tempElem.innerText = `${bus.temp}°C ${bus.temp > 55 ? '⚠️ High' : 'Normal'}`;
-
-      const fpsElem = document.getElementById('inspector-npu-fps');
-      if (fpsElem) fpsElem.innerText = `${bus.fps} FPS`;
-
-      const latElem = document.getElementById('inspector-npu-lat');
-      if (latElem) latElem.innerText = `${bus.lat_ms} ms`;
-
-      const sigElem = document.getElementById('inspector-npu-sig');
-      if (sigElem) sigElem.innerText = `${bus.signal || '98% LTE'}`;
-
-      const descElem = document.getElementById('inspector-spatial-desc');
-      if (descElem) descElem.innerText = bus.scene;
-
-      openModal('bus-inspector-modal');
-    }
-
-    function closeBusInspector() {
-      closeModal('bus-inspector-modal');
-    }
-
-    function switchLiveCameraFromInspector() {
-      closeBusInspector();
-      setViewTab('edge-vision');
-      renderActiveCameraView();
-      showToast('Camera Switched', `Viewing 1080p stream for ${selectedBusId}`, 'info');
-    }
-
-    function focusMapFromInspector() {
-      closeBusInspector();
-      setViewTab('command-center');
-      const bus = jaipurFleet.find(b => b.id === selectedBusId);
-      if (bus && map) {
-        map.flyTo([bus.lat, bus.lng], 15, { duration: 0.8 });
-      }
-      showToast('Map Focused', `Centered map on ${selectedBusId}`, 'info');
-    }
-
-    function filterDocketsFromInspector() {
-      closeBusInspector();
-      setViewTab('command-center');
-      filterDocketsByBus(selectedBusId);
-    }
-
   </script>
 
   <!-- Leaflet GIS Mapping CDN -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="">
-    // BUS INSPECTOR MODAL & OPERATOR FUNCTIONS
-    function openBusInspector(busId) {
-      const bus = jaipurFleet.find(b => b.id === busId) || jaipurFleet[0];
-      selectedBusId = bus.id;
-
-      const icon = document.getElementById('inspector-bus-icon');
-      if (icon) icon.innerText = bus.id.split('-')[1];
-
-      const idElem = document.getElementById('inspector-bus-id');
-      if (idElem) idElem.innerText = `${bus.id} TELEMETRY & OPERATIONS`;
-
-      const statusElem = document.getElementById('inspector-bus-status');
-      if (statusElem) {
-        statusElem.innerText = `${bus.status} · 1080p STREAM ACTIVE`;
-        statusElem.className = `px-2.5 py-0.5 rounded-full font-mono text-[10px] font-bold ${
-          bus.status === 'ONLINE' ? 'bg-[#E8F8EE] text-[#1E8A44]' :
-          bus.status === 'INCIDENT' ? 'bg-[#FDECEC] text-[#D33838]' : 'bg-amber-100 text-amber-800'
-        }`;
-      }
-
-      const routeElem = document.getElementById('inspector-bus-route');
-      if (routeElem) routeElem.innerText = `${bus.route} · JCTSL Municipal Fleet`;
-
-      const driverElem = document.getElementById('inspector-driver-name');
-      if (driverElem) driverElem.innerText = bus.driver;
-
-      const speedElem = document.getElementById('inspector-bus-speed');
-      if (speedElem) speedElem.innerText = `${bus.speed} km/h`;
-
-      const scoreElem = document.getElementById('inspector-safety-score');
-      if (scoreElem) {
-        scoreElem.innerText = `${bus.score} / 100`;
-        scoreElem.className = `text-sm block font-bold ${bus.score > 90 ? 'text-[#1E8A44]' : 'text-amber-700'}`;
-      }
-
-      const tempElem = document.getElementById('inspector-npu-temp');
-      if (tempElem) tempElem.innerText = `${bus.temp}°C ${bus.temp > 55 ? '⚠️ High' : 'Normal'}`;
-
-      const fpsElem = document.getElementById('inspector-npu-fps');
-      if (fpsElem) fpsElem.innerText = `${bus.fps} FPS`;
-
-      const latElem = document.getElementById('inspector-npu-lat');
-      if (latElem) latElem.innerText = `${bus.lat_ms} ms`;
-
-      const sigElem = document.getElementById('inspector-npu-sig');
-      if (sigElem) sigElem.innerText = `${bus.signal || '98% LTE'}`;
-
-      const descElem = document.getElementById('inspector-spatial-desc');
-      if (descElem) descElem.innerText = bus.scene;
-
-      openModal('bus-inspector-modal');
-    }
-
-    function closeBusInspector() {
-      closeModal('bus-inspector-modal');
-    }
-
-    function switchLiveCameraFromInspector() {
-      closeBusInspector();
-      setViewTab('edge-vision');
-      renderActiveCameraView();
-      showToast('Camera Switched', `Viewing 1080p stream for ${selectedBusId}`, 'info');
-    }
-
-    function focusMapFromInspector() {
-      closeBusInspector();
-      setViewTab('command-center');
-      const bus = jaipurFleet.find(b => b.id === selectedBusId);
-      if (bus && map) {
-        map.flyTo([bus.lat, bus.lng], 15, { duration: 0.8 });
-      }
-      showToast('Map Focused', `Centered map on ${selectedBusId}`, 'info');
-    }
-
-    function filterDocketsFromInspector() {
-      closeBusInspector();
-      setViewTab('command-center');
-      filterDocketsByBus(selectedBusId);
-    }
-
-  </script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
   <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js">
-    // BUS INSPECTOR MODAL & OPERATOR FUNCTIONS
-    function openBusInspector(busId) {
-      const bus = jaipurFleet.find(b => b.id === busId) || jaipurFleet[0];
-      selectedBusId = bus.id;
-
-      const icon = document.getElementById('inspector-bus-icon');
-      if (icon) icon.innerText = bus.id.split('-')[1];
-
-      const idElem = document.getElementById('inspector-bus-id');
-      if (idElem) idElem.innerText = `${bus.id} TELEMETRY & OPERATIONS`;
-
-      const statusElem = document.getElementById('inspector-bus-status');
-      if (statusElem) {
-        statusElem.innerText = `${bus.status} · 1080p STREAM ACTIVE`;
-        statusElem.className = `px-2.5 py-0.5 rounded-full font-mono text-[10px] font-bold ${
-          bus.status === 'ONLINE' ? 'bg-[#E8F8EE] text-[#1E8A44]' :
-          bus.status === 'INCIDENT' ? 'bg-[#FDECEC] text-[#D33838]' : 'bg-amber-100 text-amber-800'
-        }`;
-      }
-
-      const routeElem = document.getElementById('inspector-bus-route');
-      if (routeElem) routeElem.innerText = `${bus.route} · JCTSL Municipal Fleet`;
-
-      const driverElem = document.getElementById('inspector-driver-name');
-      if (driverElem) driverElem.innerText = bus.driver;
-
-      const speedElem = document.getElementById('inspector-bus-speed');
-      if (speedElem) speedElem.innerText = `${bus.speed} km/h`;
-
-      const scoreElem = document.getElementById('inspector-safety-score');
-      if (scoreElem) {
-        scoreElem.innerText = `${bus.score} / 100`;
-        scoreElem.className = `text-sm block font-bold ${bus.score > 90 ? 'text-[#1E8A44]' : 'text-amber-700'}`;
-      }
-
-      const tempElem = document.getElementById('inspector-npu-temp');
-      if (tempElem) tempElem.innerText = `${bus.temp}°C ${bus.temp > 55 ? '⚠️ High' : 'Normal'}`;
-
-      const fpsElem = document.getElementById('inspector-npu-fps');
-      if (fpsElem) fpsElem.innerText = `${bus.fps} FPS`;
-
-      const latElem = document.getElementById('inspector-npu-lat');
-      if (latElem) latElem.innerText = `${bus.lat_ms} ms`;
-
-      const sigElem = document.getElementById('inspector-npu-sig');
-      if (sigElem) sigElem.innerText = `${bus.signal || '98% LTE'}`;
-
-      const descElem = document.getElementById('inspector-spatial-desc');
-      if (descElem) descElem.innerText = bus.scene;
-
-      openModal('bus-inspector-modal');
-    }
-
-    function closeBusInspector() {
-      closeModal('bus-inspector-modal');
-    }
-
-    function switchLiveCameraFromInspector() {
-      closeBusInspector();
-      setViewTab('edge-vision');
-      renderActiveCameraView();
-      showToast('Camera Switched', `Viewing 1080p stream for ${selectedBusId}`, 'info');
-    }
-
-    function focusMapFromInspector() {
-      closeBusInspector();
-      setViewTab('command-center');
-      const bus = jaipurFleet.find(b => b.id === selectedBusId);
-      if (bus && map) {
-        map.flyTo([bus.lat, bus.lng], 15, { duration: 0.8 });
-      }
-      showToast('Map Focused', `Centered map on ${selectedBusId}`, 'info');
-    }
-
-    function filterDocketsFromInspector() {
-      closeBusInspector();
-      setViewTab('command-center');
-      filterDocketsByBus(selectedBusId);
-    }
-
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     body {
@@ -761,13 +437,13 @@
       <!-- Selected Bus Live Telemetry & Inspector Bar -->
       <div id="active-bus-telemetry-banner" class="glass-card p-5 flex flex-wrap items-center justify-between gap-4 border border-blue-500/25 bg-gradient-to-r from-blue-50/60 via-white to-white">
         <div class="flex items-center gap-3.5">
-          <div class="px-3.5 py-2 rounded-2xl bg-[#1E2320] text-white flex items-center gap-2 font-mono font-bold shadow-md">
+          <div class="px-3.5 py-2 rounded-2xl bg-[#1E2320] text-white flex items-center gap-2 font-mono font-bold shadow-md cursor-pointer hover:scale-105 transition-all" onclick="openBusInspector(selectedBusId)">
             <span class="text-xs tracking-wider" id="hud-selected-bus-id">BUS-003</span>
             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <h3 class="font-bold text-[#1E2320] text-base" id="hud-selected-bus-route">Route 3: Tonk Road</h3>
+              <h3 class="font-bold text-[#1E2320] text-base cursor-pointer hover:underline" id="hud-selected-bus-route" onclick="openBusInspector(selectedBusId)">Route 3: Tonk Road</h3>
               <span class="px-2.5 py-0.5 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-mono text-[10px] font-bold">100% Telemetry Active</span>
             </div>
             <p class="text-xs text-[#717D75] mt-0.5 font-mono" id="hud-selected-bus-meta">
@@ -777,6 +453,10 @@
         </div>
 
         <div class="flex items-center gap-2.5">
+          <button onclick="openBusInspector(selectedBusId)" class="btn-pill-solid bg-[#1E2320] hover:bg-[#353D38]">
+            <span class="material-symbols-outlined text-sm">info</span>
+            <span>Bus Inspector</span>
+          </button>
           <button onclick="setViewTab('edge-vision')" class="btn-pill-solid bg-[#4A62D6] hover:bg-[#3B50B8]">
             <span class="material-symbols-outlined text-sm">videocam</span>
             <span>View 1080p Stream</span>
@@ -799,7 +479,7 @@
               <span class="material-symbols-outlined text-base text-[#4A62D6]">map</span>
               <span>Jaipur Dynamic Fleet &amp; Defect Cartography</span>
             </h3>
-            <p class="text-xs text-[#717D75]">Live GPS polyline movement, route playback animation, and multi-bus spatial telemetry</p>
+            <p class="text-xs text-[#717D75]">Live GPS coordinates, route playback animation, and multi-bus spatial telemetry</p>
           </div>
 
           <!-- 24H Time Playback Controller Strip -->
@@ -920,17 +600,17 @@
           <canvas id="video-canvas-stream" width="960" height="420" class="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none"></canvas>
 
           <!-- Perspective HTML Overlay Layer -->
-          <div id="camera-perspective-layer" class="absolute inset-0 pointer-events-none">
+          <div id="camera-perspective-layer" class="absolute inset-0 pointer-events-none z-15">
             <!-- Dynamically populated per camera angle -->
           </div>
 
           <!-- Dynamic Bounding Boxes Container -->
-          <div id="camera-bounding-boxes-container" class="absolute inset-0 pointer-events-none">
+          <div id="camera-bounding-boxes-container" class="absolute inset-0 pointer-events-none z-15">
             <!-- Dynamically populated per bus and per angle -->
           </div>
 
           <!-- Top HUD Overlay -->
-          <div class="absolute top-4 left-5 right-5 flex justify-between items-center text-[10px] font-mono text-slate-300 bg-black/80 px-4 py-2.5 rounded-full border border-slate-700/60 backdrop-blur-md shadow-lg pointer-events-auto">
+          <div class="absolute top-4 left-5 right-5 flex justify-between items-center text-[10px] font-mono text-slate-300 bg-black/80 px-4 py-2.5 rounded-full border border-slate-700/60 backdrop-blur-md shadow-lg pointer-events-auto z-20">
             <span class="text-white font-bold flex items-center gap-1.5" id="hud-cam-bus-tag">
               <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
               <span>LIVE • BUS-003 • 1080p @ 60Hz</span>
@@ -940,7 +620,7 @@
           </div>
 
           <!-- Video Controls Toolbar Overlay (Play/Pause, Audio Mute, Fullscreen) -->
-          <div class="absolute bottom-4 left-5 right-5 flex justify-between items-center text-xs font-mono text-white bg-black/75 px-4 py-2 rounded-full border border-slate-700/60 backdrop-blur-md shadow-lg pointer-events-auto">
+          <div class="absolute bottom-4 left-5 right-5 flex justify-between items-center text-xs font-mono text-white bg-black/75 px-4 py-2 rounded-full border border-slate-700/60 backdrop-blur-md shadow-lg pointer-events-auto z-20">
             <div class="flex items-center gap-3">
               <button onclick="toggleVideoPlay()" id="btn-video-play" class="hover:text-emerald-400 transition-colors flex items-center gap-1 font-bold">
                 <span class="material-symbols-outlined text-base" id="video-play-icon">pause</span>
@@ -961,7 +641,7 @@
           </div>
 
           <!-- Target Lock Banner (For Hit and Run simulation) -->
-          <div id="target-lock-hud" class="absolute inset-0 bg-rose-900/40 border-4 border-rose-500 hidden flex-col items-center justify-center p-4 backdrop-blur-[2px] z-20 pointer-events-auto">
+          <div id="target-lock-hud" class="absolute inset-0 bg-rose-900/40 border-4 border-rose-500 hidden flex-col items-center justify-center p-4 backdrop-blur-[2px] z-30 pointer-events-auto">
             <div class="bg-white border-2 border-rose-600 p-6 rounded-3xl text-center space-y-2.5 max-w-sm shadow-2xl animate-bounce">
               <span class="material-symbols-outlined text-4xl text-rose-600 animate-spin">targeted</span>
               <strong class="text-rose-700 font-mono text-sm block tracking-widest uppercase">TARGET LOCK: RJ-14-CE-8821</strong>
@@ -1250,28 +930,28 @@
           <tbody class="divide-y divide-black/[0.03]">
             <tr>
               <td class="py-2.5 px-3 font-bold text-[#1E2320]">Rajesh Sharma</td>
-              <td class="py-2.5 px-3">BUS-001</td>
+              <td class="py-2.5 px-3 font-bold text-[#4A62D6] cursor-pointer hover:underline" onclick="selectBusDirectly('BUS-001'); closeDriverModal();">BUS-001</td>
               <td class="py-2.5 px-3 text-[#1E8A44] font-bold">96 / 100</td>
               <td class="py-2.5 px-3">0</td>
               <td class="py-2.5 px-3"><span class="text-[#1E8A44] font-semibold">Exemplary</span></td>
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-bold text-[#1E2320]">Vikram Singh</td>
-              <td class="py-2.5 px-3">BUS-002</td>
+              <td class="py-2.5 px-3 font-bold text-[#4A62D6] cursor-pointer hover:underline" onclick="selectBusDirectly('BUS-002'); closeDriverModal();">BUS-002</td>
               <td class="py-2.5 px-3 text-[#1E8A44] font-bold">92 / 100</td>
               <td class="py-2.5 px-3">0</td>
               <td class="py-2.5 px-3"><span class="text-[#1E8A44] font-semibold">Normal</span></td>
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-bold text-[#1E2320]">Manoj Meena</td>
-              <td class="py-2.5 px-3">BUS-003</td>
+              <td class="py-2.5 px-3 font-bold text-[#4A62D6] cursor-pointer hover:underline" onclick="selectBusDirectly('BUS-003'); closeDriverModal();">BUS-003</td>
               <td class="py-2.5 px-3 text-amber-700 font-bold">78 / 100</td>
               <td class="py-2.5 px-3">2</td>
               <td class="py-2.5 px-3"><span class="text-amber-700 font-semibold">Caution</span></td>
             </tr>
             <tr>
               <td class="py-2.5 px-3 font-bold text-[#1E2320]">Praveen Gurjar</td>
-              <td class="py-2.5 px-3">BUS-009</td>
+              <td class="py-2.5 px-3 font-bold text-[#4A62D6] cursor-pointer hover:underline" onclick="selectBusDirectly('BUS-009'); closeDriverModal();">BUS-009</td>
               <td class="py-2.5 px-3 text-rose-700 font-bold">58 / 100</td>
               <td class="py-2.5 px-3">5</td>
               <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 font-bold text-[10px]">Mandatory Training</span></td>
@@ -1346,7 +1026,7 @@
       <div class="space-y-3 font-mono">
         <div class="p-4 bg-[#F4F7F0] rounded-2xl space-y-2">
           <div class="flex justify-between"><span class="text-[#717D75]">Location:</span><strong class="text-[#1E2320]" id="modal-inc-loc">Tonk Road KM 4.2</strong></div>
-          <div class="flex justify-between"><span class="text-[#717D75]">Detected By:</span><strong class="text-[#4A62D6]" id="modal-inc-bus">BUS-003</strong></div>
+          <div class="flex justify-between"><span class="text-[#717D75]">Detected By:</span><strong class="text-[#4A62D6] cursor-pointer hover:underline" id="modal-inc-bus" onclick="selectBusDirectly(this.innerText)">BUS-003</strong></div>
           <div class="flex justify-between"><span class="text-[#717D75]">AI Confidence:</span><strong class="text-[#1E8A44]" id="modal-inc-conf">94.8%</strong></div>
           <div class="flex justify-between"><span class="text-[#717D75]">Est. Repair Cost:</span><strong class="text-[#1E2320]" id="modal-inc-cost">₹45,000</strong></div>
           <div class="flex justify-between"><span class="text-[#717D75]">Asphalt Required:</span><strong class="text-[#1E2320]" id="modal-inc-asphalt">12 MT</strong></div>
@@ -1361,12 +1041,99 @@
   </div>
 
   <!-- ========================================================================= -->
+  <!-- MODAL 5: BUS OPERATOR & TELEMETRY INSPECTOR MODAL -->
+  <!-- ========================================================================= -->
+  <div id="bus-inspector-modal" class="modal-backdrop fixed inset-0 z-50 bg-[#1E2320]/40 backdrop-blur-md hidden opacity-0 items-center justify-center p-4">
+    <div class="modal-content bg-white/95 backdrop-blur-2xl max-w-2xl w-full rounded-[32px] p-7 text-xs space-y-5 shadow-2xl scale-95 opacity-0 font-sans">
+      
+      <!-- Top Header -->
+      <div class="flex justify-between items-center border-b border-black/[0.05] pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-[#1E2320] text-white flex items-center justify-center text-sm font-bold font-mono shadow-md" id="inspector-bus-icon">
+            03
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="font-extrabold text-[#1E2320] text-lg tracking-tight" id="inspector-bus-id">BUS-003 TELEMETRY &amp; OPERATIONS</h3>
+              <span class="px-2.5 py-0.5 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-mono text-[10px] font-bold" id="inspector-bus-status">ONLINE · 1080p ACTIVE</span>
+            </div>
+            <p class="text-xs text-[#717D75] font-mono mt-0.5" id="inspector-bus-route">Route 3: Tonk Road Corridor · JCTSL Fleet</p>
+          </div>
+        </div>
+        <button onclick="closeBusInspector()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold cursor-pointer transition-all">✕</button>
+      </div>
+
+      <!-- Driver & Vehicle Profile Row -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 font-mono text-xs">
+        <div class="p-4 bg-[#F4F7F0] rounded-2xl space-y-1">
+          <span class="text-[10px] text-[#717D75] uppercase block font-bold">Assigned Driver</span>
+          <strong class="text-[#1E2320] text-sm block font-bold" id="inspector-driver-name">Manoj Meena</strong>
+          <span class="text-[11px] text-[#717D75] block">ID: JCTSL-8924 · Shift 1</span>
+        </div>
+
+        <div class="p-4 bg-[#F4F7F0] rounded-2xl space-y-1">
+          <span class="text-[10px] text-[#717D75] uppercase block font-bold">Live Velocity</span>
+          <strong class="text-[#4A62D6] text-sm block font-bold" id="inspector-bus-speed">22 km/h</strong>
+          <span class="text-[11px] text-[#717D75] block">Speed Limit: 40 km/h</span>
+        </div>
+
+        <div class="p-4 bg-[#F4F7F0] rounded-2xl space-y-1">
+          <span class="text-[10px] text-[#717D75] uppercase block font-bold">Driver Safety Index</span>
+          <strong class="text-[#1E8A44] text-sm block font-bold" id="inspector-safety-score">78 / 100</strong>
+          <span class="text-[11px] text-[#717D75] block" id="inspector-braking-log">2 Harsh Braking Events</span>
+        </div>
+      </div>
+
+      <!-- Edge Hardware & Spatial Telemetry Box -->
+      <div class="p-5 bg-slate-900 text-white rounded-3xl space-y-3 font-mono border border-slate-800 shadow-inner">
+        <div class="flex justify-between items-center text-xs border-b border-slate-800 pb-2">
+          <span class="text-slate-400 font-bold flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>JETSON ORIN NPU TELEMETRY &amp; CAMERAS</span>
+          </span>
+          <span class="text-emerald-400 font-bold" id="inspector-cam-count">4/4 Cameras 1080p OK</span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-[11px]">
+          <div><span class="text-slate-400 block text-[9px] uppercase">NPU Temperature</span><strong class="text-white text-xs font-bold" id="inspector-npu-temp">52°C Normal</strong></div>
+          <div><span class="text-slate-400 block text-[9px] uppercase">Local FPS Rate</span><strong class="text-emerald-400 text-xs font-bold" id="inspector-npu-fps">18.2 FPS</strong></div>
+          <div><span class="text-slate-400 block text-[9px] uppercase">Edge Latency</span><strong class="text-white text-xs font-bold" id="inspector-npu-lat">44 ms</strong></div>
+          <div><span class="text-slate-400 block text-[9px] uppercase">4G Signal</span><strong class="text-emerald-400 text-xs font-bold" id="inspector-npu-sig">97% LTE</strong></div>
+        </div>
+
+        <div class="pt-1">
+          <span class="text-slate-400 block text-[9px] uppercase mb-1">Active Spatial Detections</span>
+          <p class="text-slate-200 text-xs font-sans" id="inspector-spatial-desc">Tonk Road Corridor · Severe 16cm Pothole Crater Detected</p>
+        </div>
+      </div>
+
+      <!-- Operational Control Action Buttons -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2">
+        <button onclick="switchLiveCameraFromInspector()" class="btn-pill-solid bg-[#4A62D6] hover:bg-[#3B50B8] py-3 text-xs justify-center">
+          <span class="material-symbols-outlined text-base">videocam</span>
+          <span>View 1080p Stream</span>
+        </button>
+
+        <button onclick="focusMapFromInspector()" class="btn-pill-ghost py-3 text-xs justify-center">
+          <span class="material-symbols-outlined text-base text-[#4A62D6]">my_location</span>
+          <span>Focus Map Here</span>
+        </button>
+
+        <button onclick="filterDocketsFromInspector()" class="btn-pill-ghost py-3 text-xs justify-center">
+          <span class="material-symbols-outlined text-base text-amber-600">filter_alt</span>
+          <span>Filter Dockets</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
   <!-- JAVASCRIPT LOGIC -->
   <!-- ========================================================================= -->
   <script>
     let map = null;
     let markersLayer = null;
-    let polylinesLayer = null;
     let busMarkers = {};
     let selectedItem = null;
     let audioAlertsEnabled = true;
@@ -1387,38 +1154,18 @@
     let videoAnimFrame = null;
     let roadOffset = 0;
 
-    // 10 Official Jaipur Municipal Bus Routes with GPS Waypoints for Polylines & Animated Scrubber
+    // 10 Official Jaipur Municipal Bus Routes GPS Waypoints
     const busRoutesGPS = {
-      'BUS-001': [
-        [26.8920, 75.8150], [26.8850, 75.8140], [26.8750, 75.8120], [26.8650, 75.8080], [26.8520, 75.8020]
-      ],
-      'BUS-002': [
-        [26.8850, 75.7450], [26.8880, 75.7550], [26.8900, 75.7650], [26.8920, 75.7750], [26.8950, 75.7850]
-      ],
-      'BUS-003': [
-        [26.8520, 75.7920], [26.8600, 75.7940], [26.8700, 75.7960], [26.8800, 75.7980], [26.8900, 75.8000]
-      ],
-      'BUS-004': [
-        [26.9600, 75.7750], [26.9500, 75.7740], [26.9400, 75.7730], [26.9300, 75.7720], [26.9200, 75.7710]
-      ],
-      'BUS-005': [
-        [26.8280, 75.8050], [26.8350, 75.8070], [26.8420, 75.8090], [26.8500, 75.8110], [26.8580, 75.8130]
-      ],
-      'BUS-006': [
-        [26.9050, 75.8650], [26.9030, 75.8550], [26.9010, 75.8450], [26.8990, 75.8350], [26.8970, 75.8250]
-      ],
-      'BUS-007': [
-        [26.8550, 75.7600], [26.8580, 75.7680], [26.8610, 75.7760], [26.8640, 75.7840], [26.8670, 75.7920]
-      ],
-      'BUS-008': [
-        [26.8350, 75.8400], [26.8420, 75.8380], [26.8490, 75.8360], [26.8560, 75.8340], [26.8630, 75.8320]
-      ],
-      'BUS-009': [
-        [26.9750, 75.7600], [26.9680, 75.7620], [26.9610, 75.7640], [26.9540, 75.7660], [26.9470, 75.7680]
-      ],
-      'BUS-010': [
-        [26.9260, 75.8240], [26.9240, 75.8200], [26.9220, 75.8160], [26.9200, 75.8120], [26.9180, 75.8080]
-      ]
+      'BUS-001': [[26.8920, 75.8150], [26.8850, 75.8140], [26.8750, 75.8120], [26.8650, 75.8080], [26.8520, 75.8020]],
+      'BUS-002': [[26.8850, 75.7450], [26.8880, 75.7550], [26.8900, 75.7650], [26.8920, 75.7750], [26.8950, 75.7850]],
+      'BUS-003': [[26.8520, 75.7920], [26.8600, 75.7940], [26.8700, 75.7960], [26.8800, 75.7980], [26.8900, 75.8000]],
+      'BUS-004': [[26.9600, 75.7750], [26.9500, 75.7740], [26.9400, 75.7730], [26.9300, 75.7720], [26.9200, 75.7710]],
+      'BUS-005': [[26.8280, 75.8050], [26.8350, 75.8070], [26.8420, 75.8090], [26.8500, 75.8110], [26.8580, 75.8130]],
+      'BUS-006': [[26.9050, 75.8650], [26.9030, 75.8550], [26.9010, 75.8450], [26.8990, 75.8350], [26.8970, 75.8250]],
+      'BUS-007': [[26.8550, 75.7600], [26.8580, 75.7680], [26.8610, 75.7760], [26.8640, 75.7840], [26.8670, 75.7920]],
+      'BUS-008': [[26.8350, 75.8400], [26.8420, 75.8380], [26.8490, 75.8360], [26.8560, 75.8340], [26.8630, 75.8320]],
+      'BUS-009': [[26.9750, 75.7600], [26.9680, 75.7620], [26.9610, 75.7640], [26.9540, 75.7660], [26.9470, 75.7680]],
+      'BUS-010': [[26.9260, 75.8240], [26.9240, 75.8200], [26.9220, 75.8160], [26.9200, 75.8120], [26.9180, 75.8080]]
     };
 
     // 10 Jaipur Fleet Dataset
@@ -1445,7 +1192,7 @@
             sub: 'Continuous Asphalt Profilometry · JLN Marg Northbound',
             status: 'DOWNWARD ASPHALT SENSOR · 4K MACRO CAMERA',
             boxes: [
-              { label: 'Surface: Asphalt Raveling (89.6%)', dist: 'Depth: 4.2cm · 1.1 m²', color: 'amber', left: '38%', top: '45%', width: '220px', height: '130px' },
+              { label: 'Surface: Asphalt Raveling (89.6%)', dist: 'Depth: 4.2cm · 1.1 m²', color: 'amber', left: '38%', top: '45%', width: '130px', height: '130px' },
               { label: 'Z-Axis Vibration: 0.8g', dist: 'Surface Smoothness Normal', color: 'emerald', left: '70%', top: '25%', width: '160px', height: '70px' }
             ]
           },
@@ -1986,7 +1733,6 @@
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         if (currentCameraAngle === 'front') {
-          // Dark road gradient
           const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
           grad.addColorStop(0, '#101412');
           grad.addColorStop(0.5, '#1A201C');
@@ -1994,7 +1740,6 @@
           ctx.fillStyle = grad;
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-          // Vanishing road perspective lines
           ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
           ctx.lineWidth = 2;
           ctx.beginPath();
@@ -2004,7 +1749,6 @@
           ctx.lineTo(canvas.width, canvas.height);
           ctx.stroke();
 
-          // Animated lane markings
           ctx.strokeStyle = 'rgba(74, 98, 214, 0.4)';
           ctx.setLineDash([15, 15]);
           ctx.lineDashOffset = -roadOffset;
@@ -2014,7 +1758,6 @@
           ctx.stroke();
           ctx.setLineDash([]);
 
-          // Simulated passing vehicle silhouette
           const carY = 160 + (roadOffset * 2) % 180;
           ctx.fillStyle = 'rgba(30, 35, 32, 0.8)';
           ctx.strokeStyle = '#4A62D6';
@@ -2025,11 +1768,9 @@
           ctx.stroke();
 
         } else if (currentCameraAngle === 'asphalt') {
-          // Macro asphalt surface
           ctx.fillStyle = '#1C211E';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-          // Texture noise grid
           ctx.strokeStyle = 'rgba(203, 213, 200, 0.08)';
           ctx.lineWidth = 1;
           for (let x = 0; x < canvas.width; x += 30) {
@@ -2045,7 +1786,6 @@
             ctx.stroke();
           }
 
-          // Simulated crater defect graphic
           ctx.fillStyle = 'rgba(211, 56, 56, 0.25)';
           ctx.strokeStyle = '#D33838';
           ctx.lineWidth = 2;
@@ -2055,7 +1795,6 @@
           ctx.stroke();
 
         } else if (currentCameraAngle === 'blindspot') {
-          // Kerb perspective
           ctx.fillStyle = '#171B19';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -2067,11 +1806,9 @@
           ctx.stroke();
 
         } else if (currentCameraAngle === 'cabin') {
-          // Driver IR Camera
           ctx.fillStyle = '#0D100F';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-          // Facial target reticle
           ctx.strokeStyle = 'rgba(30, 138, 68, 0.6)';
           ctx.lineWidth = 1.5;
           ctx.beginPath();
@@ -2079,7 +1816,6 @@
           ctx.stroke();
         }
 
-        // Live Frame Timestamp and FPS HUD on Canvas
         ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
         ctx.font = '10px "JetBrains Mono", monospace';
         ctx.fillText(`REC 🟢 1080p60 · FPS: ${(59.5 + Math.random()).toFixed(1)} · BITRATE: 4.2Mbps`, 15, canvas.height - 15);
@@ -2192,9 +1928,13 @@
       if (currentFilter === 'FLEET') {
         populateFleetCardsGrid(currentSearchQuery);
       }
+
       playBeep(720);
       showToast('Bus Selected', `Loaded ${bus.id} (${bus.route}) · Driver: ${bus.driver}`, 'info');
-      if (openInspector) openBusInspector(busId);
+
+      if (openInspector) {
+        openBusInspector(busId);
+      }
     }
 
     // RENDER CAMERA VIEWPORT DYNAMICALLY BASED ON BUS & ANGLE
@@ -2202,7 +1942,6 @@
       const bus = jaipurFleet.find(b => b.id === selectedBusId) || jaipurFleet[2];
       const angleData = (bus.angles && bus.angles[currentCameraAngle]) ? bus.angles[currentCameraAngle] : bus.angles.front;
 
-      // Update Titles & Subtitles
       const camTitle = document.getElementById('edge-cam-title');
       if (camTitle) camTitle.innerText = `${bus.id} · ${angleData.title}`;
       const camSub = document.getElementById('edge-cam-subtitle');
@@ -2214,7 +1953,6 @@
       const fpsBadge = document.getElementById('hud-cam-fps-badge');
       if (fpsBadge) fpsBadge.innerText = `${bus.fps} FPS Local NPU`;
 
-      // Render Dynamic Bounding Boxes
       const boxContainer = document.getElementById('camera-bounding-boxes-container');
       if (boxContainer) {
         boxContainer.innerHTML = '';
@@ -2355,20 +2093,18 @@
                         inc.sevColor === 'rose' ? 'bg-[#FDECEC] text-[#D33838]' : 'bg-[#EEF1FD] text-[#4A62D6]';
 
         card.innerHTML = `
-          <!-- Top Row: Icon + Name + Severity Badge -->
           <div class="flex justify-between items-center">
             <div class="flex items-center gap-2.5">
               <div class="w-8 h-8 rounded-full bg-[#1E2320] text-white flex items-center justify-center text-xs shadow-sm">
                 <span class="material-symbols-outlined text-sm">${inc.logo}</span>
               </div>
-              <strong class="text-[#1E2320] font-bold text-sm">${inc.bus} · ${inc.loc.split(' ')[0]}</strong>
+              <strong class="text-[#1E2320] font-bold text-sm hover:underline cursor-pointer" onclick="selectBusDirectly('${inc.bus}')">${inc.bus} · ${inc.loc.split(' ')[0]}</strong>
             </div>
             <span class="px-3 py-1 rounded-full font-mono text-[11px] font-bold ${badgeBg}">
               ⚑ ${inc.severity}
             </span>
           </div>
 
-          <!-- Two Sub-Boxes (Type & Extracted Date) -->
           <div class="grid grid-cols-2 gap-2.5 text-xs">
             <div class="bg-[#F4F7F0] rounded-2xl p-3">
               <span class="text-[#717D75] text-[10px] block mb-1 flex items-center gap-1">
@@ -2384,7 +2120,6 @@
             </div>
           </div>
 
-          <!-- Title & Narrative -->
           <div>
             <h4 class="font-bold text-[#1E2320] text-sm leading-snug">${inc.title}</h4>
             <p class="text-[#717D75] text-xs mt-1.5 leading-relaxed line-clamp-2">
@@ -2392,7 +2127,6 @@
             </p>
           </div>
 
-          <!-- Bottom Two Action Buttons -->
           <div class="grid grid-cols-2 gap-2.5 pt-2">
             <button onclick="openIncidentDetail('${inc.id}')" class="btn-pill-ghost w-full">
               <span class="material-symbols-outlined text-sm">info</span>
@@ -2471,7 +2205,7 @@
               <span class="material-symbols-outlined text-sm">my_location</span>
               <span>Inspect Bus</span>
             </button>
-            <button onclick="selectBusDirectly('${bus.id}'); setViewTab('edge-vision');" class="btn-pill-solid w-full bg-[#4A62D6] hover:bg-[#3B50B8]">
+            <button onclick="selectBusDirectly('${bus.id}', true, false); setViewTab('edge-vision');" class="btn-pill-solid w-full bg-[#4A62D6] hover:bg-[#3B50B8]">
               <span class="material-symbols-outlined text-sm">videocam</span>
               <span>1080p Stream</span>
             </button>
@@ -2526,7 +2260,7 @@
       if (badgeRes) badgeRes.innerText = resolved;
     }
 
-    // FILTER PILLS (FILTERS DOCKETS + MAP SIMULTANEOUSLY)
+    // FILTER PILLS
     function setIncidentFilter(filter) {
       currentFilter = filter;
       ['all', 'pending', 'critical', 'resolved', 'fleet'].forEach(f => {
@@ -2555,7 +2289,7 @@
       playBeep(640);
     }
 
-    // GLOBAL OMNI-SEARCH ENGINE WITH DEBOUNCE (200ms)
+    // GLOBAL OMNI-SEARCH ENGINE WITH DEBOUNCE
     function handleGlobalSearch(val) {
       if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
       searchDebounceTimer = setTimeout(() => {
@@ -2575,7 +2309,7 @@
             b.route.toUpperCase().includes(q)
           );
           if (busMatch) {
-            selectBusDirectly(busMatch.id, true);
+            selectBusDirectly(busMatch.id, true, true);
           }
         }
       }, 200);
@@ -2610,7 +2344,7 @@
           <td class="py-3 px-4 font-bold text-[#1E2320]">${inc.id}</td>
           <td class="py-3 px-4 font-bold text-[#1E2320]">${inc.loc}</td>
           <td class="py-3 px-4">${inc.title}</td>
-          <td class="py-3 px-4 font-bold text-[#4A62D6]">${inc.bus}</td>
+          <td class="py-3 px-4 font-bold text-[#4A62D6] cursor-pointer hover:underline" onclick="selectBusDirectly('${inc.bus}')">${inc.bus}</td>
           <td class="py-3 px-4 font-bold text-[#1E8A44]">${inc.conf}%</td>
           <td class="py-3 px-4"><span class="px-3 py-1 rounded-full font-semibold text-[10px] ${statusPill}">${inc.status}</span></td>
           <td class="py-3 px-4 text-[#717D75]">${inc.cost}</td>
@@ -2624,7 +2358,7 @@
       });
     }
 
-    // LIVE HARDWARE MATRIX REAL-TIME UPDATE (EVERY 2 SECONDS)
+    // LIVE HARDWARE MATRIX REAL-TIME UPDATE
     function updateHardwareMatrixLive() {
       jaipurFleet.forEach(b => {
         b.temp = Math.min(65, Math.max(40, b.temp + Math.floor(Math.random() * 3) - 1));
@@ -2646,7 +2380,7 @@
         const latColor = b.lat_ms > 45 ? 'text-amber-700' : 'text-slate-700';
 
         tr.innerHTML = `
-          <td class="py-2.5 px-3 font-bold text-[#1E2320]">${b.id}</td>
+          <td class="py-2.5 px-3 font-bold text-[#1E2320] cursor-pointer hover:underline" onclick="selectBusDirectly('${b.id}')">${b.id}</td>
           <td class="py-2.5 px-3 text-[#4A62D6]">Jetson Orin Nano</td>
           <td class="py-2.5 px-3"><span class="${tempColor}">${b.temp}°C</span></td>
           <td class="py-2.5 px-3 font-bold">${b.fps}</td>
@@ -2660,7 +2394,7 @@
 
     setInterval(updateHardwareMatrixLive, 2000);
 
-    // TAB SWITCHER WITH CONTEXT-AWARE HEADERS
+    // TAB SWITCHER
     function setViewTab(tabName) {
       const tabs = ['command-center', 'edge-vision', 'work-orders', 'analytics'];
       tabs.forEach(t => {
@@ -2679,7 +2413,6 @@
         targetRail.className = 'w-10 h-10 rounded-full bg-[#1E2320] text-white flex items-center justify-center shadow-sm transition-all cursor-pointer';
       }
 
-      // Update Page Title and Subtitle per Tab Context
       const mainTitle = document.getElementById('main-view-title');
       const mainSubtitle = document.getElementById('main-view-subtitle');
       if (tabName === 'command-center') {
@@ -2703,7 +2436,7 @@
       playBeep(640);
     }
 
-    // INITIALIZE GIS MAP WITH POLYLINES & LIVE MOVING MARKERS
+    // INITIALIZE GIS MAP
     function initMap() {
       if (map) return;
 
@@ -2718,7 +2451,6 @@
       }).addTo(map);
 
       markersLayer = L.layerGroup().addTo(map);
-
       renderMarkers('ALL');
     }
 
@@ -2727,7 +2459,6 @@
       markersLayer.clearLayers();
       busMarkers = {};
 
-      // 1. Buses (Always rendered with active selection highlight & route position)
       jaipurFleet.forEach(b => {
         const isSel = (b.id === selectedBusId);
         const customIcon = L.divIcon({
@@ -2743,7 +2474,6 @@
         busMarkers[b.id] = marker;
       });
 
-      // 2. Road Incidents Filtered by Status
       if (filterType !== 'FLEET') {
         roadIncidents.forEach(inc => {
           if (busSpecificFilter && inc.bus !== busSpecificFilter) return;
@@ -2773,7 +2503,7 @@
       }
     }
 
-    // 24H TIME SCRUBBER WITH ACCURATE BUS GPS INTERPOLATION ALONG ROUTES
+    // 24H TIME SCRUBBER
     function handleTimeScrub(val) {
       currentScrubMinutes = parseInt(val);
       const hours = String(Math.floor(currentScrubMinutes / 60)).padStart(2, '0');
@@ -2782,14 +2512,13 @@
       const scrubLabel = document.getElementById('scrub-time-label');
       if (scrubLabel) scrubLabel.innerText = timeStr;
 
-      // Interpolate GPS positions along route polylines
-      const normTime = currentScrubMinutes / 1440; // 0.0 to 1.0
+      const normTime = currentScrubMinutes / 1440;
 
       jaipurFleet.forEach((b) => {
         const waypoints = busRoutesGPS[b.id];
         if (waypoints && waypoints.length > 1) {
           const totalSegs = waypoints.length - 1;
-          const progress = (normTime * 6) % 1; // 6 loops per day
+          const progress = (normTime * 6) % 1;
           const segIndex = Math.floor(progress * totalSegs);
           const segProgress = (progress * totalSegs) % 1;
 
@@ -2837,7 +2566,6 @@
 
     function startPlaybackInterval() {
       if (playbackInterval) clearInterval(playbackInterval);
-      // Accurate speed multiplier intervals: 1x = 100ms, 2x = 50ms, 4x = 25ms, 8x = 12ms
       const stepMs = Math.max(12, Math.floor(100 / playbackSpeed));
       playbackInterval = setInterval(() => {
         currentScrubMinutes = (currentScrubMinutes + 1) % 1440;
@@ -2862,20 +2590,16 @@
       playBeep(640);
     }
 
-    // HIGH DRAMA HIT & RUN SIMULATION ENGINE
+    // HIT & RUN SIMULATION ENGINE
     function triggerHitAndRunSimulation() {
-      // 1. High Drama Strobe Effect
       const strobe = document.getElementById('hitandrun-strobe-layer');
       if (strobe) {
         strobe.classList.add('red-strobe-overlay');
         setTimeout(() => strobe.classList.remove('red-strobe-overlay'), 2400);
       }
 
-      // 2. Play Emergency Police Siren Audio Sound
       playPoliceSirenSound();
-
-      // 3. Switch to BUS-005 immediately & open target lock HUD
-      selectBusDirectly('BUS-005', true);
+      selectBusDirectly('BUS-005', true, false);
       setViewTab('edge-vision');
 
       const hud = document.getElementById('target-lock-hud');
@@ -2886,13 +2610,12 @@
 
       showToast('🚨 CRITICAL HIT & RUN DETECTED!', 'Target vehicle RJ-14-CE-8821 intercepted by BUS-005 camera.', 'danger');
 
-      // 4. Auto-open FIR Forensic Modal after 1.2 seconds for full impact
       setTimeout(() => {
         openHitAndRunPanel();
       }, 1200);
     }
 
-    // MODAL ANIMATION & BODY SCROLL LOCK ENGINE
+    // MODAL ANIMATION ENGINE
     function openModal(modalId) {
       const modal = document.getElementById(modalId);
       if (!modal) return;
@@ -2910,7 +2633,6 @@
         }
       }, 10);
 
-      // Add click outside handler
       modal.onclick = (e) => {
         if (e.target === modal) closeModal(modalId);
       };
@@ -2997,6 +2719,86 @@
       closeModal('export-modal');
     }
 
+    // BUS INSPECTOR MODAL & OPERATOR FUNCTIONS
+    function openBusInspector(busId) {
+      const bus = jaipurFleet.find(b => b.id === busId) || jaipurFleet[0];
+      selectedBusId = bus.id;
+
+      const icon = document.getElementById('inspector-bus-icon');
+      if (icon) icon.innerText = bus.id.split('-')[1];
+
+      const idElem = document.getElementById('inspector-bus-id');
+      if (idElem) idElem.innerText = `${bus.id} TELEMETRY & OPERATIONS`;
+
+      const statusElem = document.getElementById('inspector-bus-status');
+      if (statusElem) {
+        statusElem.innerText = `${bus.status} · 1080p STREAM ACTIVE`;
+        statusElem.className = `px-2.5 py-0.5 rounded-full font-mono text-[10px] font-bold ${
+          bus.status === 'ONLINE' ? 'bg-[#E8F8EE] text-[#1E8A44]' :
+          bus.status === 'INCIDENT' ? 'bg-[#FDECEC] text-[#D33838]' : 'bg-amber-100 text-amber-800'
+        }`;
+      }
+
+      const routeElem = document.getElementById('inspector-bus-route');
+      if (routeElem) routeElem.innerText = `${bus.route} · JCTSL Municipal Fleet`;
+
+      const driverElem = document.getElementById('inspector-driver-name');
+      if (driverElem) driverElem.innerText = bus.driver;
+
+      const speedElem = document.getElementById('inspector-bus-speed');
+      if (speedElem) speedElem.innerText = `${bus.speed} km/h`;
+
+      const scoreElem = document.getElementById('inspector-safety-score');
+      if (scoreElem) {
+        scoreElem.innerText = `${bus.score} / 100`;
+        scoreElem.className = `text-sm block font-bold ${bus.score > 90 ? 'text-[#1E8A44]' : 'text-amber-700'}`;
+      }
+
+      const tempElem = document.getElementById('inspector-npu-temp');
+      if (tempElem) tempElem.innerText = `${bus.temp}°C ${bus.temp > 55 ? '⚠️ High' : 'Normal'}`;
+
+      const fpsElem = document.getElementById('inspector-npu-fps');
+      if (fpsElem) fpsElem.innerText = `${bus.fps} FPS`;
+
+      const latElem = document.getElementById('inspector-npu-lat');
+      if (latElem) latElem.innerText = `${bus.lat_ms} ms`;
+
+      const sigElem = document.getElementById('inspector-npu-sig');
+      if (sigElem) sigElem.innerText = `${bus.signal || '98% LTE'}`;
+
+      const descElem = document.getElementById('inspector-spatial-desc');
+      if (descElem) descElem.innerText = bus.scene;
+
+      openModal('bus-inspector-modal');
+    }
+
+    function closeBusInspector() {
+      closeModal('bus-inspector-modal');
+    }
+
+    function switchLiveCameraFromInspector() {
+      closeBusInspector();
+      setViewTab('edge-vision');
+      renderActiveCameraView();
+      showToast('Camera Switched', `Viewing 1080p stream for ${selectedBusId}`, 'info');
+    }
+
+    function focusMapFromInspector() {
+      closeBusInspector();
+      setViewTab('command-center');
+      const bus = jaipurFleet.find(b => b.id === selectedBusId);
+      if (bus && map) {
+        map.flyTo([bus.lat, bus.lng], 15, { duration: 0.8 });
+      }
+      showToast('Map Focused', `Centered map on ${selectedBusId}`, 'info');
+    }
+
+    function filterDocketsFromInspector() {
+      closeBusInspector();
+      setViewTab('command-center');
+      filterDocketsByBus(selectedBusId);
+    }
+
     function transmitPoliceAlert() {
       playBeep(1200);
       showToast('Police FIR Transmitted', '🚨 Pursuit vector sent to Rajasthan Police PCR dispatch.', 'danger');
@@ -3023,7 +2825,7 @@
       }
     }
 
-    // EXPORT FUNCTIONALITY (CSV, PDF, GEOJSON, SHAPEFILE)
+    // EXPORT FUNCTIONALITY
     function downloadReport(format) {
       showToast('Generating Export', `Preparing ${format} download...`, 'info');
       playBeep(720);
@@ -3160,7 +2962,7 @@
       try { populateDefectTable(); } catch (e) { console.error(e); }
       try { populateHardwareMatrix(); } catch (e) { console.error(e); }
       try { updatePillCounts(); } catch (e) { console.error(e); }
-      try { selectBusDirectly('BUS-003', false); } catch (e) { console.error(e); }
+      try { selectBusDirectly('BUS-003', false, false); } catch (e) { console.error(e); }
       try { initVideoCanvasStream(); } catch (e) { console.error(e); }
     }
 
@@ -3169,176 +2971,6 @@
     } else {
       bootDashboard();
     }
-  
-    // BUS INSPECTOR MODAL & OPERATOR FUNCTIONS
-    function openBusInspector(busId) {
-      const bus = jaipurFleet.find(b => b.id === busId) || jaipurFleet[0];
-      selectedBusId = bus.id;
-
-      const icon = document.getElementById('inspector-bus-icon');
-      if (icon) icon.innerText = bus.id.split('-')[1];
-
-      const idElem = document.getElementById('inspector-bus-id');
-      if (idElem) idElem.innerText = `${bus.id} TELEMETRY & OPERATIONS`;
-
-      const statusElem = document.getElementById('inspector-bus-status');
-      if (statusElem) {
-        statusElem.innerText = `${bus.status} · 1080p STREAM ACTIVE`;
-        statusElem.className = `px-2.5 py-0.5 rounded-full font-mono text-[10px] font-bold ${
-          bus.status === 'ONLINE' ? 'bg-[#E8F8EE] text-[#1E8A44]' :
-          bus.status === 'INCIDENT' ? 'bg-[#FDECEC] text-[#D33838]' : 'bg-amber-100 text-amber-800'
-        }`;
-      }
-
-      const routeElem = document.getElementById('inspector-bus-route');
-      if (routeElem) routeElem.innerText = `${bus.route} · JCTSL Municipal Fleet`;
-
-      const driverElem = document.getElementById('inspector-driver-name');
-      if (driverElem) driverElem.innerText = bus.driver;
-
-      const speedElem = document.getElementById('inspector-bus-speed');
-      if (speedElem) speedElem.innerText = `${bus.speed} km/h`;
-
-      const scoreElem = document.getElementById('inspector-safety-score');
-      if (scoreElem) {
-        scoreElem.innerText = `${bus.score} / 100`;
-        scoreElem.className = `text-sm block font-bold ${bus.score > 90 ? 'text-[#1E8A44]' : 'text-amber-700'}`;
-      }
-
-      const tempElem = document.getElementById('inspector-npu-temp');
-      if (tempElem) tempElem.innerText = `${bus.temp}°C ${bus.temp > 55 ? '⚠️ High' : 'Normal'}`;
-
-      const fpsElem = document.getElementById('inspector-npu-fps');
-      if (fpsElem) fpsElem.innerText = `${bus.fps} FPS`;
-
-      const latElem = document.getElementById('inspector-npu-lat');
-      if (latElem) latElem.innerText = `${bus.lat_ms} ms`;
-
-      const sigElem = document.getElementById('inspector-npu-sig');
-      if (sigElem) sigElem.innerText = `${bus.signal || '98% LTE'}`;
-
-      const descElem = document.getElementById('inspector-spatial-desc');
-      if (descElem) descElem.innerText = bus.scene;
-
-      openModal('bus-inspector-modal');
-    }
-
-    function closeBusInspector() {
-      closeModal('bus-inspector-modal');
-    }
-
-    function switchLiveCameraFromInspector() {
-      closeBusInspector();
-      setViewTab('edge-vision');
-      renderActiveCameraView();
-      showToast('Camera Switched', `Viewing 1080p stream for ${selectedBusId}`, 'info');
-    }
-
-    function focusMapFromInspector() {
-      closeBusInspector();
-      setViewTab('command-center');
-      const bus = jaipurFleet.find(b => b.id === selectedBusId);
-      if (bus && map) {
-        map.flyTo([bus.lat, bus.lng], 15, { duration: 0.8 });
-      }
-      showToast('Map Focused', `Centered map on ${selectedBusId}`, 'info');
-    }
-
-    function filterDocketsFromInspector() {
-      closeBusInspector();
-      setViewTab('command-center');
-      filterDocketsByBus(selectedBusId);
-    }
-
   </script>
-
-  <!-- ========================================================================= -->
-  <!-- MODAL 5: BUS OPERATOR & TELEMETRY INSPECTOR MODAL -->
-  <!-- ========================================================================= -->
-  <div id="bus-inspector-modal" class="modal-backdrop fixed inset-0 z-50 bg-[#1E2320]/40 backdrop-blur-md hidden opacity-0 items-center justify-center p-4">
-    <div class="modal-content bg-white/95 backdrop-blur-2xl max-w-2xl w-full rounded-[32px] p-7 text-xs space-y-5 shadow-2xl scale-95 opacity-0 font-sans">
-      
-      <!-- Top Header -->
-      <div class="flex justify-between items-center border-b border-black/[0.05] pb-4">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-[#1E2320] text-white flex items-center justify-center text-sm font-bold font-mono shadow-md" id="inspector-bus-icon">
-            03
-          </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <h3 class="font-extrabold text-[#1E2320] text-lg tracking-tight" id="inspector-bus-id">BUS-003 TELEMETRY & OPERATIONS</h3>
-              <span class="px-2.5 py-0.5 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-mono text-[10px] font-bold" id="inspector-bus-status">ONLINE · 1080p ACTIVE</span>
-            </div>
-            <p class="text-xs text-[#717D75] font-mono mt-0.5" id="inspector-bus-route">Route 3: Tonk Road Corridor · JCTSL Fleet</p>
-          </div>
-        </div>
-        <button onclick="closeBusInspector()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold cursor-pointer transition-all">✕</button>
-      </div>
-
-      <!-- Driver & Vehicle Profile Row -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 font-mono text-xs">
-        <div class="p-4 bg-[#F4F7F0] rounded-2xl space-y-1">
-          <span class="text-[10px] text-[#717D75] uppercase block font-bold">Assigned Driver</span>
-          <strong class="text-[#1E2320] text-sm block font-bold" id="inspector-driver-name">Manoj Meena</strong>
-          <span class="text-[11px] text-[#717D75] block">ID: JCTSL-8924 · Shift 1</span>
-        </div>
-
-        <div class="p-4 bg-[#F4F7F0] rounded-2xl space-y-1">
-          <span class="text-[10px] text-[#717D75] uppercase block font-bold">Live Velocity</span>
-          <strong class="text-[#4A62D6] text-sm block font-bold" id="inspector-bus-speed">22 km/h</strong>
-          <span class="text-[11px] text-[#717D75] block">Speed Limit: 40 km/h</span>
-        </div>
-
-        <div class="p-4 bg-[#F4F7F0] rounded-2xl space-y-1">
-          <span class="text-[10px] text-[#717D75] uppercase block font-bold">Driver Safety Index</span>
-          <strong class="text-[#1E8A44] text-sm block font-bold" id="inspector-safety-score">78 / 100</strong>
-          <span class="text-[11px] text-[#717D75] block" id="inspector-braking-log">2 Harsh Braking Events</span>
-        </div>
-      </div>
-
-      <!-- Edge Hardware & Spatial Telemetry Box -->
-      <div class="p-5 bg-slate-900 text-white rounded-3xl space-y-3 font-mono border border-slate-800 shadow-inner">
-        <div class="flex justify-between items-center text-xs border-b border-slate-800 pb-2">
-          <span class="text-slate-400 font-bold flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>JETSON ORIN NPU TELEMETRY &amp; CAMERAS</span>
-          </span>
-          <span class="text-emerald-400 font-bold" id="inspector-cam-count">4/4 Cameras 1080p OK</span>
-        </div>
-
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-[11px]">
-          <div><span class="text-slate-400 block text-[9px] uppercase">NPU Temperature</span><strong class="text-white text-xs font-bold" id="inspector-npu-temp">52°C Normal</strong></div>
-          <div><span class="text-slate-400 block text-[9px] uppercase">Local FPS Rate</span><strong class="text-emerald-400 text-xs font-bold" id="inspector-npu-fps">18.2 FPS</strong></div>
-          <div><span class="text-slate-400 block text-[9px] uppercase">Edge Latency</span><strong class="text-white text-xs font-bold" id="inspector-npu-lat">44 ms</strong></div>
-          <div><span class="text-slate-400 block text-[9px] uppercase">4G Signal</span><strong class="text-emerald-400 text-xs font-bold" id="inspector-npu-sig">97% LTE</strong></div>
-        </div>
-
-        <div class="pt-1">
-          <span class="text-slate-400 block text-[9px] uppercase mb-1">Active Spatial Detections</span>
-          <p class="text-slate-200 text-xs font-sans" id="inspector-spatial-desc">Tonk Road Corridor · Severe 16cm Pothole Crater Detected</p>
-        </div>
-      </div>
-
-      <!-- Operational Control Action Buttons -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2">
-        <button onclick="switchLiveCameraFromInspector()" class="btn-pill-solid bg-[#4A62D6] hover:bg-[#3B50B8] py-3 text-xs justify-center">
-          <span class="material-symbols-outlined text-base">videocam</span>
-          <span>View 1080p Stream</span>
-        </button>
-
-        <button onclick="focusMapFromInspector()" class="btn-pill-ghost py-3 text-xs justify-center">
-          <span class="material-symbols-outlined text-base text-[#4A62D6]">my_location</span>
-          <span>Focus Map Here</span>
-        </button>
-
-        <button onclick="filterDocketsFromInspector()" class="btn-pill-ghost py-3 text-xs justify-center">
-          <span class="material-symbols-outlined text-base text-amber-600">filter_alt</span>
-          <span>Filter Dockets</span>
-        </button>
-      </div>
-
-    </div>
-  </div>
-
 </body>
 </html>
