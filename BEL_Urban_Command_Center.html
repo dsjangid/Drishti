@@ -56,7 +56,7 @@
 
     /* Glassmorphic Surfaces */
     .glass-card {
-      background: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-radius: 28px;
@@ -142,12 +142,14 @@
       justify-content: center;
       font-weight: bold;
       font-size: 10px;
-      transition: transform 0.2s;
+      transition: all 0.2s ease;
+      cursor: pointer;
     }
     .bus-marker-icon.active-bus {
       background: #4A62D6 !important;
-      box-shadow: 0 0 0 5px rgba(74, 98, 214, 0.4) !important;
-      transform: scale(1.35) !important;
+      box-shadow: 0 0 0 6px rgba(74, 98, 214, 0.45) !important;
+      transform: scale(1.4) !important;
+      z-index: 9999 !important;
     }
     .incident-marker-pothole {
       background: #D97706;
@@ -158,6 +160,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
     }
     .incident-marker-critical {
       background: #D33838;
@@ -168,6 +171,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
     }
     .incident-marker-water {
       background: #0284C7;
@@ -178,6 +182,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -243,7 +248,7 @@
   <!-- ========================================================================= -->
   <main class="flex-1 flex flex-col p-6 sm:p-9 overflow-y-auto gap-6">
     
-    <!-- Top Context Bar (Matching Screenshot Breadcrumb & Counter) -->
+    <!-- Top Context Bar -->
     <div class="flex justify-between items-center text-xs font-mono text-[#717D75] font-bold uppercase tracking-wider">
       <span>/JUCC: JAIPUR URBAN COMMAND CENTER · JMC &amp; BEL</span>
       <span>06 · SIH-26124</span>
@@ -266,8 +271,8 @@
             type="text" 
             id="global-search-input" 
             oninput="handleGlobalSearch(this.value)" 
-            placeholder="Search bus (e.g. BUS-005), road, driver..." 
-            class="w-56 sm:w-72 pl-10 pr-4 py-2.5 bg-white/90 backdrop-blur-md rounded-full text-xs text-[#1E2320] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E2320]/15 font-mono shadow-sm"
+            placeholder="Search bus (e.g. 5, BUS-002), road, driver..." 
+            class="w-60 sm:w-80 pl-10 pr-4 py-2.5 bg-white/90 backdrop-blur-md rounded-full text-xs text-[#1E2320] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E2320]/20 font-mono shadow-sm"
           />
         </div>
 
@@ -322,6 +327,12 @@
           <span class="px-2 py-0.5 bg-emerald-100 rounded-full text-[10px] font-mono font-bold text-emerald-800" id="badge-count-resolved">5</span>
         </button>
 
+        <button onclick="setIncidentFilter('FLEET')" id="pill-filter-fleet" class="px-5 py-2 rounded-full text-[#717D75] hover:text-[#1E2320] flex items-center gap-2.5 transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-sm text-[#4A62D6]">directions_bus</span>
+          <span>Fleet Buses</span>
+          <span class="px-2 py-0.5 bg-[#EEF1FD] rounded-full text-[10px] font-mono font-bold text-[#4A62D6]">10</span>
+        </button>
+
       </div>
 
       <!-- Floating Notification Pill -->
@@ -337,18 +348,98 @@
 
     </div>
 
-    <!-- 10-Bus Direct Access Selector Strip (Interactive Bus Switching) -->
+    <!-- 10-BUS DIRECT SELECTOR STRIP (STATICALLY RENDERED FOR GUARANTEED CLICKABILITY) -->
     <div class="glass-card p-4 space-y-2.5">
       <div class="flex justify-between items-center text-xs">
         <span class="font-bold text-[#1E2320] flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider">
           <span class="material-symbols-outlined text-base text-[#4A62D6]">directions_bus</span>
-          <span>Select Fleet Bus (Click any bus below to switch context &amp; cameras)</span>
+          <span>10-Bus Direct Fleet Switcher (Click any bus below to inspect instantly):</span>
         </span>
         <span class="text-[11px] text-[#717D75] font-mono">10 Units Online · 4G LTE Edge Mesh</span>
       </div>
 
       <div id="fleet-selector-strip" class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2.5 font-mono text-xs">
-        <!-- Dynamically populated with BUS-001 to BUS-010 -->
+        
+        <button onclick="selectBusDirectly('BUS-001')" id="bus-pill-BUS-001" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-[11px]">BUS-001</span>
+            <span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
+          </div>
+          <span class="text-[10px] truncate text-[#717D75]">28 km/h · Rajesh</span>
+        </button>
+
+        <button onclick="selectBusDirectly('BUS-002')" id="bus-pill-BUS-002" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-[11px]">BUS-002</span>
+            <span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
+          </div>
+          <span class="text-[10px] truncate text-[#717D75]">34 km/h · Vikram</span>
+        </button>
+
+        <button onclick="selectBusDirectly('BUS-003')" id="bus-pill-BUS-003" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#1E2320] text-white shadow-md">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-[11px]">BUS-003</span>
+            <span class="w-2 h-2 rounded-full bg-white"></span>
+          </div>
+          <span class="text-[10px] truncate text-slate-300">22 km/h · Manoj</span>
+        </button>
+
+        <button onclick="selectBusDirectly('BUS-004')" id="bus-pill-BUS-004" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-[11px]">BUS-004</span>
+            <span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
+          </div>
+          <span class="text-[10px] truncate text-[#717D75]">31 km/h · Ramesh</span>
+        </button>
+
+        <button onclick="selectBusDirectly('BUS-005')" id="bus-pill-BUS-005" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-[11px]">BUS-005</span>
+            <span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
+          </div>
+          <span class="text-[10px] truncate text-[#717D75]">42 km/h · Suresh</span>
+        </button>
+
+        <button onclick="selectBusDirectly('BUS-006')" id="bus-pill-BUS-006" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-[11px]">BUS-006</span>
+            <span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
+          </div>
+          <span class="text-[10px] truncate text-[#717D75]">26 km/h · Anil</span>
+        </button>
+
+        <button onclick="selectBusDirectly('BUS-007')" id="bus-pill-BUS-007" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-[11px]">BUS-007</span>
+            <span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
+          </div>
+          <span class="text-[10px] truncate text-[#717D75]">29 km/h · Dinesh</span>
+        </button>
+
+        <button onclick="selectBusDirectly('BUS-008')" id="bus-pill-BUS-008" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-[11px]">BUS-008</span>
+            <span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
+          </div>
+          <span class="text-[10px] truncate text-[#717D75]">35 km/h · Sunil</span>
+        </button>
+
+        <button onclick="selectBusDirectly('BUS-009')" id="bus-pill-BUS-009" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-[11px]">BUS-009</span>
+            <span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
+          </div>
+          <span class="text-[10px] truncate text-[#717D75]">18 km/h · Praveen</span>
+        </button>
+
+        <button onclick="selectBusDirectly('BUS-010')" id="bus-pill-BUS-010" class="p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-[11px]">BUS-010</span>
+            <span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
+          </div>
+          <span class="text-[10px] truncate text-[#717D75]">14 km/h · Mahesh</span>
+        </button>
+
       </div>
     </div>
 
@@ -358,7 +449,7 @@
     <div id="tab-view-command-center" class="space-y-7">
       
       <!-- Selected Bus Live Telemetry & Inspector Bar -->
-      <div id="active-bus-telemetry-banner" class="glass-card p-5 flex flex-wrap items-center justify-between gap-4 border border-blue-500/20 bg-gradient-to-r from-blue-50/50 via-white to-white">
+      <div id="active-bus-telemetry-banner" class="glass-card p-5 flex flex-wrap items-center justify-between gap-4 border border-blue-500/25 bg-gradient-to-r from-blue-50/60 via-white to-white">
         <div class="flex items-center gap-3.5">
           <div class="w-12 h-12 rounded-2xl bg-[#1E2320] text-white flex flex-col items-center justify-center font-mono font-bold shadow-md">
             <span class="text-xs" id="hud-selected-bus-id">BUS-003</span>
@@ -437,9 +528,9 @@
         <span class="text-xs text-[#717D75] font-mono" id="dockets-count-label">Showing 18 dockets</span>
       </div>
 
-      <!-- BENTO DOCKETS GRID -->
+      <!-- BENTO DOCKETS & FLEET GRID -->
       <div id="bento-incident-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Dynamically populated with 18 cards matching the exact screenshot design -->
+        <!-- Dynamically populated -->
       </div>
 
     </div>
@@ -453,7 +544,7 @@
       <div class="glass-card p-4 flex flex-wrap items-center justify-between gap-3">
         <span class="font-bold text-[#1E2320] text-xs font-mono uppercase tracking-wider">Switch Onboard Camera Unit:</span>
         <div id="camera-tab-bus-selector" class="flex flex-wrap gap-2 font-mono text-xs">
-          <!-- Dynamically populated with 10 bus buttons -->
+          <!-- Dynamically populated -->
         </div>
       </div>
 
@@ -1092,58 +1183,15 @@
       }, 3500);
     }
 
-    // POPULATE 10 BUS SELECTOR BUTTONS
-    function populateBusSelectorStrip() {
-      const strip = document.getElementById('fleet-selector-strip');
-      const camStrip = document.getElementById('camera-tab-bus-selector');
-      if (strip) strip.innerHTML = '';
-      if (camStrip) camStrip.innerHTML = '';
-
-      jaipurFleet.forEach(b => {
-        const isSel = (b.id === selectedBusId);
-        
-        // 1. Top Strip Button
-        if (strip) {
-          const btn = document.createElement('button');
-          btn.id = `bus-pill-${b.id}`;
-          btn.onclick = () => selectBusDirectly(b.id);
-          btn.className = `p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer ${
-            isSel ? 'bg-[#1E2320] text-white shadow-md' : 'bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]'
-          }`;
-          btn.innerHTML = `
-            <div class="flex justify-between items-center">
-              <span class="font-bold text-[11px]">${b.id}</span>
-              <span class="w-2 h-2 rounded-full ${isSel ? 'bg-white' : 'bg-[#1E8A44]'}"></span>
-            </div>
-            <span class="text-[10px] truncate ${isSel ? 'text-slate-300' : 'text-[#717D75]'}">${b.speed} km/h · ${b.driver.split(' ')[0]}</span>
-          `;
-          strip.appendChild(btn);
-        }
-
-        // 2. Camera Tab Quick Switcher Pill
-        if (camStrip) {
-          const camBtn = document.createElement('button');
-          camBtn.id = `cam-bus-pill-${b.id}`;
-          camBtn.onclick = () => selectBusDirectly(b.id, false);
-          camBtn.className = `px-3.5 py-1.5 rounded-full text-xs font-mono font-bold transition-all cursor-pointer ${
-            isSel ? 'bg-[#1E2320] text-white shadow-sm' : 'bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]'
-          }`;
-          camBtn.innerText = b.id;
-          camStrip.appendChild(camBtn);
-        }
-      });
-    }
-
     // DIRECT BUS SELECTION & TELEMETRY BINDING
     function selectBusDirectly(busId, triggerMapFly = true) {
       selectedBusId = busId;
       const bus = jaipurFleet.find(b => b.id === busId);
       if (!bus) return;
 
-      // Update Top Selector Pills Active Classes
+      // 1. Update Top Selector Buttons Style
       jaipurFleet.forEach(b => {
         const p = document.getElementById(`bus-pill-${b.id}`);
-        const cp = document.getElementById(`cam-bus-pill-${b.id}`);
         const isSel = (b.id === busId);
         if (p) {
           p.className = `p-2.5 rounded-2xl text-left transition-all flex flex-col justify-between cursor-pointer ${
@@ -1154,14 +1202,25 @@
           const dot = p.querySelector('span.w-2');
           if (dot) dot.className = `w-2 h-2 rounded-full ${isSel ? 'bg-white' : 'bg-[#1E8A44]'}`;
         }
-        if (cp) {
-          cp.className = `px-3.5 py-1.5 rounded-full text-xs font-mono font-bold transition-all cursor-pointer ${
-            isSel ? 'bg-[#1E2320] text-white shadow-sm' : 'bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]'
-          }`;
-        }
       });
 
-      // Update Command Center Active Bus Telemetry Banner
+      // 2. Update Camera Tab Selector Pills Style
+      const camStrip = document.getElementById('camera-tab-bus-selector');
+      if (camStrip) {
+        camStrip.innerHTML = '';
+        jaipurFleet.forEach(b => {
+          const isSel = (b.id === busId);
+          const camBtn = document.createElement('button');
+          camBtn.onclick = () => selectBusDirectly(b.id, false);
+          camBtn.className = `px-3.5 py-1.5 rounded-full text-xs font-mono font-bold transition-all cursor-pointer ${
+            isSel ? 'bg-[#1E2320] text-white shadow-sm' : 'bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]'
+          }`;
+          camBtn.innerText = b.id;
+          camStrip.appendChild(camBtn);
+        });
+      }
+
+      // 3. Update Command Center Active Bus Telemetry Banner
       const hudId = document.getElementById('hud-selected-bus-id');
       if (hudId) hudId.innerText = bus.id;
       const hudRoute = document.getElementById('hud-selected-bus-route');
@@ -1171,7 +1230,7 @@
       const btnFilterLabel = document.getElementById('btn-filter-bus-label');
       if (btnFilterLabel) btnFilterLabel.innerText = `Show Dockets Detected By ${bus.id}`;
 
-      // Update Camera Feed Tab Text
+      // 4. Update Camera Feed Tab Text
       const camTitle = document.getElementById('edge-cam-title');
       if (camTitle) camTitle.innerText = `${bus.id} · FRONT 1080p WINDSHIELD CAMERA`;
       const camSub = document.getElementById('edge-cam-subtitle');
@@ -1179,7 +1238,7 @@
       const hudTag = document.getElementById('hud-cam-bus-tag');
       if (hudTag) hudTag.innerText = `FRAME #4029 • ${bus.id}`;
 
-      // Render Dynamic Bounding Boxes inside the camera stream
+      // 5. Render Dynamic Bounding Boxes in Camera Feed
       const boxContainer = document.getElementById('camera-bounding-boxes-container');
       if (boxContainer) {
         boxContainer.innerHTML = '';
@@ -1213,12 +1272,15 @@
         }
       }
 
-      // Fly Map to selected bus & update active marker state
+      // 6. Fly Map to selected bus & update active marker state
       if (map && triggerMapFly) {
         map.flyTo([bus.lat, bus.lng], 14, { duration: 0.8 });
       }
 
       renderMarkers(currentFilter);
+      if (currentFilter === 'FLEET') {
+        populateFleetCardsGrid(currentSearchQuery);
+      }
       playBeep(720);
       showToast('Bus Inspected', `${bus.id} (${bus.route}) · Driver: ${bus.driver}`, 'info');
     }
@@ -1244,10 +1306,16 @@
       playBeep(640);
     }
 
-    // BENTO INCIDENT DOCKETS GRID (EXACT SCREENSHOT MATCH)
+    // BENTO INCIDENT DOCKETS & FLEET GRID
     function populateBentoIncidentGrid(query = '', filter = 'ALL') {
       const grid = document.getElementById('bento-incident-grid');
       if (!grid) return;
+
+      if (filter === 'FLEET') {
+        populateFleetCardsGrid(query);
+        return;
+      }
+
       grid.innerHTML = '';
 
       let filtered = roadIncidents.filter(inc => {
@@ -1347,6 +1415,79 @@
       });
     }
 
+    // FLEET CARDS GRID (WHEN 'FLEET BUSES' FILTER IS ACTIVE)
+    function populateFleetCardsGrid(query = '') {
+      const grid = document.getElementById('bento-incident-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      let filtered = jaipurFleet;
+      if (query && query.trim() !== '') {
+        const q = query.toLowerCase().trim();
+        filtered = filtered.filter(b => b.id.toLowerCase().includes(q) || b.driver.toLowerCase().includes(q) || b.route.toLowerCase().includes(q));
+      }
+
+      const countLabel = document.getElementById('dockets-count-label');
+      if (countLabel) countLabel.innerText = `Showing ${filtered.length} active fleet buses`;
+
+      filtered.forEach(bus => {
+        const card = document.createElement('div');
+        const isSel = (bus.id === selectedBusId);
+        card.className = `glass-card p-6 flex flex-col justify-between space-y-4 cursor-pointer transition-all ${
+          isSel ? 'ring-2 ring-[#4A62D6] bg-blue-50/20' : ''
+        }`;
+        card.onclick = (e) => {
+          if (e.target.tagName !== 'BUTTON') selectBusDirectly(bus.id);
+        };
+
+        card.innerHTML = `
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-full ${isSel ? 'bg-[#4A62D6]' : 'bg-[#1E2320]'} text-white flex items-center justify-center text-xs font-bold shadow-sm font-mono">
+                ${bus.id.split('-')[1]}
+              </div>
+              <div>
+                <strong class="text-[#1E2320] font-bold text-sm block">${bus.id}</strong>
+                <span class="text-[11px] text-[#717D75]">${bus.driver}</span>
+              </div>
+            </div>
+            <span class="px-3 py-1 rounded-full font-mono text-[11px] font-bold ${bus.score > 90 ? 'bg-[#E8F8EE] text-[#1E8A44]' : 'bg-amber-100 text-amber-800'}">
+              ★ ${bus.score}/100 Score
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5 text-xs font-mono">
+            <div class="bg-[#F4F7F0] rounded-2xl p-3">
+              <span class="text-[#717D75] text-[10px] block mb-1">Route</span>
+              <strong class="text-[#1E2320] text-xs truncate block font-bold">${bus.route.split(':')[1] || bus.route}</strong>
+            </div>
+            <div class="bg-[#F4F7F0] rounded-2xl p-3">
+              <span class="text-[#717D75] text-[10px] block mb-1">Live Speed</span>
+              <strong class="text-[#1E2320] text-xs truncate block font-bold">${bus.speed} km/h</strong>
+            </div>
+          </div>
+
+          <div>
+            <span class="text-[10px] text-[#717D75] font-mono uppercase block font-bold">Spatial Scene Detections</span>
+            <p class="text-[#1E2320] text-xs mt-1 leading-snug">${bus.scene}</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5 pt-2">
+            <button onclick="selectBusDirectly('${bus.id}')" class="btn-pill-ghost w-full">
+              <span class="material-symbols-outlined text-sm">my_location</span>
+              <span>Inspect Bus</span>
+            </button>
+            <button onclick="selectBusDirectly('${bus.id}'); setViewTab('edge-vision');" class="btn-pill-solid w-full bg-[#4A62D6] hover:bg-[#3B50B8]">
+              <span class="material-symbols-outlined text-sm">videocam</span>
+              <span>1080p Stream</span>
+            </button>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
     function clearSearchAndFilters() {
       currentSearchQuery = '';
       const input = document.getElementById('global-search-input');
@@ -1394,7 +1535,7 @@
     // FILTER PILLS (FILTERS DOCKETS + MAP SIMULTANEOUSLY)
     function setIncidentFilter(filter) {
       currentFilter = filter;
-      ['all', 'pending', 'critical', 'resolved'].forEach(f => {
+      ['all', 'pending', 'critical', 'resolved', 'fleet'].forEach(f => {
         const btn = document.getElementById('pill-filter-' + f);
         if (btn) btn.className = 'px-5 py-2 rounded-full text-[#717D75] hover:text-[#1E2320] flex items-center gap-2.5 transition-all font-medium cursor-pointer';
       });
@@ -1402,6 +1543,11 @@
       const activeBtn = document.getElementById('pill-filter-' + filter.toLowerCase());
       if (activeBtn) {
         activeBtn.className = 'px-5 py-2 rounded-full bg-white text-[#1E2320] font-bold shadow-sm flex items-center gap-2.5 transition-all cursor-pointer';
+      }
+
+      const heading = document.getElementById('dockets-section-heading');
+      if (heading) {
+        heading.innerText = filter === 'FLEET' ? 'Active 10-Bus Municipal Fleet' : 'Active Municipal Dockets';
       }
 
       populateBentoIncidentGrid(currentSearchQuery, filter);
@@ -1423,8 +1569,16 @@
 
       if (val && val.trim() !== '') {
         const q = val.toUpperCase().trim();
-        // Match bus by ID or partial number (e.g. "005", "BUS-005") or driver
-        const busMatch = jaipurFleet.find(b => b.id.toUpperCase().includes(q) || b.driver.toUpperCase().includes(q) || b.route.toUpperCase().includes(q));
+        // Support searching "1", "2", "001", "BUS-001", "Manoj", etc.
+        const busMatch = jaipurFleet.find(b => 
+          b.id.toUpperCase() === q ||
+          b.id.toUpperCase().replace('-', '') === q ||
+          b.id.toUpperCase().replace('BUS-', '') === q ||
+          b.id.toUpperCase().endsWith('00' + q) ||
+          b.id.toUpperCase().endsWith('0' + q) ||
+          b.driver.toUpperCase().includes(q) || 
+          b.route.toUpperCase().includes(q)
+        );
         if (busMatch) {
           selectBusDirectly(busMatch.id, true);
         }
@@ -1527,6 +1681,9 @@
     function initMap() {
       if (map) return;
 
+      const container = document.getElementById('main-gis-map');
+      if (!container || typeof L === 'undefined') return;
+
       map = L.map('main-gis-map', { zoomControl: true }).setView([26.8850, 75.8000], 12);
 
       L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
@@ -1539,10 +1696,10 @@
     }
 
     function renderMarkers(filterType = 'ALL') {
-      if (!markersLayer) return;
+      if (!markersLayer || typeof L === 'undefined') return;
       markersLayer.clearLayers();
 
-      // 1. Buses (Always visible or highlighted)
+      // 1. Buses (Always rendered with active selection highlight)
       jaipurFleet.forEach(b => {
         const isSel = (b.id === selectedBusId);
         const customIcon = L.divIcon({
@@ -1557,29 +1714,31 @@
         marker.bindTooltip(`<b>${b.id}</b> · ${b.route} (${b.speed} km/h)`, { direction: 'top', offset: [0, -10] });
       });
 
-      // 2. Road Incidents Filtered by Status
-      roadIncidents.forEach(inc => {
-        if (busSpecificFilter && inc.bus !== busSpecificFilter) return;
-        if (filterType === 'PENDING' && inc.status !== 'Pending' && inc.status !== 'In Progress') return;
-        if (filterType === 'CRITICAL' && inc.type !== 'CRITICAL') return;
-        if (filterType === 'RESOLVED' && inc.status !== 'Resolved') return;
+      // 2. Road Incidents Filtered by Status (Skip when in pure fleet mode)
+      if (filterType !== 'FLEET') {
+        roadIncidents.forEach(inc => {
+          if (busSpecificFilter && inc.bus !== busSpecificFilter) return;
+          if (filterType === 'PENDING' && inc.status !== 'Pending' && inc.status !== 'In Progress') return;
+          if (filterType === 'CRITICAL' && inc.type !== 'CRITICAL') return;
+          if (filterType === 'RESOLVED' && inc.status !== 'Resolved') return;
 
-        let iconClass = 'incident-marker-pothole';
-        let iconSymbol = '⚠️';
-        if (inc.type === 'CRITICAL') { iconClass = 'incident-marker-critical'; iconSymbol = '🚨'; }
-        else if (inc.type === 'WATERLOGGING') { iconClass = 'incident-marker-water'; iconSymbol = '🌊'; }
+          let iconClass = 'incident-marker-pothole';
+          let iconSymbol = '⚠️';
+          if (inc.type === 'CRITICAL') { iconClass = 'incident-marker-critical'; iconSymbol = '🚨'; }
+          else if (inc.type === 'WATERLOGGING') { iconClass = 'incident-marker-water'; iconSymbol = '🌊'; }
 
-        const customIcon = L.divIcon({
-          className: 'custom-inc-icon',
-          html: `<div class="${iconClass} w-6 h-6 text-xs">${iconSymbol}</div>`,
-          iconSize: [24, 24],
-          iconAnchor: [12, 12]
+          const customIcon = L.divIcon({
+            className: 'custom-inc-icon',
+            html: `<div class="${iconClass} w-6 h-6 text-xs">${iconSymbol}</div>`,
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+          });
+
+          const marker = L.marker([inc.lat, inc.lng], { icon: customIcon }).addTo(markersLayer);
+          marker.on('click', () => openIncidentDetail(inc.id));
+          marker.bindTooltip(`<b>${inc.title}</b><br/>${inc.loc} · ${inc.time}`, { direction: 'top', offset: [0, -10] });
         });
-
-        const marker = L.marker([inc.lat, inc.lng], { icon: customIcon }).addTo(markersLayer);
-        marker.on('click', () => openIncidentDetail(inc.id));
-        marker.bindTooltip(`<b>${inc.title}</b><br/>${inc.loc} · ${inc.time}`, { direction: 'top', offset: [0, -10] });
-      });
+      }
     }
 
     // 24H TIME SCRUBBER & PLAYBACK SIMULATION
@@ -1820,7 +1979,7 @@
     // ANALYTICS CHARTS (LIGHT THEME)
     function initAnalyticsCharts() {
       const ctxTraffic = document.getElementById('chart-traffic-light')?.getContext('2d');
-      if (ctxTraffic) {
+      if (ctxTraffic && typeof Chart !== 'undefined') {
         if (chartInstances.trafficLight) chartInstances.trafficLight.destroy();
         chartInstances.trafficLight = new Chart(ctxTraffic, {
           type: 'line',
@@ -1850,7 +2009,7 @@
       }
 
       const ctxVehicles = document.getElementById('chart-vehicles-light')?.getContext('2d');
-      if (ctxVehicles) {
+      if (ctxVehicles && typeof Chart !== 'undefined') {
         if (chartInstances.vehiclesLight) chartInstances.vehiclesLight.destroy();
         chartInstances.vehiclesLight = new Chart(ctxVehicles, {
           type: 'doughnut',
@@ -1881,15 +2040,21 @@
       if (camTime) camTime.innerText = clockStr;
     }, 1000);
 
-    window.onload = function() {
-      initMap();
-      populateBusSelectorStrip();
-      populateBentoIncidentGrid('', 'ALL');
-      populateDefectTable();
-      populateHardwareMatrix();
-      updatePillCounts();
-      selectBusDirectly('BUS-003');
-    };
+    // ROBUST INITIALIZATION
+    function bootDashboard() {
+      try { initMap(); } catch (e) { console.warn('GIS Map init:', e); }
+      try { populateBentoIncidentGrid('', 'ALL'); } catch (e) { console.error(e); }
+      try { populateDefectTable(); } catch (e) { console.error(e); }
+      try { populateHardwareMatrix(); } catch (e) { console.error(e); }
+      try { updatePillCounts(); } catch (e) { console.error(e); }
+      try { selectBusDirectly('BUS-003', false); } catch (e) { console.error(e); }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bootDashboard);
+    } else {
+      bootDashboard();
+    }
   </script>
 </body>
 </html>
