@@ -2392,20 +2392,7 @@
         maxZoom: 19
       }).addTo(map);
 
-      polylinesLayer = L.layerGroup().addTo(map);
       markersLayer = L.layerGroup().addTo(map);
-
-      // Render Route Polylines
-      Object.keys(busRoutesGPS).forEach((busId, idx) => {
-        const colors = ['#4A62D6', '#1E8A44', '#D97706', '#D33838', '#0284C7', '#8B5CF6', '#EC4899', '#14B8A6', '#F59E0B', '#6366F1'];
-        const poly = L.polyline(busRoutesGPS[busId], {
-          color: colors[idx % colors.length],
-          weight: 3.5,
-          opacity: 0.65,
-          dashArray: '8, 6'
-        }).addTo(polylinesLayer);
-        poly.bindTooltip(`Route Vector: ${busId}`, { sticky: true });
-      });
 
       renderMarkers('ALL');
     }
