@@ -170,9 +170,30 @@ class CommandRequestHandler(BaseHTTPRequestHandler):
             self._send_json({
                 "hourly_volume_scanned": [1200, 7800, 5200, 4900, 5400, 7030, 8400, 4200],
                 "vehicle_classification": {"cars_pct": 42, "bikes_pct": 28, "autos_pct": 14, "buses_pct": 8, "trucks_pct": 5, "pedestrians_pct": 3}
+        elif url.path == "/api/contractors":
+            from ai_engine.models.iwatchroad_engine import IWatchRoadContractorTracker
+            self._send_json(IWatchRoadContractorTracker.MUNICIPAL_CONTRACTS)
+        elif url.path == "/api/governance":
+            from ai_engine.models.iwatchroad_engine import IWatchRoadContractorTracker
+            self._send_json({
+                "system": "iWatchRoad Municipal Governance Matrix",
+                "active_contracts": IWatchRoadContractorTracker.MUNICIPAL_CONTRACTS,
+                "lifecycle_stages": ["Reported", "Verified", "In Progress", "Fixed", "Closed"],
+                "total_dockets_tracked": len(db.defects)
             })
         else:
-            self._send_json({"status": "JUCC Urban Intelligence API Online", "endpoints": ["/api/fleet", "/api/defects", "/api/traffic", "/api/geojson"]}, 200)
+            self._send_json({
+                "status": "JUCC Urban Intelligence API Online",
+                "framework": "iWatchRoad v2 + BEL Urban Sensing",
+                "endpoints": [
+                    "/api/fleet",
+                    "/api/defects",
+                    "/api/traffic",
+                    "/api/geojson",
+                    "/api/contractors",
+                    "/api/governance"
+                ]
+            }, 200)
 
     def do_POST(self):
         url = urlparse(self.path)
