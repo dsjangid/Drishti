@@ -3589,6 +3589,41 @@
       populateLabEventsTable();
 
       showToast('Custom Video Ingested', `Loaded ${file.name} (${(file.size / (1024*1024)).toFixed(1)} MB) into AI Inference Engine.`, 'success');
+
+      // Attempt high-accuracy YOLOv8 neural network inference via local AI server
+      fetch('http://localhost:8080/api/upload_and_process', {
+        method: 'POST',
+        body: file
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success' && data.detections) {
+          console.log(`[YOLOv8 Backend] Received ${data.detections.length} neural anomaly detections!`);
+          
+          YOLO_NEURAL_TELEMETRY_DB['custom-upload'] = data.detections.flatMap(d => {
+            return d.objects.map(obj => {
+              const [bx, by, bw, bh] = obj.bbox;
+              return {
+                time: d.time_sec,
+                bx: bx / 1920.0,
+                by: by / 1080.0,
+                bw: bw / 1920.0,
+                bh: bh / 1080.0,
+                conf: obj.confidence,
+                sev: obj.severity,
+                color: obj.color,
+                depth: obj.depth_cm,
+                cost: obj.repair_cost
+              };
+            });
+          });
+
+          showToast('YOLOv8 Neural Detection', `AI Neural Network extracted ${data.total_anomaly_frames} genuine pothole frames!`, 'success');
+        }
+      })
+      .catch(() => {
+        console.log('[YOLOv8 Backend] Server offline, running client-side Edge Vision Engine.');
+      });
     }
 
     function toggleLabVideoPlay() {
@@ -4370,8 +4405,25 @@
             const curTime = (vid && vid.currentTime) ? vid.currentTime : ((frameCounter / 30) % 20);
             const cvResults = roadVisionEngine.analyzeFrame(canvas, labLayers, isLabMirrored, curTime);
 
-            // 1. Draw Real Detected Road Potholes & Surface Distress
-            if (labLayers.defects && cvResults.defects && cvResults.defects.length > 0) {
+            // 1. Draw YOLOv8 Deep Learning Detections or Vision Profilometry
+            if (YOLO_NEURAL_TELEMETRY_DB['custom-upload'] && YOLO_NEURAL_TELEMETRY_DB['custom-upload'].length > 0) {
+              const matches = YOLO_NEURAL_TELEMETRY_DB['custom-upload'].filter(d => Math.abs(d.time - curTime) < 0.60);
+              if (matches.length > 0 && labLayers.defects) {
+                for (const match of matches) {
+                  const dw = match.bw * canvas.width;
+                  const dh = match.bh * canvas.height;
+                  const dx = isLabMirrored ? (canvas.width - (match.bx * canvas.width) - dw) : (match.bx * canvas.width);
+                  const dy = match.by * canvas.height;
+
+                  drawYoloBox(
+                    dx, dy, dw, dh,
+                    'YOLOv8 POTHOLE', match.conf, match.color,
+                    `Grade: ${match.sev} [${match.depth}cm · ${match.cost}]`,
+                    'Contractor: Rajeshwar Infra Ltd (48h SLA)'
+                  );
+                }
+              }
+            } else if (labLayers.defects && cvResults.defects && cvResults.defects.length > 0) {
               for (const defect of cvResults.defects) {
                 const defGrading = gradePotholeIWatchRoad(defect.w, defect.h, 0.95);
                 drawYoloBox(
