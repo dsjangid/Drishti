@@ -3,3 +3,8 @@
 __pycache__/
 *.pyc
 ai_output/
+datasets/
+runs/
+*.pt
+*.onnx
+*.engine

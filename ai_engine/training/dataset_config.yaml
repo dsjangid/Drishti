@@ -1,0 +1,24 @@
+# JUCC Edge AI Engine - RAD (Road Anomaly Detection) Dataset Configuration
+# Dataset: rohitsuresh15/radroad-anomaly-detection (Kaggle)
+# Problem Statement: SIH PS-26124
+
+# Path Configuration (Relative or Absolute)
+path: ./datasets/rad_dataset  # dataset root dir
+train: images/train           # train images (relative to path)
+val: images/val               # val images (relative to path)
+test: images/test             # test images (optional)
+
+# Class Mapping for RAD Road Anomaly Dataset
+names:
+  0: pothole
+  1: crack
+  2: manhole
+  3: speed_bump
+  4: protrusion
+  5: lmv
+  6: hmv
+  7: pedestrian
+  8: unsurfaced_road
+
+# Number of Classes
+nc: 9
