@@ -3897,13 +3897,14 @@
           // NISER SMLab AI Vision Engine for Custom Uploaded Videos
           const curTime = (vid && vid.currentTime) ? vid.currentTime : t;
 
+          // 1. Road Surface Pothole / Distress Detection (Asphalt Road Surface on Left)
           if (labLayers.defects) {
             const defW = 210, defH = 95;
             const defGrading = gradePotholeIWatchRoad(defW, defH, 0.94);
             const defX = isLabMirrored 
-              ? canvas.width * 0.22 - (Math.cos(curTime * 0.4) * 20)
-              : canvas.width * 0.48 + (Math.cos(curTime * 0.4) * 25);
-            const defY = canvas.height * 0.60;
+              ? canvas.width * 0.56 - (Math.cos(curTime * 0.4) * 20)
+              : canvas.width * 0.25 + (Math.cos(curTime * 0.4) * 20);
+            const defY = canvas.height * 0.68;
             drawYoloBox(
               defX, defY, defW, defH,
               'POTHOLE', '95.4%', defGrading.color,
@@ -3912,28 +3913,32 @@
             );
           }
 
+          // 2. Multi-Class Vehicle Detection (White Sedan & Bus on Right Traffic Lane)
           if (labLayers.vehicles) {
+            const vW = 250, vH = 155;
             const vX = isLabMirrored 
-              ? canvas.width * 0.58 - (Math.sin(curTime * 0.4) * 30)
-              : canvas.width * 0.18 + (Math.sin(curTime * 0.4) * 35);
-            const vY = canvas.height * 0.46;
+              ? canvas.width * 0.08 - (Math.sin(curTime * 0.4) * 20)
+              : canvas.width * 0.71 + (Math.sin(curTime * 0.4) * 20);
+            const vY = canvas.height * 0.52;
             drawYoloBox(
-              vX, vY, 210, 145,
+              vX, vY, vW, vH,
               'VEHICLE / BUS', '96.8%', '#4A62D6',
-              'Speed: 34 km/h · Primary Transit Corridor',
-              'PCU Flow: 2.2 · Free Flow'
+              'White Sedan · 38 km/h · Lane 3',
+              'PCU Flow: 2.8 · Free Flow'
             );
           }
 
+          // 3. ANPR License Plate OCR (Targeting Sedan Plate on Right)
           if (labLayers.anpr) {
+            const anprW = 100, anprH = 30;
             const anprX = isLabMirrored 
-              ? canvas.width * 0.62 - (Math.sin(curTime * 0.4) * 30)
-              : canvas.width * 0.24 + (Math.sin(curTime * 0.4) * 35);
-            const anprY = canvas.height * 0.55;
+              ? canvas.width * 0.14 - (Math.sin(curTime * 0.4) * 20)
+              : canvas.width * 0.77 + (Math.sin(curTime * 0.4) * 20);
+            const anprY = canvas.height * 0.63;
             drawYoloBox(
-              anprX, anprY, 115, 36,
+              anprX, anprY, anprW, anprH,
               'ANPR OCR', '97.6%', '#10B981',
-              'KA-04-MB-4412 · High Confidence Match'
+              'KA-50-MA-1587 · Karnataka RTO'
             );
           }
         }
