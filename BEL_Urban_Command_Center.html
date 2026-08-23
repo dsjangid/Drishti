@@ -145,7 +145,7 @@
       justify-content: center;
       font-weight: bold;
       font-size: 10px;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.15s linear;
       cursor: pointer;
     }
     .bus-marker-icon.active-bus {
@@ -166,10 +166,6 @@
       cursor: pointer;
       transition: transform 0.2s ease;
     }
-    .incident-marker-pothole.selected-inc {
-      transform: scale(1.35);
-      box-shadow: 0 0 0 6px rgba(217, 119, 6, 0.4);
-    }
     .incident-marker-critical {
       background: #D33838;
       color: white;
@@ -180,11 +176,11 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      animation: pulse-red 1.5s infinite;
+      animation: pulse-red 1.2s infinite;
     }
     @keyframes pulse-red {
-      0% { box-shadow: 0 0 0 0 rgba(211, 56, 56, 0.7); }
-      70% { box-shadow: 0 0 0 10px rgba(211, 56, 56, 0); }
+      0% { box-shadow: 0 0 0 0 rgba(211, 56, 56, 0.8); }
+      70% { box-shadow: 0 0 0 12px rgba(211, 56, 56, 0); }
       100% { box-shadow: 0 0 0 0 rgba(211, 56, 56, 0); }
     }
     .incident-marker-water {
@@ -199,6 +195,16 @@
       cursor: pointer;
     }
 
+    /* Dramatic Hit & Run Red Flash Overlay */
+    @keyframes dramatic-flash {
+      0%, 100% { opacity: 0; }
+      20%, 60% { opacity: 0.6; }
+      40%, 80% { opacity: 0.2; }
+    }
+    .red-strobe-overlay {
+      animation: dramatic-flash 0.8s ease-in-out 3;
+    }
+
     /* Modal Animation */
     .modal-backdrop {
       transition: opacity 0.25s ease-out;
@@ -208,7 +214,10 @@
     }
   </style>
 </head>
-<body class="flex min-h-screen">
+<body class="flex min-h-screen relative">
+
+  <!-- Dramatic Hit and Run Strobe Layer -->
+  <div id="hitandrun-strobe-layer" class="fixed inset-0 z-[9998] bg-rose-600 pointer-events-none opacity-0"></div>
 
   <!-- Toast Notification Container -->
   <div id="toast-container" class="fixed top-6 right-6 z-[9999] flex flex-col gap-2.5 pointer-events-none"></div>
@@ -242,7 +251,7 @@
           <span class="material-symbols-outlined text-xl">monitoring</span>
         </button>
 
-        <button onclick="openHitAndRunPanel()" title="Hit-and-Run Multi-Camera Trail" class="w-10 h-10 rounded-full text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-all cursor-pointer">
+        <button onclick="triggerHitAndRunSimulation()" title="Simulate Hit-and-Run Intercept ⚡" class="w-10 h-10 rounded-full text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-all cursor-pointer animate-pulse">
           <span class="material-symbols-outlined text-xl">shield</span>
         </button>
       </nav>
@@ -458,7 +467,7 @@
         </div>
       </div>
 
-      <!-- GIS Map Card with 24H Playback Scrubber -->
+      <!-- GIS Map Card with 24H Animated Route Scrubber -->
       <div class="glass-card p-5 space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -466,7 +475,7 @@
               <span class="material-symbols-outlined text-base text-[#4A62D6]">map</span>
               <span>Jaipur Dynamic Fleet &amp; Defect Cartography</span>
             </h3>
-            <p class="text-xs text-[#717D75]">Live coordinates, road hazard mesh, and multi-bus spatial telemetry</p>
+            <p class="text-xs text-[#717D75]">Live GPS polyline movement, route playback animation, and multi-bus spatial telemetry</p>
           </div>
 
           <!-- 24H Time Playback Controller Strip -->
@@ -492,6 +501,7 @@
               <button onclick="setPlaybackSpeed(1)" id="btn-speed-1" class="px-2.5 py-0.5 rounded-full bg-[#1E2320] text-white text-[10px] font-bold cursor-pointer">1x</button>
               <button onclick="setPlaybackSpeed(2)" id="btn-speed-2" class="px-2.5 py-0.5 rounded-full bg-[#E2E8DC] hover:bg-[#D5DDCF] text-slate-700 text-[10px] font-bold cursor-pointer">2x</button>
               <button onclick="setPlaybackSpeed(4)" id="btn-speed-4" class="px-2.5 py-0.5 rounded-full bg-[#E2E8DC] hover:bg-[#D5DDCF] text-slate-700 text-[10px] font-bold cursor-pointer">4x</button>
+              <button onclick="setPlaybackSpeed(8)" id="btn-speed-8" class="px-2.5 py-0.5 rounded-full bg-[#E2E8DC] hover:bg-[#D5DDCF] text-slate-700 text-[10px] font-bold cursor-pointer">8x</button>
             </div>
           </div>
         </div>
@@ -625,8 +635,8 @@
 
           <!-- Target Lock Banner (For Hit and Run simulation) -->
           <div id="target-lock-hud" class="absolute inset-0 bg-rose-900/40 border-4 border-rose-500 hidden flex-col items-center justify-center p-4 backdrop-blur-[2px] z-20 pointer-events-auto">
-            <div class="bg-white border-2 border-rose-600 p-6 rounded-3xl text-center space-y-2.5 max-w-sm shadow-2xl">
-              <span class="material-symbols-outlined text-4xl text-rose-600 animate-bounce">targeted</span>
+            <div class="bg-white border-2 border-rose-600 p-6 rounded-3xl text-center space-y-2.5 max-w-sm shadow-2xl animate-bounce">
+              <span class="material-symbols-outlined text-4xl text-rose-600 animate-spin">targeted</span>
               <strong class="text-rose-700 font-mono text-sm block tracking-widest uppercase">TARGET LOCK: RJ-14-CE-8821</strong>
               <p class="text-xs text-slate-700">White Toyota Fortuner SUV · High-Speed Collision &amp; Flee</p>
               <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-mono text-xs font-bold inline-block">
@@ -859,17 +869,17 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 font-mono text-xs">
-          <div class="p-3.5 rounded-2xl bg-white space-y-1 shadow-sm">
+          <div class="p-3.5 rounded-2xl bg-white space-y-1 shadow-sm border border-rose-100">
             <span class="text-[10px] text-rose-600 font-bold block uppercase">15:20 IST · IMPACT</span>
             <strong class="text-slate-900 block text-xs">BUS-005 (Airport T2)</strong>
             <p class="text-[11px] text-slate-500 font-sans">Front Camera · 84 km/h crash</p>
           </div>
-          <div class="p-3.5 rounded-2xl bg-white space-y-1 shadow-sm">
+          <div class="p-3.5 rounded-2xl bg-white space-y-1 shadow-sm border border-rose-100">
             <span class="text-[10px] text-amber-600 font-bold block uppercase">15:26 IST · INTERCEPT</span>
             <strong class="text-slate-900 block text-xs">BUS-003 (Tonk Rd)</strong>
             <p class="text-[11px] text-slate-500 font-sans">Left Blindspot Camera</p>
           </div>
-          <div class="p-3.5 rounded-2xl bg-white space-y-1 shadow-sm">
+          <div class="p-3.5 rounded-2xl bg-white space-y-1 shadow-sm border border-rose-100">
             <span class="text-[10px] text-emerald-600 font-bold block uppercase">15:34 IST · LAST FIX</span>
             <strong class="text-slate-900 block text-xs">BUS-001 (JLN Marg)</strong>
             <p class="text-[11px] text-slate-500 font-sans">Rear Camera · B2 Bypass</p>
@@ -1029,6 +1039,8 @@
   <script>
     let map = null;
     let markersLayer = null;
+    let polylinesLayer = null;
+    let busMarkers = {};
     let selectedItem = null;
     let audioAlertsEnabled = true;
     let isPlaying = false;
@@ -1048,12 +1060,46 @@
     let videoAnimFrame = null;
     let roadOffset = 0;
 
-    // 10 Jaipur Fleet Dataset with rich bus-specific camera detections and bounding boxes for all 4 angles
+    // 10 Official Jaipur Municipal Bus Routes with GPS Waypoints for Polylines & Animated Scrubber
+    const busRoutesGPS = {
+      'BUS-001': [
+        [26.8920, 75.8150], [26.8850, 75.8140], [26.8750, 75.8120], [26.8650, 75.8080], [26.8520, 75.8020]
+      ],
+      'BUS-002': [
+        [26.8850, 75.7450], [26.8880, 75.7550], [26.8900, 75.7650], [26.8920, 75.7750], [26.8950, 75.7850]
+      ],
+      'BUS-003': [
+        [26.8520, 75.7920], [26.8600, 75.7940], [26.8700, 75.7960], [26.8800, 75.7980], [26.8900, 75.8000]
+      ],
+      'BUS-004': [
+        [26.9600, 75.7750], [26.9500, 75.7740], [26.9400, 75.7730], [26.9300, 75.7720], [26.9200, 75.7710]
+      ],
+      'BUS-005': [
+        [26.8280, 75.8050], [26.8350, 75.8070], [26.8420, 75.8090], [26.8500, 75.8110], [26.8580, 75.8130]
+      ],
+      'BUS-006': [
+        [26.9050, 75.8650], [26.9030, 75.8550], [26.9010, 75.8450], [26.8990, 75.8350], [26.8970, 75.8250]
+      ],
+      'BUS-007': [
+        [26.8550, 75.7600], [26.8580, 75.7680], [26.8610, 75.7760], [26.8640, 75.7840], [26.8670, 75.7920]
+      ],
+      'BUS-008': [
+        [26.8350, 75.8400], [26.8420, 75.8380], [26.8490, 75.8360], [26.8560, 75.8340], [26.8630, 75.8320]
+      ],
+      'BUS-009': [
+        [26.9750, 75.7600], [26.9680, 75.7620], [26.9610, 75.7640], [26.9540, 75.7660], [26.9470, 75.7680]
+      ],
+      'BUS-010': [
+        [26.9260, 75.8240], [26.9240, 75.8200], [26.9220, 75.8160], [26.9200, 75.8120], [26.9180, 75.8080]
+      ]
+    };
+
+    // 10 Jaipur Fleet Dataset
     const jaipurFleet = [
       { 
         id: 'BUS-001', 
         route: 'Route 1: JLN Marg', 
-        lat: 26.8920, lng: 75.8150, baseLat: 26.8920, baseLng: 75.8150, 
+        lat: 26.8920, lng: 75.8150, 
         speed: 28, driver: 'Rajesh Sharma', status: 'ONLINE', score: 96, 
         temp: 46, fps: 18.6, lat_ms: 41, signal: '98%',
         scene: 'Passing Rajasthan University Gate · Pedestrian Crossings Monitored',
@@ -1099,7 +1145,7 @@
       { 
         id: 'BUS-002', 
         route: 'Route 2: Ajmer Road', 
-        lat: 26.8850, lng: 75.7450, baseLat: 26.8850, baseLng: 75.7450, 
+        lat: 26.8850, lng: 75.7450, 
         speed: 34, driver: 'Vikram Singh', status: 'ONLINE', score: 92, 
         temp: 48, fps: 18.4, lat_ms: 42, signal: '96%',
         scene: 'Approaching 200ft Bypass Underpass · Waterlogging Inundation Risk',
@@ -1142,7 +1188,7 @@
       { 
         id: 'BUS-003', 
         route: 'Route 3: Tonk Road', 
-        lat: 26.8520, lng: 75.7920, baseLat: 26.8520, baseLng: 75.7920, 
+        lat: 26.8520, lng: 75.7920, 
         speed: 22, driver: 'Manoj Meena', status: 'INCIDENT', score: 78, 
         temp: 52, fps: 18.2, lat_ms: 44, signal: '97%',
         scene: 'Tonk Road Corridor · Severe 16cm Pothole Crater Detected',
@@ -1189,7 +1235,7 @@
       { 
         id: 'BUS-004', 
         route: 'Route 4: Sikar Road', 
-        lat: 26.9600, lng: 75.7750, baseLat: 26.9600, baseLng: 75.7750, 
+        lat: 26.9600, lng: 75.7750, 
         speed: 31, driver: 'Ramesh Kumar', status: 'ONLINE', score: 88, 
         temp: 47, fps: 18.5, lat_ms: 41, signal: '95%',
         scene: 'Sikar Road KM 7.1 · Asphalt Fracture & Surface Depression',
@@ -1232,7 +1278,7 @@
       { 
         id: 'BUS-005', 
         route: 'Route 5: Airport Link', 
-        lat: 26.8280, lng: 75.8050, baseLat: 26.8280, baseLng: 75.8050, 
+        lat: 26.8280, lng: 75.8050, 
         speed: 42, driver: 'Suresh Saini', status: 'ONLINE', score: 94, 
         temp: 47, fps: 18.8, lat_ms: 40, signal: '99%',
         scene: 'Airport T2 Junction · Hit-and-Run Intercept Plate OCR Target Lock',
@@ -1274,7 +1320,7 @@
       { 
         id: 'BUS-006', 
         route: 'Route 6: Agra Road', 
-        lat: 26.9050, lng: 75.8650, baseLat: 26.9050, baseLng: 75.8650, 
+        lat: 26.9050, lng: 75.8650, 
         speed: 26, driver: 'Anil Yadav', status: 'ONLINE', score: 90, 
         temp: 49, fps: 18.1, lat_ms: 43, signal: '94%',
         scene: 'Transport Nagar Flyover · Expansion Joint Dip Flagged',
@@ -1317,7 +1363,7 @@
       { 
         id: 'BUS-007', 
         route: 'Route 7: Mansarovar', 
-        lat: 26.8550, lng: 75.7600, baseLat: 26.8550, baseLng: 75.7600, 
+        lat: 26.8550, lng: 75.7600, 
         speed: 29, driver: 'Dinesh Gurjar', status: 'ONLINE', score: 89, 
         temp: 48, fps: 18.3, lat_ms: 42, signal: '97%',
         scene: 'Mansarovar Metro Pillar 84 · Road Shoulder Drop-off',
@@ -1360,7 +1406,7 @@
       { 
         id: 'BUS-008', 
         route: 'Route 8: Jagatpura', 
-        lat: 26.8350, lng: 75.8400, baseLat: 26.8350, baseLng: 75.8400, 
+        lat: 26.8350, lng: 75.8400, 
         speed: 35, driver: 'Sunil Verma', status: 'ONLINE', score: 91, 
         temp: 46, fps: 18.7, lat_ms: 40, signal: '98%',
         scene: 'Jagatpura 7 No. Stand · Municipal Drain Overflow Pool',
@@ -1403,7 +1449,7 @@
       { 
         id: 'BUS-009', 
         route: 'Route 9: VKI Industrial', 
-        lat: 26.9750, lng: 75.7600, baseLat: 26.9750, baseLng: 75.7600, 
+        lat: 26.9750, lng: 75.7600, 
         speed: 18, driver: 'Praveen Gurjar', status: 'CAUTION', score: 58, 
         temp: 58, fps: 16.4, lat_ms: 49, signal: '91%',
         scene: 'VKI Road No. 9 · Industrial Crater Cluster & High Vibration',
@@ -1448,7 +1494,7 @@
       { 
         id: 'BUS-010', 
         route: 'Route 10: Walled City', 
-        lat: 26.9260, lng: 75.8240, baseLat: 26.9260, baseLng: 75.8240, 
+        lat: 26.9260, lng: 75.8240, 
         speed: 14, driver: 'Mahesh Sharma', status: 'ONLINE', score: 95, 
         temp: 45, fps: 18.9, lat_ms: 39, signal: '98%',
         scene: 'Choti Chaupar Heritage Arc · Tourist Density & E-Rickshaw Flow',
@@ -1507,12 +1553,12 @@
       { id: 'INC_013', type: 'POTHOLE', title: 'Crater on Bus Stop Lane', loc: 'SMS Hospital Gate', lat: 26.8990, lng: 75.8190, bus: 'BUS-001', time: '15 December 2026', minuteScrub: 1015, conf: 93.7, status: 'Pending', cost: '₹35,000', asphalt: '9 MT', severity: 'High 8/10', sevColor: 'emerald', logo: 'construction' },
       { id: 'INC_014', type: 'POTHOLE', title: 'Surface Depression', loc: 'Choti Chaupar Corner', lat: 26.9270, lng: 75.8230, bus: 'BUS-010', time: '15 December 2026', minuteScrub: 860, conf: 89.1, status: 'Resolved', cost: '₹15,000', asphalt: '4 MT', severity: 'Low 4/10', sevColor: 'emerald', logo: 'construction' },
       { id: 'INC_015', type: 'WATERLOGGING', title: 'Road Inundation', loc: 'Durgapura Flyover Downramp', lat: 26.8510, lng: 75.7910, bus: 'BUS-003', time: '15 December 2026', minuteScrub: 975, conf: 95.4, status: 'In Progress', cost: '₹45,000', asphalt: 'Channeling', severity: 'Medium 6/10', sevColor: 'blue', logo: 'water_drop' },
-      { id: 'INC_016', type: 'POTHOLE', title: 'Deep Pothole (14cm)', loc: 'Civil Lines Crossing', lat: 26.8870, lng: 75.7780, bus: 'BUS-002', time: '15 December 2026', minuteScrub: 1025, conf: 92.8, status: 'Pending', cost: '₹40,000', asphalt: '10 MT', severity: 'Medium 5/10', sevColor: 'blue', logo: 'construction' },
+      { id: 'INC_016', type: 'POTHOLE', title: 'Deep Pothole (14cm)', loc: 'Civil Lines Crossing', lat: 26.8870, lng: 75.7780, bus: 'BUS-002', time: '15 December 2026', minuteScrub: 1025, conf: 92.8, status: 'Pending', cost: '₹40,000', asphalt: '10 MT', severity: 'Medium 5/10', sevColor: 'blue', logo: 'water_drop' },
       { id: 'INC_017', type: 'POTHOLE', title: 'Multiple Asphalt Cracks', loc: 'Malviya Nagar Sector 3', lat: 26.8420, lng: 75.8120, bus: 'BUS-005', time: '15 December 2026', minuteScrub: 870, conf: 87.5, status: 'Resolved', cost: '₹30,000', asphalt: '7 MT', severity: 'Low 3/10', sevColor: 'emerald', logo: 'construction' },
       { id: 'INC_018', type: 'WATERLOGGING', title: 'Standing Water Pool', loc: 'Bani Park Underpass', lat: 26.9320, lng: 75.7920, bus: 'BUS-002', time: '15 December 2026', minuteScrub: 850, conf: 93.3, status: 'Resolved', cost: '₹35,000', asphalt: 'Drainage', severity: 'Medium 5/10', sevColor: 'blue', logo: 'water_drop' },
     ];
 
-    // Web Audio Synthesizer (Safely Handles User Gesture Activation)
+    // Web Audio Synthesizer with Dual-Tone Police Emergency Siren
     let audioCtx = null;
     function playBeep(freq = 880, duration = 0.08) {
       if (!audioAlertsEnabled) return;
@@ -1532,7 +1578,33 @@
       } catch (e) {}
     }
 
-    // TOAST NOTIFICATION ENGINE (WITH FALLBACK CREATION)
+    function playPoliceSirenSound() {
+      if (!audioAlertsEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        
+        const now = audioCtx.currentTime;
+        osc.frequency.setValueAtTime(600, now);
+        osc.frequency.linearRampToValueAtTime(1400, now + 0.3);
+        osc.frequency.linearRampToValueAtTime(600, now + 0.6);
+        osc.frequency.linearRampToValueAtTime(1400, now + 0.9);
+        osc.frequency.linearRampToValueAtTime(600, now + 1.2);
+
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.3);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 1.3);
+      } catch (e) {}
+    }
+
+    // TOAST NOTIFICATION ENGINE
     function showToast(title, msg, type = 'info') {
       let container = document.getElementById('toast-container');
       if (!container) {
@@ -2004,7 +2076,7 @@
       });
     }
 
-    // FLEET CARDS GRID (WHEN 'FLEET BUSES' FILTER IS ACTIVE)
+    // FLEET CARDS GRID
     function populateFleetCardsGrid(query = '') {
       const grid = document.getElementById('bento-incident-grid');
       if (!grid) return;
@@ -2298,7 +2370,7 @@
       playBeep(640);
     }
 
-    // INITIALIZE GIS MAP & REACTIVE MARKERS
+    // INITIALIZE GIS MAP WITH POLYLINES & LIVE MOVING MARKERS
     function initMap() {
       if (map) return;
 
@@ -2312,15 +2384,30 @@
         maxZoom: 19
       }).addTo(map);
 
+      polylinesLayer = L.layerGroup().addTo(map);
       markersLayer = L.layerGroup().addTo(map);
+
+      // Render Route Polylines
+      Object.keys(busRoutesGPS).forEach((busId, idx) => {
+        const colors = ['#4A62D6', '#1E8A44', '#D97706', '#D33838', '#0284C7', '#8B5CF6', '#EC4899', '#14B8A6', '#F59E0B', '#6366F1'];
+        const poly = L.polyline(busRoutesGPS[busId], {
+          color: colors[idx % colors.length],
+          weight: 3.5,
+          opacity: 0.65,
+          dashArray: '8, 6'
+        }).addTo(polylinesLayer);
+        poly.bindTooltip(`Route Vector: ${busId}`, { sticky: true });
+      });
+
       renderMarkers('ALL');
     }
 
     function renderMarkers(filterType = 'ALL') {
       if (!markersLayer || typeof L === 'undefined') return;
       markersLayer.clearLayers();
+      busMarkers = {};
 
-      // 1. Buses (Always rendered with active selection highlight)
+      // 1. Buses (Always rendered with active selection highlight & route position)
       jaipurFleet.forEach(b => {
         const isSel = (b.id === selectedBusId);
         const customIcon = L.divIcon({
@@ -2333,6 +2420,7 @@
         const marker = L.marker([b.lat, b.lng], { icon: customIcon }).addTo(markersLayer);
         marker.on('click', () => selectBusDirectly(b.id));
         marker.bindTooltip(`<b>${b.id}</b> · ${b.route} (${b.speed} km/h)`, { direction: 'top', offset: [0, -10] });
+        busMarkers[b.id] = marker;
       });
 
       // 2. Road Incidents Filtered by Status
@@ -2348,6 +2436,9 @@
           if (inc.type === 'CRITICAL') { iconClass = 'incident-marker-critical'; iconSymbol = '🚨'; }
           else if (inc.type === 'WATERLOGGING') { iconClass = 'incident-marker-water'; iconSymbol = '🌊'; }
 
+          const isNearTime = Math.abs(currentScrubMinutes - inc.minuteScrub) < 40;
+          if (isNearTime) iconClass += ' selected-inc';
+
           const customIcon = L.divIcon({
             className: 'custom-inc-icon',
             html: `<div class="${iconClass} w-6 h-6 text-xs">${iconSymbol}</div>`,
@@ -2362,7 +2453,7 @@
       }
     }
 
-    // 24H TIME SCRUBBER & REAL-TIME PLAYBACK SIMULATION WITH ACCURATE MULTIPLIER
+    // 24H TIME SCRUBBER WITH ACCURATE BUS GPS INTERPOLATION ALONG ROUTES
     function handleTimeScrub(val) {
       currentScrubMinutes = parseInt(val);
       const hours = String(Math.floor(currentScrubMinutes / 60)).padStart(2, '0');
@@ -2371,11 +2462,27 @@
       const scrubLabel = document.getElementById('scrub-time-label');
       if (scrubLabel) scrubLabel.innerText = timeStr;
 
-      // Animate bus positions smoothly along orbital route
-      const angle = (currentScrubMinutes / 1440) * Math.PI * 4;
-      jaipurFleet.forEach((b, idx) => {
-        b.lat = b.baseLat + Math.sin(angle + idx * 0.5) * 0.012;
-        b.lng = b.baseLng + Math.cos(angle + idx * 0.5) * 0.012;
+      // Interpolate GPS positions along route polylines
+      const normTime = currentScrubMinutes / 1440; // 0.0 to 1.0
+
+      jaipurFleet.forEach((b) => {
+        const waypoints = busRoutesGPS[b.id];
+        if (waypoints && waypoints.length > 1) {
+          const totalSegs = waypoints.length - 1;
+          const progress = (normTime * 6) % 1; // 6 loops per day
+          const segIndex = Math.floor(progress * totalSegs);
+          const segProgress = (progress * totalSegs) % 1;
+
+          const p1 = waypoints[segIndex];
+          const p2 = waypoints[(segIndex + 1) % waypoints.length];
+
+          b.lat = p1[0] + (p2[0] - p1[0]) * segProgress;
+          b.lng = p1[1] + (p2[1] - p1[1]) * segProgress;
+
+          if (busMarkers[b.id]) {
+            busMarkers[b.id].setLatLng([b.lat, b.lng]);
+          }
+        }
       });
 
       renderMarkers(currentFilter);
@@ -2410,18 +2517,19 @@
 
     function startPlaybackInterval() {
       if (playbackInterval) clearInterval(playbackInterval);
-      const stepInterval = Math.max(50, 100 * (4 / (playbackSpeed * 4)));
+      // Accurate speed multiplier intervals: 1x = 100ms, 2x = 50ms, 4x = 25ms, 8x = 12ms
+      const stepMs = Math.max(12, Math.floor(100 / playbackSpeed));
       playbackInterval = setInterval(() => {
-        currentScrubMinutes = (currentScrubMinutes + playbackSpeed) % 1440;
+        currentScrubMinutes = (currentScrubMinutes + 1) % 1440;
         const slider = document.getElementById('time-scrubber');
         if (slider) slider.value = currentScrubMinutes;
         handleTimeScrub(currentScrubMinutes);
-      }, stepInterval);
+      }, stepMs);
     }
 
     function setPlaybackSpeed(spd) {
       playbackSpeed = spd;
-      [1, 2, 4].forEach(s => {
+      [1, 2, 4, 8].forEach(s => {
         const b = document.getElementById('btn-speed-' + s);
         if (b) b.className = s === spd ? 'px-2.5 py-0.5 rounded-full bg-[#1E2320] text-white text-[10px] font-bold cursor-pointer' : 'px-2.5 py-0.5 rounded-full bg-[#E2E8DC] hover:bg-[#D5DDCF] text-slate-700 text-[10px] font-bold cursor-pointer';
       });
@@ -2432,6 +2540,36 @@
 
       showToast('Playback Speed', `Speed set to ${spd}x.`, 'info');
       playBeep(640);
+    }
+
+    // HIGH DRAMA HIT & RUN SIMULATION ENGINE
+    function triggerHitAndRunSimulation() {
+      // 1. High Drama Strobe Effect
+      const strobe = document.getElementById('hitandrun-strobe-layer');
+      if (strobe) {
+        strobe.classList.add('red-strobe-overlay');
+        setTimeout(() => strobe.classList.remove('red-strobe-overlay'), 2400);
+      }
+
+      // 2. Play Emergency Police Siren Audio Sound
+      playPoliceSirenSound();
+
+      // 3. Switch to BUS-005 immediately & open target lock HUD
+      selectBusDirectly('BUS-005', true);
+      setViewTab('edge-vision');
+
+      const hud = document.getElementById('target-lock-hud');
+      if (hud) {
+        hud.classList.remove('hidden');
+        hud.classList.add('flex');
+      }
+
+      showToast('🚨 CRITICAL HIT & RUN DETECTED!', 'Target vehicle RJ-14-CE-8821 intercepted by BUS-005 camera.', 'danger');
+
+      // 4. Auto-open FIR Forensic Modal after 1.2 seconds for full impact
+      setTimeout(() => {
+        openHitAndRunPanel();
+      }, 1200);
     }
 
     // MODAL ANIMATION & BODY SCROLL LOCK ENGINE
@@ -2543,18 +2681,6 @@
       playBeep(1200);
       showToast('Police FIR Transmitted', '🚨 Pursuit vector sent to Rajasthan Police PCR dispatch.', 'danger');
       closeHitAndRunPanel();
-    }
-
-    function triggerHitAndRunSimulation() {
-      const hud = document.getElementById('target-lock-hud');
-      if (hud) {
-        hud.classList.remove('hidden');
-        hud.classList.add('flex');
-        playBeep(980);
-        setTimeout(() => playBeep(1100), 150);
-        setTimeout(() => playBeep(1320), 300);
-        showToast('HIT & RUN DETECTED!', 'Target vehicle RJ-14-CE-8821 locked on optical camera.', 'danger');
-      }
     }
 
     function captureCameraSnapshot() {
