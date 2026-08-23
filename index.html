@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>JUCC · Jaipur Urban Command Center</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..900;1,8..60,400..700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Leaflet GIS Map CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#FF0000",
+            "primary-dark": "#D90000",
+            "surface-dark": "#0A0A0A",
+            "surface-card": "#111212",
+            "surface-card-hover": "#161818",
+            "border-subtle": "#222222",
+            "text-primary": "#F4F2EE",
+            "text-secondary": "#8A8A8A",
+            "accent-green": "#4CAF50",
+            "accent-amber": "#FFC107",
+            "accent-blue": "#3B82F6",
+            "accent-purple": "#8B5CF6",
+            "accent-gray": "#71717A"
+          },
+          fontFamily: {
+            "mono": ["JetBrains Mono", "monospace"],
+            "serif": ["Source Serif 4", "serif"],
+            "sans": ["Geist", "sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #080909;
+      color: #F4F2EE;
+      font-family: 'Geist', sans-serif;
+      letter-spacing: -0.01em;
+    }
+    
+    .panel-card {
+      background-color: #111212;
+      border: 1px solid #222222;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #0D0E0E;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #2A2C2C;
+      border-radius: 2px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #FF0000;
+    }
+
+    #main-gis-map {
+      height: 100% !important;
+      min-height: 540px !important;
+      width: 100% !important;
+      background-color: #0A0A0A !important;
+    }
+
+    .leaflet-tile {
+      filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+    }
+    .leaflet-container {
+      background: #0A0A0A !important;
+      font-family: 'JetBrains Mono', monospace !important;
+    }
+
+    .leaflet-popup-content-wrapper {
+      background: #0D0E0E !important;
+      color: #F4F2EE !important;
+      border: 1px solid #333333 !important;
+      border-radius: 6px !important;
+      box-shadow: none !important;
+    }
+    .leaflet-popup-tip {
+      background: #0D0E0E !important;
+    }
+
+    /* Standard interactive button & focus tokens */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.375rem;
+      height: 2rem;
+      padding: 0 0.875rem;
+      border-radius: 0.375rem;
+      background-color: #FF0000;
+      color: #FFFFFF;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      line-height: 1;
+      border: 1px solid transparent;
+      transition: all 150ms cubic-bezier(0.23, 1, 0.32, 1);
+      cursor: pointer;
+    }
+    .btn-primary:hover {
+      background-color: #D90000;
+    }
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.375rem;
+      height: 2rem;
+      padding: 0 0.75rem;
+      border-radius: 0.375rem;
+      background-color: #161818;
+      color: #F4F2EE;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 500;
+      line-height: 1;
+      border: 1px solid #2A2C2C;
+      transition: all 150ms cubic-bezier(0.23, 1, 0.32, 1);
+      cursor: pointer;
+    }
+    .btn-secondary:hover {
+      background-color: #222424;
+      border-color: #444;
+      color: #FFFFFF;
+    }
+    .btn-secondary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      height: 1.625rem;
+      padding: 0 0.625rem;
+      border-radius: 0.25rem;
+      background-color: #161818;
+      color: #8A8A8A;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6875rem;
+      font-weight: 500;
+      line-height: 1;
+      border: 1px solid #2A2C2C;
+      transition: all 150ms cubic-bezier(0.23, 1, 0.32, 1);
+      cursor: pointer;
+    }
+    .btn-pill:hover {
+      color: #F4F2EE;
+      background-color: #222424;
+      border-color: #444;
+    }
+    .btn-pill:active {
+      transform: scale(0.98);
+    }
+
+    .input-control {
+      height: 2rem;
+      padding: 0 0.625rem;
+      border-radius: 0.375rem;
+      background-color: #0A0A0A;
+      color: #F4F2EE;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      border: 1px solid #2A2C2C;
+      outline: none;
+      transition: border-color 150ms ease;
+    }
+    .input-control:focus {
+      border-color: #FF0000;
+    }
+
+    /* High contrast mode class */
+    .high-contrast {
+      filter: contrast(1.25) brightness(1.1);
+    }
+    .high-contrast .panel-card {
+      border-color: #444444 !important;
+      background-color: #050505 !important;
+    }
+
+    /* Large font mode */
+    .large-font {
+      font-size: 110%;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex overflow-x-hidden text-sm select-none">
+
+  <!-- 1. LEFT SIDEBAR NAVIGATION (With Multi-View Controls) -->
+  <nav class="fixed left-0 top-0 h-screen w-[260px] bg-[#0D0E0E] border-r border-[#222222] z-50 flex flex-col p-4 hidden md:flex">
+    <!-- Brand Header -->
+    <div class="mb-5 flex items-center gap-3 px-2 pt-2">
+      <div class="h-9 w-9 rounded bg-[#FF0000]/15 flex items-center justify-center border border-[#FF0000]/40 text-[#FF0000] shrink-0">
+        <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">radar</span>
+      </div>
+      <div>
+        <h1 class="font-serif text-base font-bold tracking-wider text-[#F4F2EE] leading-none uppercase">JUCC</h1>
+        <p class="font-mono text-[10px] text-[#8A8A8A] uppercase tracking-wider mt-1 whitespace-nowrap">Jaipur Command Center</p>
+      </div>
+    </div>
+
+    <!-- Multi-View Mode Switcher -->
+    <ul class="space-y-1 font-mono text-xs list-none">
+      <li class="pt-1 pb-1 text-[10px] text-[#666] font-bold uppercase tracking-wider px-3 flex justify-between items-center">
+        <span>View Layouts</span>
+        <span class="text-[#FF0000]">6 Modes</span>
+      </li>
+      <li>
+        <button onclick="setViewMode('map')" id="view-btn-map" class="w-full flex items-center gap-2.5 px-3 h-8 rounded bg-[#FF0000] text-white font-semibold transition-colors">
+          <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">map</span>
+          <span>Map &amp; Heatmap View</span>
+        </button>
+      </li>
+      <li>
+        <button onclick="setViewMode('timeline')" id="view-btn-timeline" class="w-full flex items-center gap-2.5 px-3 h-8 rounded text-[#8A8A8A] hover:text-[#F4F2EE] hover:bg-white/5 transition-colors font-medium">
+          <span class="material-symbols-outlined text-sm">schedule</span>
+          <span>Timeline Stream</span>
+        </button>
+      </li>
+      <li>
+        <button onclick="setViewMode('grid')" id="view-btn-grid" class="w-full flex items-center gap-2.5 px-3 h-8 rounded text-[#8A8A8A] hover:text-[#F4F2EE] hover:bg-white/5 transition-colors font-medium">
+          <span class="material-symbols-outlined text-sm">grid_view</span>
+          <span>Incident Cards Grid</span>
+        </button>
+      </li>
+      <li>
+        <button onclick="setViewMode('charts')" id="view-btn-charts" class="w-full flex items-center gap-2.5 px-3 h-8 rounded text-[#8A8A8A] hover:text-[#F4F2EE] hover:bg-white/5 transition-colors font-medium">
+          <span class="material-symbols-outlined text-sm">analytics</span>
+          <span>Traffic &amp; Charts</span>
+        </button>
+      </li>
+      <li>
+        <button onclick="setViewMode('before-after')" id="view-btn-before-after" class="w-full flex items-center gap-2.5 px-3 h-8 rounded text-[#8A8A8A] hover:text-[#F4F2EE] hover:bg-white/5 transition-colors font-medium">
+          <span class="material-symbols-outlined text-sm">compare</span>
+          <span>Before / After ROI</span>
+        </button>
+      </li>
+      <li>
+        <button onclick="setViewMode('report')" id="view-btn-report" class="w-full flex items-center gap-2.5 px-3 h-8 rounded text-[#8A8A8A] hover:text-[#F4F2EE] hover:bg-white/5 transition-colors font-medium">
+          <span class="material-symbols-outlined text-sm">summarize</span>
+          <span>Report &amp; GIS Export</span>
+        </button>
+      </li>
+    </ul>
+
+    <!-- Specialized Modules -->
+    <ul class="mt-4 space-y-1 font-mono text-xs list-none">
+      <li class="pt-1 pb-1 text-[10px] text-[#666] font-bold uppercase tracking-wider px-3">Forensics &amp; Safety</li>
+      <li>
+        <button onclick="openHitAndRunPanel()" class="w-full flex items-center gap-2.5 px-3 h-8 rounded text-[#8A8A8A] hover:text-[#FF0000] hover:bg-white/5 transition-colors font-medium">
+          <span class="material-symbols-outlined text-sm text-[#FF0000]">shield</span>
+          <span>Hit &amp; Run Forensics</span>
+        </button>
+      </li>
+      <li>
+        <button onclick="openDriverLeaderboard()" class="w-full flex items-center gap-2.5 px-3 h-8 rounded text-[#8A8A8A] hover:text-[#4CAF50] hover:bg-white/5 transition-colors font-medium">
+          <span class="material-symbols-outlined text-sm text-[#4CAF50]">person</span>
+          <span>Driver Safety Scores</span>
+        </button>
+      </li>
+      <li>
+        <button onclick="openPedestrianAnalysis()" class="w-full flex items-center gap-2.5 px-3 h-8 rounded text-[#8A8A8A] hover:text-[#FFC107] hover:bg-white/5 transition-colors font-medium">
+          <span class="material-symbols-outlined text-sm text-[#FFC107]">directions_walk</span>
+          <span>Pedestrian Hotspots</span>
+        </button>
+      </li>
+    </ul>
+
+    <!-- Bottom Telemetry & Audio Settings -->
+    <div class="mt-auto border-t border-[#222222] pt-3 font-mono text-[10px] space-y-2">
+      <div class="flex justify-between items-center text-[#8A8A8A]">
+        <span class="font-semibold uppercase tracking-wider">AUDIO ALERTS</span>
+        <button onclick="toggleAudioAlerts()" id="btn-audio-toggle" class="btn-pill px-2 h-6 text-[#4CAF50] font-bold flex items-center gap-1">
+          <span class="material-symbols-outlined text-xs">volume_up</span> <span>ON</span>
+        </button>
+      </div>
+      <div class="flex justify-between items-center text-[10px] text-[#8A8A8A]">
+        <span>EDGE NPU: <strong class="text-[#4CAF50]">Jetson Orin</strong></span>
+        <span>FPS: 28.4</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 2. TOP APP BAR (With Search, Quick Jump, Role Presets & Accessibility) -->
+  <header class="fixed top-0 right-0 w-full md:w-[calc(100%-260px)] h-16 bg-[#0D0E0E] border-b border-[#222222] z-40 flex justify-between items-center px-4 lg:px-6 gap-3">
+    
+    <!-- Title & Role Preset -->
+    <div class="flex items-center gap-2.5 shrink-0">
+      <!-- Mobile Menu Toggle Button -->
+      <button onclick="toggleMobileSidebar()" class="w-8 h-8 rounded bg-[#161818] border border-[#2A2C2C] text-[#8A8A8A] hover:text-[#F4F2EE] md:hidden flex items-center justify-center">
+        <span class="material-symbols-outlined text-sm">menu</span>
+      </button>
+
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-[#FF0000] animate-pulse"></span>
+        <h2 class="font-mono text-sm md:text-base font-bold tracking-wider text-[#F4F2EE] uppercase">
+          JUCC
+        </h2>
+      </div>
+      
+      <div class="h-4 w-px bg-[#2A2C2C] hidden sm:block mx-1"></div>
+
+      <!-- Role Preset Dropdown -->
+      <div class="relative">
+        <select onchange="applyRolePreset(this.value)" class="input-control text-xs font-mono whitespace-nowrap">
+          <option value="traffic">Role: Traffic Manager</option>
+          <option value="maintenance">Role: PWD / Maintenance</option>
+          <option value="police">Role: Police Safety Officer</option>
+          <option value="planner">Role: City Infrastructure Planner</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Search, Quick Jump & Accessibility Tools -->
+    <div class="flex items-center gap-2 shrink-0">
+      
+      <!-- Quick Jump Buttons -->
+      <div class="hidden xl:flex items-center gap-1.5 font-mono">
+        <button onclick="quickJump('recent')" class="btn-pill whitespace-nowrap">⚡ Recent</button>
+        <button onclick="quickJump('severe')" class="btn-pill text-[#FF0000] border-[#FF0000]/40 bg-[#FF0000]/10 hover:bg-[#FF0000]/20 font-semibold whitespace-nowrap">🚨 Critical</button>
+        <button onclick="quickJump('offline')" class="btn-pill text-[#FFC107] border-[#FFC107]/40 bg-[#FFC107]/10 hover:bg-[#FFC107]/20 font-semibold whitespace-nowrap">⚠️ Offline</button>
+      </div>
+
+      <!-- Global Search Bar with Live Filter -->
+      <div class="relative hidden sm:block">
+        <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[#8A8A8A] text-sm">search</span>
+        <input 
+          id="global-search"
+          type="text" 
+          placeholder="Search bus, defect..." 
+          onkeyup="handleGlobalSearch(this.value)"
+          class="input-control w-40 lg:w-48 xl:w-56 pl-8 text-xs font-mono placeholder:text-[#555]"
+        />
+      </div>
+
+      <!-- Accessibility Toggles -->
+      <button onclick="toggleHighContrast()" title="High Contrast Mode" class="w-8 h-8 rounded bg-[#161818] hover:bg-[#222] border border-[#2A2C2C] text-[#8A8A8A] hover:text-[#F4F2EE] flex items-center justify-center transition-all">
+        <span class="material-symbols-outlined text-sm">contrast</span>
+      </button>
+      <button onclick="toggleFontSize()" title="Text Size" class="w-8 h-8 rounded bg-[#161818] hover:bg-[#222] border border-[#2A2C2C] text-[#8A8A8A] hover:text-[#F4F2EE] font-mono text-xs font-bold flex items-center justify-center transition-all">
+        A±
+      </button>
+
+      <!-- Live Clock -->
+      <div class="hidden lg:flex items-center gap-1.5 font-mono text-xs text-[#F4F2EE] bg-[#111212] px-3 h-8 rounded border border-[#222222] whitespace-nowrap">
+        <span class="material-symbols-outlined text-sm text-[#FF0000]">schedule</span>
+        <span id="live-clock">16:05:00 IST</span>
+      </div>
+
+      <!-- Export Trigger -->
+      <button 
+        onclick="openReportModal()"
+        class="btn-primary h-8 px-3.5 text-xs whitespace-nowrap"
+      >
+        <span class="material-symbols-outlined text-sm">download</span>
+        <span>Export Report</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 3. MAIN DASHBOARD CONTAINER -->
+  <main class="md:ml-[260px] mt-16 p-4 lg:p-6 flex-1 min-h-[calc(100vh-64px)] flex flex-col gap-5 max-w-[1600px] mx-auto w-full">
+
+    <!-- TOP KPI ROW (Dashboard Summary Cards) -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 font-mono">
+      <div class="panel-card rounded p-3.5 space-y-1 h-[92px] flex flex-col justify-between">
+        <span class="text-[10px] text-[#8A8A8A] uppercase tracking-wider font-semibold block">Buses Monitored</span>
+        <div class="flex items-baseline gap-1.5">
+          <span class="font-serif text-2xl font-bold text-[#F4F2EE]">10</span>
+          <span class="text-[11px] text-[#4CAF50] font-bold">9 Online</span>
+        </div>
+        <span class="text-[10px] text-[#666] block">1 Offline (Signal)</span>
+      </div>
+
+      <div class="panel-card rounded p-3.5 space-y-1 h-[92px] flex flex-col justify-between">
+        <span class="text-[10px] text-[#8A8A8A] uppercase tracking-wider font-semibold block">Detected Today</span>
+        <div class="flex items-baseline gap-1.5">
+          <span class="font-serif text-2xl font-bold text-[#FF0000]">18</span>
+          <span class="text-[11px] text-[#8A8A8A] font-semibold">/ 114 wk</span>
+        </div>
+        <span class="text-[10px] text-[#666] block">6 Critical Severity</span>
+      </div>
+
+      <div class="panel-card rounded p-3.5 space-y-1 h-[92px] flex flex-col justify-between">
+        <span class="text-[10px] text-[#8A8A8A] uppercase tracking-wider font-semibold block">Road Network</span>
+        <div class="flex items-baseline gap-1.5">
+          <span class="font-serif text-2xl font-bold text-[#F4F2EE]">184.2</span>
+          <span class="text-[11px] text-[#8A8A8A] font-semibold">KM</span>
+        </div>
+        <span class="text-[10px] text-[#666] block">10 Corridors Scanned</span>
+      </div>
+
+      <div class="panel-card rounded p-3.5 space-y-1 h-[92px] flex flex-col justify-between">
+        <span class="text-[10px] text-[#8A8A8A] uppercase tracking-wider font-semibold block">Defects / KM</span>
+        <div class="flex items-baseline gap-1.5">
+          <span class="font-serif text-2xl font-bold text-[#FFC107]">1.02</span>
+          <span class="text-[11px] text-[#FFC107] font-bold">Avg</span>
+        </div>
+        <span class="text-[10px] text-[#666] block">Tonk Rd: 3.8/km</span>
+      </div>
+
+      <div class="panel-card rounded p-3.5 space-y-1 h-[92px] flex flex-col justify-between">
+        <span class="text-[10px] text-[#8A8A8A] uppercase tracking-wider font-semibold block">Highest Risk Sector</span>
+        <div class="flex items-baseline gap-1.5">
+          <span class="font-serif text-xl font-bold text-[#FF0000] truncate">Tonk Rd</span>
+          <span class="text-[10px] text-[#FF0000] font-bold uppercase bg-[#FF0000]/15 px-1.5 py-0.5 rounded">High</span>
+        </div>
+        <span class="text-[10px] text-[#666] block truncate">Gopalpura Flyover</span>
+      </div>
+
+      <div class="panel-card rounded p-3.5 space-y-1 h-[92px] flex flex-col justify-between">
+        <span class="text-[10px] text-[#8A8A8A] uppercase tracking-wider font-semibold block">Avg Response Time</span>
+        <div class="flex items-baseline gap-1.5">
+          <span class="font-serif text-2xl font-bold text-[#4CAF50]">4.2</span>
+          <span class="text-[11px] text-[#8A8A8A] font-semibold">Min</span>
+        </div>
+        <span class="text-[10px] text-[#666] block">Report → PWD Alert</span>
+      </div>
+    </div>
+
+    <!-- ADVANCED FILTER BAR -->
+    <div class="panel-card rounded p-3.5 font-mono text-xs space-y-3">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#222] pb-2.5">
+        <div class="flex items-center gap-2 text-xs font-bold text-[#F4F2EE]">
+          <span class="material-symbols-outlined text-sm text-[#FF0000]">tune</span>
+          <span class="tracking-wide uppercase">ADVANCED MULTI-FILTERING</span>
+        </div>
+        
+        <!-- Filter Presets -->
+        <div class="flex flex-wrap items-center gap-1.5 text-xs font-mono">
+          <span class="text-[#8A8A8A] text-[11px] mr-1">Presets:</span>
+          <button onclick="applyPreset('rush')" class="btn-pill">⚡ Rush Hour</button>
+          <button onclick="applyPreset('hazard')" class="btn-pill text-[#FF0000] border-[#FF0000]/40 bg-[#FF0000]/10 hover:bg-[#FF0000]/20 font-semibold">🚨 High-Risk</button>
+          <button onclick="applyPreset('monsoon')" class="btn-pill text-[#3B82F6] border-[#3B82F6]/40 bg-[#3B82F6]/10 hover:bg-[#3B82F6]/20 font-semibold">🌊 Monsoon</button>
+          <button onclick="resetFilters()" class="btn-pill text-[#8A8A8A] hover:text-[#F4F2EE]">Reset ✕</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-xs font-mono">
+        
+        <!-- 1. Incident Type Dropdown -->
+        <div>
+          <label class="text-[10px] text-[#8A8A8A] uppercase tracking-wider font-semibold block mb-1.5">Incident Type</label>
+          <select id="filter-type" onchange="applyFilters()" class="input-control w-full">
+            <option value="ALL">All Incident Types</option>
+            <option value="Pothole">Potholes Only</option>
+            <option value="Waterlogging">Waterlogging Only</option>
+            <option value="Hit-and-Run">Hit-and-Run Only</option>
+            <option value="Missing Signage">Missing Signage Only</option>
+            <option value="Rash Driving">Rash Driving Only</option>
+            <option value="Pedestrian Risk">Pedestrian Risk Only</option>
+          </select>
+        </div>
+
+        <!-- 2. Severity Slider -->
+        <div>
+          <div class="flex justify-between items-center text-[10px] text-[#8A8A8A] uppercase tracking-wider font-semibold mb-1.5">
+            <span>Min Severity</span>
+            <span id="severity-val" class="text-[#FF0000] font-bold">ALL</span>
+          </div>
+          <div class="h-8 flex items-center">
+            <input 
+              id="filter-severity" 
+              type="range" 
+              min="0" 
+              max="100" 
+              value="0" 
+              oninput="document.getElementById('severity-val').innerText = this.value + '%'; applyFilters();"
+              class="w-full accent-[#FF0000] h-1.5 bg-[#222] rounded cursor-pointer"
+            />
+          </div>
+        </div>
+
+        <!-- 3. Date Range Selector -->
+        <div>
+          <label class="text-[10px] text-[#8A8A8A] uppercase tracking-wider font-semibold block mb-1.5">Timeframe</label>
+          <select id="filter-date" onchange="applyFilters()" class="input-control w-full">
+            <option value="TODAY">Today (Live 24h)</option>
+            <option value="WEEK">Last 7 Days</option>
+            <option value="MONTH">Last 30 Days</option>
+            <option value="MONSOON">Monsoon Season</option>
+          </select>
+        </div>
+
+        <!-- 4. Confidence Threshold -->
+        <div>
+          <label class="text-[10px] text-[#8A8A8A] uppercase tracking-wider font-semibold block mb-1.5">AI Confidence</label>
+          <select id="filter-confidence" onchange="applyFilters()" class="input-control w-full">
+            <option value="0">&gt;0% (All Scores)</option>
+            <option value="80">&gt;80% High Conf</option>
+            <option value="90">&gt;90% Strict</option>
+            <option value="95">&gt;95% Verified</option>
+          </select>
+        </div>
+
+        <!-- 5. Bus Fleet Unit Filter -->
+        <div>
+          <label class="text-[10px] text-[#8A8A8A] uppercase tracking-wider font-semibold block mb-1.5">Bus Unit</label>
+          <select id="filter-bus-id" onchange="applyFilters()" class="input-control w-full">
+            <option value="ALL">All 10 Fleet Units</option>
+            <option value="BUS-001">BUS-001 (Rajesh Sharma)</option>
+            <option value="BUS-002">BUS-002 (Vikram Singh)</option>
+            <option value="BUS-003">BUS-003 (Manoj Meena)</option>
+            <option value="BUS-004">BUS-004 (Anil Kumar)</option>
+            <option value="BUS-005">BUS-005 (Suresh Saini)</option>
+            <option value="BUS-006">BUS-006 (Deepak Verma)</option>
+            <option value="BUS-007">BUS-007 (Kailash Chand)</option>
+            <option value="BUS-008">BUS-008 (Gopal Lal)</option>
+            <option value="BUS-009">BUS-009 (Praveen Gurjar)</option>
+            <option value="BUS-010">BUS-010 (Rameshwar Lal)</option>
+          </select>
+        </div>
+
+        <!-- 6. Bus Status Filter -->
+        <div>
+          <label class="text-[10px] text-[#8A8A8A] uppercase tracking-wider font-semibold block mb-1.5">Bus Status</label>
+          <select id="filter-status" onchange="applyFilters()" class="input-control w-full">
+            <option value="ALL">All Units</option>
+            <option value="ONLINE">Online (9)</option>
+            <option value="INCIDENT">Incident Active (2)</option>
+            <option value="OFFLINE">Offline / No GPS (1)</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 1: MAP & HEATMAP VIEW (With Time-Scrubbing Playback) -->
+    <!-- ========================================================================= -->
+    <div id="view-container-map" class="space-y-4">
+      
+      <!-- Time Scrubber & Playback Bar -->
+      <div class="panel-card rounded p-3 flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
+        <div class="flex items-center gap-3">
+          <button onclick="toggleTimelinePlay()" id="btn-play-playback" class="btn-primary h-8 px-3">
+            <span class="material-symbols-outlined text-sm" id="play-icon">play_arrow</span>
+            <span id="play-label">Play 24h</span>
+          </button>
+          
+          <div class="flex items-center gap-1 text-xs">
+            <span class="text-[#8A8A8A] text-[11px] mr-0.5">Speed:</span>
+            <button onclick="setPlaybackSpeed(1)" id="btn-speed-1" class="h-7 px-2.5 rounded bg-[#FF0000] text-white font-bold text-xs">1x</button>
+            <button onclick="setPlaybackSpeed(2)" id="btn-speed-2" class="h-7 px-2.5 rounded bg-[#161818] text-[#8A8A8A] hover:text-[#F4F2EE] text-xs font-medium border border-[#2A2C2C]">2x</button>
+            <button onclick="setPlaybackSpeed(4)" id="btn-speed-4" class="h-7 px-2.5 rounded bg-[#161818] text-[#8A8A8A] hover:text-[#F4F2EE] text-xs font-medium border border-[#2A2C2C]">4x</button>
+          </div>
+        </div>
+
+        <!-- 24-Hour Scrubber Slider -->
+        <div class="flex-1 min-w-[240px] flex items-center gap-3">
+          <span class="text-[11px] text-[#8A8A8A] font-medium">00:00</span>
+          <input 
+            id="time-scrubber" 
+            type="range" 
+            min="0" 
+            max="1440" 
+            value="960" 
+            oninput="handleTimeScrub(this.value)" 
+            class="w-full accent-[#FF0000] h-1.5 bg-[#222] rounded cursor-pointer"
+          />
+          <span class="text-[11px] text-[#8A8A8A] font-medium">24:00</span>
+        </div>
+
+        <div class="h-8 flex items-center gap-2 bg-[#0A0A0A] px-3 rounded border border-[#222]">
+          <span class="text-[#8A8A8A] text-[10px] uppercase font-semibold">TIME:</span>
+          <strong id="scrubber-display" class="text-[#FF0000] font-bold text-xs">16:00 IST</strong>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        
+        <!-- Main Map (8 Cols) -->
+        <div class="lg:col-span-8 panel-card rounded p-4 flex flex-col relative overflow-hidden h-[620px]">
+          <div class="flex justify-between items-center pb-2.5 mb-2.5 border-b border-[#222] font-mono text-xs">
+            <span class="font-bold text-[#F4F2EE] flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[#4CAF50] text-sm">map</span>
+              <span>Jaipur Dynamic Fleet &amp; Defect Mesh</span>
+            </span>
+            <span id="filtered-count-badge" class="h-6 px-2.5 bg-[#FF0000]/15 text-[#FF0000] border border-[#FF0000]/30 rounded text-[11px] font-bold flex items-center">
+              18 Incidents Active
+            </span>
+          </div>
+
+          <div id="main-gis-map" class="rounded border border-[#222] relative overflow-hidden flex-1"></div>
+          <div class="absolute bottom-6 left-6 bg-[#0D0E0E]/95 border border-[#222222] p-3 rounded font-mono text-xs space-y-1.5 backdrop-blur-sm z-[500]">
+            <div class="text-[#F4F2EE] font-bold uppercase text-[10px] flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-[#FF0000]"></span>
+              <span>Jaipur Defect &amp; Fleet Legend</span>
+            </div>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] pt-1">
+              <span class="flex items-center gap-1.5 text-[#FF0000]"><span class="w-2 h-2 rounded-full bg-[#FF0000]"></span> Critical Incident</span>
+              <span class="flex items-center gap-1.5 text-[#FFC107]"><span class="w-2 h-2 rounded-full bg-[#FFC107]"></span> Pothole Crater</span>
+              <span class="flex items-center gap-1.5 text-[#3B82F6]"><span class="w-2 h-2 rounded-full bg-[#3B82F6]"></span> Waterlogging</span>
+              <span class="flex items-center gap-1.5 text-[#4CAF50]"><span class="w-2 h-2 rounded-full bg-[#4CAF50]"></span> Active Bus (Online)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-Time Live Alert Feed (4 Cols) -->
+        <div class="lg:col-span-4 panel-card rounded p-4 flex flex-col h-[620px] font-mono">
+          <div class="flex justify-between items-center border-b border-[#222] pb-2.5 mb-2.5">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-[#FF0000] animate-pulse"></span>
+              <span class="text-xs font-bold text-[#F4F2EE] uppercase tracking-wide">Live Incident Feed</span>
+            </div>
+            <span class="text-[10px] text-[#8A8A8A] font-medium">Autoscroll Active</span>
+          </div>
+
+          <div id="live-incident-feed" class="space-y-2.5 overflow-y-auto custom-scrollbar flex-1 pr-1">
+            <!-- Populated dynamically via JS -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 2: TIMELINE STREAM VIEW -->
+    <!-- ========================================================================= -->
+    <div id="view-container-timeline" class="hidden space-y-4 font-mono">
+      <div class="panel-card rounded p-5">
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <h3 class="font-serif text-base md:text-lg font-bold text-[#F4F2EE]">Chronological Incident Stream</h3>
+            <p class="font-sans text-xs text-[#8A8A8A] mt-0.5">Exact sensor-to-server time progression of municipal detections</p>
+          </div>
+          <span class="h-6 px-2.5 rounded bg-[#4CAF50]/15 text-[#4CAF50] font-mono text-[11px] font-bold flex items-center">
+            18 Events Today
+          </span>
+        </div>
+
+        <div id="timeline-stream-container" class="space-y-3 relative before:absolute before:left-4 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#222]">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 3: INCIDENT CARDS GRID VIEW -->
+    <!-- ========================================================================= -->
+    <div id="view-container-grid" class="hidden space-y-4 font-mono">
+      <div class="panel-card rounded p-5">
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <h3 class="font-serif text-base md:text-lg font-bold text-[#F4F2EE]">Incident Dockets Grid</h3>
+            <p class="font-sans text-xs text-[#8A8A8A] mt-0.5">Comprehensive visual cards with frame captures and metadata</p>
+          </div>
+        </div>
+
+        <div id="incident-grid-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 4: TRAFFIC & CHARTS VIEW -->
+    <!-- ========================================================================= -->
+    <div id="view-container-charts" class="hidden space-y-6 font-mono">
+      
+      <!-- Top Metrics -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="panel-card rounded p-4 space-y-1.5">
+          <div class="flex justify-between items-center text-[10px] text-[#8A8A8A] uppercase font-semibold tracking-wider">
+            <span>Vehicle Scan Rate</span>
+            <span class="material-symbols-outlined text-sm text-[#4CAF50]">radar</span>
+          </div>
+          <div class="text-3xl font-serif font-bold text-[#F4F2EE]">7,030 / hr</div>
+          <p class="font-sans text-xs text-[#8A8A8A]">Aggregated from 10 active bus AI camera feeds</p>
+        </div>
+
+        <div class="panel-card rounded p-4 space-y-1.5">
+          <div class="flex justify-between items-center text-[10px] text-[#8A8A8A] uppercase font-semibold tracking-wider">
+            <span>Traffic Density Gauge</span>
+            <span class="material-symbols-outlined text-sm text-[#FFC107]">speed</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl font-serif font-bold text-[#FFC107]">MEDIUM-HIGH</span>
+            <span class="h-6 px-2 rounded bg-[#FFC107]/15 text-[#FFC107] font-mono text-xs font-bold flex items-center">78%</span>
+          </div>
+          <div class="w-full h-2 bg-[#222] rounded overflow-hidden mt-1">
+            <div class="w-[78%] h-full bg-[#FFC107]"></div>
+          </div>
+        </div>
+
+        <div class="panel-card rounded p-4 space-y-1.5">
+          <div class="flex justify-between items-center text-[10px] text-[#8A8A8A] uppercase font-semibold tracking-wider">
+            <span>Primary Bottleneck</span>
+            <span class="material-symbols-outlined text-sm text-[#FF0000]">warning</span>
+          </div>
+          <div class="text-xl font-serif font-bold text-[#FF0000]">Gopalpura Flyover</div>
+          <p class="font-sans text-xs text-[#8A8A8A]">Tonk Rd · Congestion delay +14 min over baseline</p>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-8 panel-card rounded p-5 flex flex-col justify-between">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="font-serif text-base md:text-lg font-bold text-[#F4F2EE]">Traffic Flow Time-Series (24h)</h3>
+              <p class="font-sans text-xs text-[#8A8A8A] mt-0.5">Hourly vehicle volume scanned across Jaipur arterial roads</p>
+            </div>
+          </div>
+          <div class="h-64 w-full">
+            <canvas id="chart-traffic-timeseries"></canvas>
+          </div>
+        </div>
+
+        <div class="lg:col-span-4 panel-card rounded p-5 flex flex-col justify-between">
+          <div class="mb-2">
+            <h3 class="font-serif text-base md:text-lg font-bold text-[#F4F2EE]">Vehicle Classification</h3>
+            <p class="font-sans text-xs text-[#8A8A8A] mt-0.5">6 AI Object Detection Classes</p>
+          </div>
+          <div class="h-64 w-full flex items-center justify-center">
+            <canvas id="chart-vehicle-breakdown"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seasonality & Historical Trends -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-8 panel-card rounded p-5 flex flex-col justify-between">
+          <div class="mb-4">
+            <h3 class="font-serif text-base md:text-lg font-bold text-[#F4F2EE]">Monsoon Seasonality &amp; Road Degradation Trend</h3>
+            <p class="font-sans text-xs text-[#8A8A8A] mt-0.5">Waterlogging and Pothole surges following heavy rainfall events</p>
+          </div>
+          <div class="h-64 w-full">
+            <canvas id="chart-seasonality"></canvas>
+          </div>
+        </div>
+
+        <div class="lg:col-span-4 panel-card rounded p-5 space-y-3">
+          <h3 class="font-serif text-base md:text-lg font-bold text-[#F4F2EE]">Predictive Indicators</h3>
+          <div class="p-3.5 bg-[#0A0A0A] border border-[#222] rounded space-y-1">
+            <span class="text-[#FFC107] font-mono font-bold text-[10px] uppercase tracking-wider block">Monsoon Surge (+50%)</span>
+            <p class="font-sans text-xs text-[#8A8A8A] leading-relaxed">Waterlogging incidents increase 50% on Ajmer Road and Sikar Road underpasses during peak rainfall.</p>
+          </div>
+          <div class="p-3.5 bg-[#0A0A0A] border border-[#222] rounded space-y-1">
+            <span class="text-[#FF0000] font-mono font-bold text-[10px] uppercase tracking-wider block">Pothole Expansion (14 Days)</span>
+            <p class="font-sans text-xs text-[#8A8A8A] leading-relaxed">Micro-cracks detected on Tonk Road KM 4.2 forecast to expand into deep craters (&gt;15cm) within 14 days.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 6: BEFORE / AFTER INFRASTRUCTURE ROI -->
+    <!-- ========================================================================= -->
+    <div id="view-container-before-after" class="hidden space-y-6 font-mono">
+      <div class="panel-card rounded p-5 space-y-4">
+        <div class="border-b border-[#222] pb-3">
+          <h3 class="font-serif text-base md:text-lg font-bold text-[#F4F2EE]">Before / After Infrastructure Repair Verification</h3>
+          <p class="font-sans text-xs text-[#8A8A8A] mt-0.5">Algorithmic defect verification + municipal ROI payoff analysis</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Before Card -->
+          <div class="p-4 rounded bg-[#0A0A0A] border border-[#FF0000]/40 space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="h-6 px-2.5 rounded bg-[#FF0000]/20 text-[#FF0000] font-mono font-bold text-[10px] uppercase flex items-center">BEFORE REPAIR (July 2026)</span>
+              <span class="text-[#8A8A8A] font-mono text-xs">Tonk Road KM 8.2</span>
+            </div>
+            <div class="h-44 bg-[#111212] rounded border border-[#222] flex flex-col items-center justify-center p-4 text-center">
+              <span class="material-symbols-outlined text-4xl text-[#FF0000] mb-2">warning</span>
+              <strong class="font-serif text-base font-bold text-[#F4F2EE]">6 Major Pothole Craters (Avg Depth 16cm)</strong>
+              <p class="font-sans text-xs text-[#8A8A8A] mt-1">Bus suspension impact shock &gt;3.2g · Severe 2-wheeler hazard</p>
+            </div>
+            <div class="font-mono text-xs space-y-1.5">
+              <div class="flex justify-between"><span class="text-[#8A8A8A]">Detected By Fleet:</span><strong class="text-[#F4F2EE]">34 Instances in 30 Days</strong></div>
+              <div class="flex justify-between"><span class="text-[#8A8A8A]">Vehicle Damage Cost:</span><strong class="text-[#FF0000]">~₹2,00,000 / month</strong></div>
+            </div>
+          </div>
+
+          <!-- After Card -->
+          <div class="p-4 rounded bg-[#0A0A0A] border border-[#4CAF50]/40 space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="h-6 px-2.5 rounded bg-[#4CAF50]/20 text-[#4CAF50] font-mono font-bold text-[10px] uppercase flex items-center">AFTER JDA HOT-MIX REPAIR (August 2026)</span>
+              <span class="h-6 px-2.5 rounded bg-[#4CAF50]/20 text-[#4CAF50] font-mono text-[11px] font-bold flex items-center">✅ VERIFIED FIXED</span>
+            </div>
+            <div class="h-44 bg-[#111212] rounded border border-[#222] flex flex-col items-center justify-center p-4 text-center">
+              <span class="material-symbols-outlined text-4xl text-[#4CAF50] mb-2">check_circle</span>
+              <strong class="font-serif text-base font-bold text-[#F4F2EE]">0 Potholes Detected in Last 14 Days</strong>
+              <p class="font-sans text-xs text-[#8A8A8A] mt-1">Asphalt surface smooth · Vibration levels normal (&lt;0.4g)</p>
+            </div>
+            <div class="font-mono text-xs space-y-1.5">
+              <div class="flex justify-between"><span class="text-[#8A8A8A]">JDA Hot-Mix Cost:</span><strong class="text-[#4CAF50]">₹45,000</strong></div>
+              <div class="flex justify-between"><span class="text-[#8A8A8A]">Municipal ROI:</span><strong class="text-[#4CAF50] font-bold">4.4x Payoff in 24 Days</strong></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 7: REPORT & GIS EXPORT BUILDER -->
+    <!-- ========================================================================= -->
+    <div id="view-container-report" class="hidden space-y-6 font-mono">
+      <div class="panel-card rounded p-5 space-y-4">
+        <div class="border-b border-[#222] pb-3">
+          <h3 class="font-serif text-base md:text-lg font-bold text-[#F4F2EE]">Customizable Municipal Report &amp; GIS Export Engine</h3>
+          <p class="font-sans text-xs text-[#8A8A8A] mt-0.5">Generate agency-ready documentation for PWD, JDA, Police, and Urban Planners</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
+          
+          <div class="p-4 rounded bg-[#0A0A0A] border border-[#222] space-y-3">
+            <span class="text-[#FF0000] font-bold uppercase text-[10px] tracking-wider block">1. Report Type</span>
+            <div class="space-y-2">
+              <label class="flex items-center gap-2 cursor-pointer text-xs">
+                <input type="radio" name="report-type" checked class="accent-[#FF0000]"/>
+                <span>Daily Morning Briefing (JDA / PWD)</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-xs">
+                <input type="radio" name="report-type" class="accent-[#FF0000]"/>
+                <span>Weekly Infrastructure Health</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-xs">
+                <input type="radio" name="report-type" class="accent-[#FF0000]"/>
+                <span>Hit-and-Run Police FIR Evidence</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="p-4 rounded bg-[#0A0A0A] border border-[#222] space-y-3">
+            <span class="text-[#FFC107] font-bold uppercase text-[10px] tracking-wider block">2. Included Sections</span>
+            <div class="space-y-2">
+              <label class="flex items-center gap-2 cursor-pointer text-xs"><input type="checkbox" checked class="accent-[#FF0000]"/><span>Pothole Craters (&gt;12cm)</span></label>
+              <label class="flex items-center gap-2 cursor-pointer text-xs"><input type="checkbox" checked class="accent-[#FF0000]"/><span>Waterlogging &amp; Underpasses</span></label>
+              <label class="flex items-center gap-2 cursor-pointer text-xs"><input type="checkbox" checked class="accent-[#FF0000]"/><span>License Plate Extractions (OCR)</span></label>
+              <label class="flex items-center gap-2 cursor-pointer text-xs"><input type="checkbox" checked class="accent-[#FF0000]"/><span>Missing Zebra Crossings</span></label>
+            </div>
+          </div>
+
+          <div class="p-4 rounded bg-[#0A0A0A] border border-[#222] space-y-3">
+            <span class="text-[#4CAF50] font-bold uppercase text-[10px] tracking-wider block">3. Export Format</span>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="downloadReport('PDF')" class="btn-primary h-9 w-full text-xs font-semibold">PDF Report ↓</button>
+              <button onclick="downloadReport('CSV')" class="btn-secondary h-9 w-full text-xs font-semibold">CSV Data ↓</button>
+              <button onclick="downloadReport('GEOJSON')" class="btn-secondary h-9 w-full text-xs font-semibold text-[#4CAF50] border-[#4CAF50]/30 hover:border-[#4CAF50]">GeoJSON Layer ↓</button>
+              <button onclick="downloadReport('SHAPEFILE')" class="btn-secondary h-9 w-full text-xs font-semibold text-[#3B82F6] border-[#3B82F6]/30 hover:border-[#3B82F6]">Shapefile ↓</button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 1: INCIDENT DETAIL PANEL -->
+  <!-- ========================================================================= -->
+  <div id="incident-detail-modal" class="fixed inset-0 z-[100] bg-black/85 hidden items-center justify-center p-4 font-mono">
+    <div class="bg-[#111212] border border-[#333333] max-w-2xl w-full rounded p-6 text-xs space-y-4 shadow-2xl">
+      
+      <div class="flex justify-between items-center border-b border-[#222222] pb-3">
+        <div class="flex items-center gap-2.5">
+          <span id="modal-inc-id" class="h-6 px-2.5 rounded bg-[#FF0000]/20 text-[#FF0000] font-bold text-xs flex items-center">#INC_00234</span>
+          <span id="modal-inc-title" class="font-serif text-base font-bold text-[#F4F2EE]">Pothole Cluster</span>
+        </div>
+        <button onclick="closeIncidentModal()" class="w-8 h-8 rounded bg-[#161818] hover:bg-[#222] border border-[#2A2C2C] text-[#8A8A8A] hover:text-white flex items-center justify-center font-bold text-sm transition-all">✕</button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <!-- Left: Simulated Frame Capture -->
+        <div class="space-y-2">
+          <div class="h-44 bg-[#0A0A0A] rounded border border-[#222] flex flex-col items-center justify-center relative overflow-hidden p-3 text-center">
+            <span class="material-symbols-outlined text-4xl text-[#FFC107] mb-1" id="modal-frame-icon">construction</span>
+            <span class="text-[10px] text-[#8A8A8A] uppercase font-bold tracking-wider" id="modal-frame-label">ONBOARD 1080p CAMERA CAPTURE</span>
+            <div class="absolute bottom-2 left-2 right-2 bg-black/80 p-1.5 rounded text-[10px] text-[#F4F2EE] flex justify-between border border-[#333]">
+              <span id="modal-frame-cam">Cam: Downward Asphalt</span>
+              <span id="modal-frame-conf" class="text-[#4CAF50] font-bold">Conf: 94.8%</span>
+            </div>
+          </div>
+          
+          <div class="p-3 bg-[#0A0A0A] border border-[#222] rounded text-xs space-y-1.5">
+            <div class="flex justify-between"><span class="text-[#8A8A8A]">Estimated Damage:</span><strong id="modal-damage" class="text-[#FF0000]">8/10 (Severe)</strong></div>
+            <div class="flex justify-between"><span class="text-[#8A8A8A]">Weather Condition:</span><strong id="modal-weather" class="text-[#F4F2EE]">Dry · Clear Daylight</strong></div>
+            <div class="flex justify-between"><span class="text-[#8A8A8A]">Repair Priority:</span><strong id="modal-priority" class="text-[#FF0000]">URGENT (Within 7 Days)</strong></div>
+          </div>
+        </div>
+
+        <!-- Right: Metadata & Location History -->
+        <div class="space-y-3">
+          <div class="space-y-1.5 text-xs">
+            <div class="flex justify-between"><span class="text-[#8A8A8A]">GPS Location:</span><strong id="modal-gps" class="text-[#F4F2EE]">26.8631°N, 75.7982°E</strong></div>
+            <div class="flex justify-between"><span class="text-[#8A8A8A]">Detected By:</span><strong id="modal-bus" class="text-[#F4F2EE]">BUS-003</strong></div>
+            <div class="flex justify-between"><span class="text-[#8A8A8A]">Timestamp:</span><strong id="modal-timestamp" class="text-[#F4F2EE]">2026-08-23 15:48:12</strong></div>
+            <div class="flex justify-between items-center pt-1 border-t border-[#222]">
+              <span class="text-[#8A8A8A]">Repair Status:</span>
+              <select id="modal-status-select" onchange="updateIncidentStatus(this.value)" class="input-control text-xs text-[#4CAF50] font-bold">
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Location History -->
+          <div class="p-3 bg-[#080909] border border-[#222] rounded space-y-1">
+            <span class="text-[10px] text-[#8A8A8A] uppercase font-bold tracking-wider block">Historical Data for Segment:</span>
+            <ul class="font-sans text-xs text-[#8A8A8A] list-disc list-inside space-y-0.5">
+              <li>3 potholes detected in last 30 days</li>
+              <li>Average AI confidence: 92.4%</li>
+              <li>Last JDA patch: 2026-07-15</li>
+            </ul>
+          </div>
+
+          <!-- Notes Textarea -->
+          <div>
+            <textarea id="modal-notes" placeholder="Add observation or dispatch note..." class="w-full bg-[#0A0A0A] border border-[#2A2C2C] rounded p-2 text-xs font-mono text-[#F4F2EE] focus:border-[#FF0000] outline-none h-14 placeholder:text-[#555]"></textarea>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between pt-3 border-t border-[#222222] gap-2">
+        <button onclick="focusModalIncidentOnMap()" class="btn-secondary h-8 px-3 text-xs">
+          <span class="material-symbols-outlined text-xs text-[#4CAF50]">location_on</span>
+          <span>Focus on Bus &amp; Location 📍</span>
+        </button>
+        <div class="flex items-center gap-2">
+          <button onclick="downloadReport('PDF')" class="btn-secondary h-8 px-3 text-xs">
+            Download PDF ↓
+          </button>
+          <button onclick="escalateModalIncident()" class="btn-primary h-8 px-3 text-xs">
+            🚨 Escalate to JDA / Police
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 2: HIT & RUN FORENSICS -->
+  <!-- ========================================================================= -->
+  <div id="hitandrun-modal" class="fixed inset-0 z-[100] bg-black/85 hidden items-center justify-center p-4 font-mono">
+    <div class="bg-[#111212] border border-[#333333] max-w-2xl w-full rounded p-6 text-xs space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-[#222] pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-[#FF0000]">shield</span>
+          <span class="font-serif text-base font-bold text-[#F4F2EE]">HIT-AND-RUN FORENSICS &amp; MULTI-CAMERA TRAIL</span>
+        </div>
+        <button onclick="closeHitAndRunModal()" class="w-8 h-8 rounded bg-[#161818] hover:bg-[#222] border border-[#2A2C2C] text-[#8A8A8A] hover:text-white flex items-center justify-center font-bold text-sm transition-all">✕</button>
+      </div>
+
+      <div class="border border-[#FF0000]/40 bg-[#0A0A0A] rounded p-4 space-y-3">
+        <div class="flex justify-between items-start">
+          <div>
+            <span class="font-mono text-base text-[#F4F2EE] font-bold tracking-wider">RJ-14-CE-8821</span>
+            <p class="font-sans text-xs text-[#8A8A8A] mt-0.5">White Toyota Fortuner SUV · High Speed Crash &amp; Flee</p>
+          </div>
+          <span class="h-6 px-2.5 rounded bg-[#4CAF50]/15 text-[#4CAF50] font-mono text-xs font-bold flex items-center">OCR Confidence: 97.2%</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 font-mono text-xs">
+          <div class="p-3 rounded bg-[#111212] border border-[#FF0000]/40 space-y-1">
+            <span class="text-[10px] text-[#FF0000] font-bold block uppercase tracking-wider">15:20 IST · IMPACT</span>
+            <strong class="text-[#F4F2EE] block text-xs">BUS-005 (Airport T2)</strong>
+            <p class="font-sans text-[11px] text-[#8A8A8A]">Front Camera · 84 km/h collision</p>
+          </div>
+          <div class="p-3 rounded bg-[#111212] border border-[#222] space-y-1">
+            <span class="text-[10px] text-[#FFC107] font-bold block uppercase tracking-wider">15:26 IST · INTERCEPT</span>
+            <strong class="text-[#F4F2EE] block text-xs">BUS-003 (Tonk Rd)</strong>
+            <p class="font-sans text-[11px] text-[#8A8A8A]">Left Blindspot Camera</p>
+          </div>
+          <div class="p-3 rounded bg-[#111212] border border-[#222] space-y-1">
+            <span class="text-[10px] text-[#4CAF50] font-bold block uppercase tracking-wider">15:34 IST · LAST FIX</span>
+            <strong class="text-[#F4F2EE] block text-xs">BUS-001 (JLN Marg)</strong>
+            <p class="font-sans text-[11px] text-[#8A8A8A]">Rear Camera · B2 Bypass</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-[#222]">
+        <button onclick="downloadReport('PDF')" class="btn-secondary h-8 px-3 text-xs">Export FIR Docket ↓</button>
+        <button onclick="escalateToAuthorities('CASE #HR-2026-089')" class="btn-primary h-8 px-3 text-xs">Transmit to Rajasthan Police →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 3: DRIVER BEHAVIOR LEADERBOARD -->
+  <!-- ========================================================================= -->
+  <div id="driver-modal" class="fixed inset-0 z-[100] bg-black/85 hidden items-center justify-center p-4 font-mono">
+    <div class="bg-[#111212] border border-[#333333] max-w-2xl w-full rounded p-6 text-xs space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-[#222] pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-[#4CAF50]">person</span>
+          <span class="font-serif text-base font-bold text-[#F4F2EE]">JCTSL DRIVER SAFETY INDEX &amp; BEHAVIOR ANALYTICS</span>
+        </div>
+        <button onclick="closeDriverModal()" class="w-8 h-8 rounded bg-[#161818] hover:bg-[#222] border border-[#2A2C2C] text-[#8A8A8A] hover:text-white flex items-center justify-center font-bold text-sm transition-all">✕</button>
+      </div>
+
+      <div class="overflow-x-auto font-mono">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-[#222] text-[#8A8A8A] text-[10px] uppercase font-semibold">
+              <th class="pb-2.5">DRIVER</th>
+              <th class="pb-2.5">ASSIGNED BUS</th>
+              <th class="pb-2.5">SAFETY SCORE</th>
+              <th class="pb-2.5">RASH INCIDENTS</th>
+              <th class="pb-2.5">SPEEDING EVENTS</th>
+              <th class="pb-2.5">TRAINING</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#222]">
+            <tr>
+              <td class="py-2.5 text-[#F4F2EE] font-bold">Rajesh Sharma</td>
+              <td class="py-2.5">BUS-001</td>
+              <td class="py-2.5 text-[#4CAF50] font-bold">96 / 100</td>
+              <td class="py-2.5">0</td>
+              <td class="py-2.5">1</td>
+              <td class="py-2.5"><span class="text-[#4CAF50] font-bold">Exemplary</span></td>
+            </tr>
+            <tr>
+              <td class="py-2.5 text-[#F4F2EE] font-bold">Vikram Singh</td>
+              <td class="py-2.5">BUS-002</td>
+              <td class="py-2.5 text-[#4CAF50] font-bold">92 / 100</td>
+              <td class="py-2.5">0</td>
+              <td class="py-2.5">2</td>
+              <td class="py-2.5"><span class="text-[#4CAF50] font-bold">Normal</span></td>
+            </tr>
+            <tr>
+              <td class="py-2.5 text-[#F4F2EE] font-bold">Manoj Meena</td>
+              <td class="py-2.5">BUS-003</td>
+              <td class="py-2.5 text-[#FFC107] font-bold">78 / 100</td>
+              <td class="py-2.5">2</td>
+              <td class="py-2.5">4</td>
+              <td class="py-2.5"><span class="text-[#FFC107] font-bold">Caution</span></td>
+            </tr>
+            <tr>
+              <td class="py-2.5 text-[#F4F2EE] font-bold">Praveen Gurjar</td>
+              <td class="py-2.5">BUS-009</td>
+              <td class="py-2.5 text-[#FF0000] font-bold">58 / 100</td>
+              <td class="py-2.5">5</td>
+              <td class="py-2.5">9</td>
+              <td class="py-2.5"><span class="h-5 px-2 rounded bg-[#FF0000]/20 text-[#FF0000] font-bold text-[10px] inline-flex items-center">Mandatory Training</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL 4: PEDESTRIAN SAFETY ANALYSIS -->
+  <!-- ========================================================================= -->
+  <div id="pedestrian-modal" class="fixed inset-0 z-[100] bg-black/85 hidden items-center justify-center p-4 font-mono">
+    <div class="bg-[#111212] border border-[#333333] max-w-2xl w-full rounded p-6 text-xs space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-[#222] pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-[#FFC107]">directions_walk</span>
+          <span class="font-serif text-base font-bold text-[#F4F2EE]">PEDESTRIAN &amp; SCHOOL ZONE SAFETY ANALYSIS</span>
+        </div>
+        <button onclick="closePedestrianModal()" class="w-8 h-8 rounded bg-[#161818] hover:bg-[#222] border border-[#2A2C2C] text-[#8A8A8A] hover:text-white flex items-center justify-center font-bold text-sm transition-all">✕</button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-3.5 bg-[#0A0A0A] border border-[#222] rounded space-y-2">
+          <strong class="text-[#FF0000] text-xs font-mono uppercase tracking-wider block">High-Risk Crossing Zones</strong>
+          <ul class="space-y-1.5 text-xs font-sans text-[#8A8A8A]">
+            <li class="flex justify-between"><span>Choti Chaupar Heritage Cross:</span><strong class="text-[#FF0000] font-mono font-bold">8 Near-Misses</strong></li>
+            <li class="flex justify-between"><span>Rajasthan University Gate:</span><strong class="text-[#FFC107] font-mono font-bold">5 Student Surges</strong></li>
+            <li class="flex justify-between"><span>Sindhi Camp Bus Stand:</span><strong class="text-[#FF0000] font-mono font-bold">12 Near-Misses</strong></li>
+          </ul>
+        </div>
+
+        <div class="p-3.5 bg-[#0A0A0A] border border-[#222] rounded space-y-2">
+          <strong class="text-[#4CAF50] text-xs font-mono uppercase tracking-wider block">Recommended JDA Interventions</strong>
+          <ul class="space-y-1.5 text-xs font-sans text-[#8A8A8A]">
+            <li>• Install Pelican Signal @ RU JLN Marg</li>
+            <li>• Repaint 3 High-Visibility Zebra Crossings</li>
+            <li>• Deploy Speed Calming Table @ School Zone</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- SCRIPT ENGINE (Core Interactive Features + Real-Time Fleet & Defect Telemetry) -->
+  <script>
+    // 1. JAIPUR FLEET DATA (10 ACTIVE MUNICIPAL BUSES)
+    const jaipurFleet = [
+      { id: 'BUS-001', driver: 'Rajesh Sharma', lat: 26.8528, lng: 75.8052, speed: 38, heading: 'NE', status: 'ONLINE', incidents: 1, location: 'JLN Marg near WTP' },
+      { id: 'BUS-002', driver: 'Vikram Singh', lat: 26.9157, lng: 75.8184, speed: 42, heading: 'W', status: 'ONLINE', incidents: 0, location: 'MI Road near Ajmeri Gate' },
+      { id: 'BUS-003', driver: 'Manoj Meena', lat: 26.8631, lng: 75.7982, speed: 62, heading: 'S', status: 'INCIDENT', incidents: 3, location: 'Tonk Road at Gopalpura Flyover' },
+      { id: 'BUS-004', driver: 'Anil Kumar', lat: 26.8627, lng: 75.7554, speed: 35, heading: 'E', status: 'ONLINE', incidents: 1, location: 'Mansarovar Sector 10' },
+      { id: 'BUS-005', driver: 'Suresh Saini', lat: 26.8289, lng: 75.8056, speed: 78, heading: 'SE', status: 'INCIDENT', incidents: 2, location: 'Airport T2 Terminal Link' },
+      { id: 'BUS-006', driver: 'Deepak Verma', lat: 26.9064, lng: 75.7431, speed: 44, heading: 'N', status: 'ONLINE', incidents: 0, location: 'Vaishali Nagar Amrapali Circle' },
+      { id: 'BUS-007', driver: 'Kailash Chand', lat: 26.8872, lng: 75.8152, speed: 48, heading: 'SW', status: 'ONLINE', incidents: 1, location: 'JLN Marg @ Rajasthan University' },
+      { id: 'BUS-008', driver: 'Gopal Lal', lat: 26.9239, lng: 75.8267, speed: 32, heading: 'N', status: 'ONLINE', incidents: 1, location: 'Badi Chaupar Heritage Gate' },
+      { id: 'BUS-009', driver: 'Praveen Gurjar', lat: 26.7761, lng: 75.8450, speed: 85, heading: 'S', status: 'OFFLINE', incidents: 4, location: 'Sitapura Industrial Zone' },
+      { id: 'BUS-010', driver: 'Rameshwar Lal', lat: 26.9825, lng: 75.7725, speed: 40, heading: 'NW', status: 'ONLINE', incidents: 0, location: 'Sikar Road VKIA Industrial Zone' }
+    ];
+
+    // 2. DEFECT & INCIDENT TELEMETRY DOCKETS
+    const allIncidents = [
+      { id: 'INC-001', type: 'Hit-and-Run', severity: 'HIGH', severityScore: 95, busId: 'BUS-005', lat: 26.8289, lng: 75.8056, time: '15:20 IST', minuteOfDay: 920, camera: 'Front Camera 1', conf: 97.2, damage: '9/10', priority: 'CRITICAL', weather: 'Clear Daylight', desc: 'High speed collision detected near Airport link. Commercial SUV fled towards Durgapura. License plate extracted: RJ-14-CE-8821.', status: 'Pending', assigned: 'Rajasthan Police', location: 'Airport Terminal 2 Link' },
+      { id: 'INC-002', type: 'Pothole', severity: 'HIGH', severityScore: 88, busId: 'BUS-003', lat: 26.8631, lng: 75.7982, time: '15:32 IST', minuteOfDay: 932, camera: 'Downward Asphalt 1080p', conf: 94.8, damage: '8/10', priority: 'URGENT', weather: 'Dry', desc: 'Deep crater cluster (16cm depth, 3.8m² area) detected on Tonk Road near Gopalpura Flyover.', status: 'In Progress', assigned: 'JDA South Zone', location: 'Tonk Road Gopalpura' },
+      { id: 'INC-003', type: 'Waterlogging', severity: 'MEDIUM', severityScore: 65, busId: 'BUS-004', lat: 26.8920, lng: 75.7380, time: '14:40 IST', minuteOfDay: 880, camera: 'Front Wide Angle', conf: 91.2, damage: '6/10', priority: 'MEDIUM', weather: 'Overcast', desc: 'Surface water depth >14cm at Ajmer Road Underpass Entry causing lane bottleneck.', status: 'Pending', assigned: 'JMC Drainage Div', location: 'Ajmer Rd Underpass' },
+      { id: 'INC-004', type: 'Missing Signage', severity: 'LOW', severityScore: 40, busId: 'BUS-008', lat: 26.9239, lng: 75.8267, time: '13:15 IST', minuteOfDay: 795, camera: 'Top OCR Sensor', conf: 88.5, damage: '3/10', priority: 'LOW', weather: 'Dry', desc: 'Damaged 40 km/h speed limit signage on Amer Road Heritage Corridor.', status: 'Pending', assigned: 'Traffic Sign Crew', location: 'Badi Chaupar Gate' },
+      { id: 'INC-005', type: 'Rash Driving', severity: 'HIGH', severityScore: 90, busId: 'BUS-009', lat: 26.7761, lng: 75.8450, time: '12:05 IST', minuteOfDay: 725, camera: 'Rear Vision Camera', conf: 95.1, damage: '7/10', priority: 'HIGH', weather: 'Dry', desc: 'Dangerous cutting across bus lane at 85 km/h in Sitapura Industrial Zone.', status: 'In Progress', assigned: 'Traffic Police', location: 'Sitapura Industrial Zone' },
+      { id: 'INC-006', type: 'Pedestrian Risk', severity: 'MEDIUM', severityScore: 60, busId: 'BUS-007', lat: 26.8872, lng: 75.8152, time: '11:20 IST', minuteOfDay: 680, camera: 'Front Wide Angle', conf: 93.4, damage: '5/10', priority: 'MEDIUM', weather: 'Clear', desc: 'Un-signalized pedestrian surge (9 university students) on JLN Marg near Rajasthan University gate.', status: 'Resolved', assigned: 'JMC Safety Wing', location: 'JLN Marg @ RU Gate' },
+      { id: 'INC-007', type: 'Pothole', severity: 'HIGH', severityScore: 82, busId: 'BUS-001', lat: 26.8535, lng: 75.8062, time: '09:45 IST', minuteOfDay: 585, camera: 'Downward Asphalt', conf: 93.0, damage: '7/10', priority: 'URGENT', weather: 'Dry', desc: 'Asphalt edge subsidence near World Trade Park (WTP) bus stop bay.', status: 'Resolved', assigned: 'JDA South Zone', location: 'JLN Marg near WTP' },
+      { id: 'INC-008', type: 'Pothole', severity: 'HIGH', severityScore: 89, busId: 'BUS-010', lat: 26.9825, lng: 75.7725, time: '08:15 IST', minuteOfDay: 495, camera: 'Downward Asphalt', conf: 96.1, damage: '8/10', priority: 'URGENT', weather: 'Dry', desc: 'Heavy vehicle rutting (19cm depth) on Sikar Road Road No. 14 VKIA.', status: 'In Progress', assigned: 'PWD Rajasthan', location: 'VKIA Sikar Road' }
+    ];
+
+    let map = null;
+    let markersLayer = null;
+    let selectedBusId = null;
+    let currentFilteredIncidents = [...allIncidents];
+    let audioAlertsEnabled = true;
+    let audioCtx = null;
+    let selectedIncidentForModal = null;
+    let playbackInterval = null;
+    let playbackSpeed = 1;
+    let isPlaying = false;
+    const chartInstances = {};
+
+    // MOBILE SIDEBAR TOGGLE
+    function toggleMobileSidebar() {
+      const nav = document.querySelector('nav');
+      if (nav) {
+        nav.classList.toggle('hidden');
+        nav.classList.toggle('flex');
+        nav.classList.toggle('z-50');
+      }
+    }
+
+    // AUDIO CHIME SYNTHESIZER (Singleton AudioContext)
+    function playBeep(freq = 880, type = 'sine', duration = 0.15) {
+      if (!audioAlertsEnabled) return;
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function toggleAudioAlerts() {
+      audioAlertsEnabled = !audioAlertsEnabled;
+      const btn = document.getElementById('btn-audio-toggle');
+      if (audioAlertsEnabled) {
+        btn.innerHTML = '<span class="material-symbols-outlined text-xs">volume_up</span> <span>ON</span>';
+        btn.className = 'px-2 py-0.5 rounded bg-[#222] text-[#4CAF50] font-bold flex items-center gap-1';
+        playBeep(880);
+      } else {
+        btn.innerHTML = '<span class="material-symbols-outlined text-xs">volume_off</span> <span>OFF</span>';
+        btn.className = 'px-2 py-0.5 rounded bg-[#222] text-[#8A8A8A] font-bold flex items-center gap-1';
+      }
+    }
+
+    // LIVE CLOCK
+    setInterval(() => {
+      const now = new Date();
+      const clockElem = document.getElementById('live-clock');
+      if (clockElem) {
+        clockElem.innerText = now.toLocaleTimeString('en-US', { hour12: false }) + ' IST';
+      }
+    }, 1000);
+
+    // MULTI-VIEW SWITCHER
+    function setViewMode(mode) {
+      const modes = ['map', 'timeline', 'grid', 'charts', 'before-after', 'report'];
+      modes.forEach(m => {
+        const container = document.getElementById('view-container-' + m);
+        const btn = document.getElementById('view-btn-' + m);
+        if (container) container.classList.add('hidden');
+        if (btn) {
+          btn.className = 'w-full flex items-center gap-3 px-3 py-2 rounded text-[#8A8A8A] hover:text-[#F4F2EE] hover:bg-white/5 transition-colors font-mono text-xs';
+        }
+      });
+
+      const targetContainer = document.getElementById('view-container-' + mode);
+      const targetBtn = document.getElementById('view-btn-' + mode);
+      if (targetContainer) targetContainer.classList.remove('hidden');
+      if (targetBtn) {
+        targetBtn.className = 'w-full flex items-center gap-3 px-3 py-2 rounded bg-[#FF0000] text-white font-bold transition-colors font-mono text-xs';
+      }
+
+      if (mode === 'map') {
+        setTimeout(() => { if (map) map.invalidateSize(); }, 150);
+      } else if (mode === 'charts') {
+        setTimeout(() => {
+          Object.values(chartInstances).forEach(chart => {
+            if (chart && typeof chart.resize === 'function') chart.resize();
+          });
+        }, 120);
+      }
+
+      // Close mobile drawer on view change
+      const nav = document.querySelector('nav');
+      if (nav && window.innerWidth < 768 && !nav.classList.contains('hidden')) {
+        nav.classList.add('hidden');
+        nav.classList.remove('flex');
+      }
+    }
+
+    // INITIALIZE MAP
+    function initJaipurMap() {
+      if (map) return;
+      map = L.map('main-gis-map', { zoomControl: true }).setView([26.8850, 75.8000], 12);
+      
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap · Jaipur Public Transport Fleet Mesh'
+      }).addTo(map);
+
+      markersLayer = L.layerGroup().addTo(map);
+      renderMapMarkers();
+    }
+
+    function renderMapMarkers() {
+      if (!markersLayer) return;
+      markersLayer.clearLayers();
+
+      const busFilter = document.getElementById('filter-bus-id')?.value || 'ALL';
+      const statusFilter = document.getElementById('filter-status')?.value || 'ALL';
+
+      // 1. Render Buses
+      jaipurFleet.forEach(b => {
+        if (busFilter !== 'ALL' && b.id !== busFilter) return;
+        if (statusFilter !== 'ALL' && b.status !== statusFilter) return;
+
+        const isSelected = (selectedBusId === b.id);
+        const color = b.status === 'ONLINE' ? '#4CAF50' : b.status === 'INCIDENT' ? '#FF0000' : '#FFC107';
+
+        if (isSelected) {
+          const pulseRing = L.circleMarker([b.lat, b.lng], {
+            radius: 18,
+            color: color,
+            fillColor: color,
+            fillOpacity: 0.25,
+            weight: 2,
+            dashArray: '3, 3'
+          });
+          markersLayer.addLayer(pulseRing);
+        }
+
+        const marker = L.circleMarker([b.lat, b.lng], {
+          radius: isSelected ? 12 : (b.status === 'INCIDENT' ? 9 : 7.5),
+          color: isSelected ? '#FFD700' : '#FFFFFF',
+          fillColor: color,
+          fillOpacity: 1,
+          weight: isSelected ? 3 : 2
+        });
+
+        marker.bindPopup(`
+          <div style="font-family: JetBrains Mono, monospace; font-size: 11px; padding: 4px;">
+            <strong style="color: ${color}">🚌 ${b.id} (${b.status})</strong><br/>
+            <strong>Driver:</strong> ${b.driver}<br/>
+            <strong>Speed:</strong> ${b.speed} km/h (Heading: ${b.heading})<br/>
+            <strong>Location:</strong> ${b.location}<br/>
+            <div style="margin-top: 8px;">
+              <button onclick="selectBus('${b.id}')" style="background:#FF0000; color:white; border:none; height:24px; padding:0 8px; font-size:10px; font-family:'JetBrains Mono',monospace; border-radius:4px; cursor:pointer; font-weight:600;">Focus Bus 📍</button>
+            </div>
+          </div>
+        `);
+
+        marker.on('click', () => {
+          selectBus(b.id);
+        });
+
+        markersLayer.addLayer(marker);
+      });
+
+      // 2. Render Incidents
+      currentFilteredIncidents.forEach(inc => {
+        const color = inc.severity === 'HIGH' ? '#FF0000' : inc.severity === 'MEDIUM' ? '#FFC107' : '#71717A';
+
+        const marker = L.circleMarker([inc.lat, inc.lng], {
+          radius: 8,
+          color: '#FFFFFF',
+          fillColor: color,
+          fillOpacity: 1,
+          weight: 1.5
+        });
+
+        marker.bindPopup(`
+          <div style="font-family: JetBrains Mono, monospace; font-size: 11px; padding: 4px;">
+            <strong style="color: ${color}">⚠️ ${inc.type.toUpperCase()} [${inc.severity}]</strong><br/>
+            <strong>ID:</strong> ${inc.id} · Bus: ${inc.busId}<br/>
+            <strong>Time:</strong> ${inc.time} (Conf: ${inc.conf}%)<br/>
+            <strong>Location:</strong> ${inc.location}<br/>
+            <p style="color:#8A8A8A; font-family: Geist, sans-serif; font-size:11px; margin-top:4px; line-height:1.3;">${inc.desc}</p>
+            <div style="margin-top: 8px; display:flex; gap:6px;">
+              <button onclick="openIncidentModalById('${inc.id}')" style="background:#FF0000; color:white; border:none; height:24px; padding:0 8px; font-size:10px; font-family:'JetBrains Mono',monospace; border-radius:4px; cursor:pointer; font-weight:600;">Deep-Dive →</button>
+              <button onclick="selectBus('${inc.busId}')" style="background:#161818; color:#F4F2EE; border:1px solid #2A2C2C; height:24px; padding:0 8px; font-size:10px; font-family:'JetBrains Mono',monospace; border-radius:4px; cursor:pointer; font-weight:600;">Focus Bus 📍</button>
+            </div>
+          </div>
+        `);
+
+        marker.on('click', () => openIncidentModalById(inc.id));
+        markersLayer.addLayer(marker);
+      });
+
+      const badge = document.getElementById('filtered-count-badge');
+      if (badge) {
+        badge.innerText = `${currentFilteredIncidents.length} Incidents Active`;
+      }
+    }
+
+    // FOCUS BUS ON MAP
+    function selectBus(busId) {
+      const bus = jaipurFleet.find(b => b.id === busId);
+      if (!bus) return;
+
+      selectedBusId = bus.id;
+      setViewMode('map');
+      renderMapMarkers();
+
+      if (map) {
+        map.setView([bus.lat, bus.lng], 15);
+      }
+      playBeep(920);
+    }
+
+    // ADVANCED FILTER LOGIC
+    function applyFilters() {
+      const type = document.getElementById('filter-type')?.value || 'ALL';
+      const minSeverity = parseInt(document.getElementById('filter-severity')?.value || '0');
+      const minConf = parseFloat(document.getElementById('filter-confidence')?.value || '0');
+      const busId = document.getElementById('filter-bus-id')?.value || 'ALL';
+      const status = document.getElementById('filter-status')?.value || 'ALL';
+      const maxMinute = parseInt(document.getElementById('time-scrubber')?.value || '1440');
+
+      if (busId !== 'ALL') {
+        selectedBusId = busId;
+      } else {
+        selectedBusId = null;
+      }
+
+      currentFilteredIncidents = allIncidents.filter(inc => {
+        if (inc.minuteOfDay > maxMinute) return false;
+        if (type !== 'ALL' && inc.type !== type) return false;
+        if (inc.severityScore < minSeverity) return false;
+        if (inc.conf < minConf) return false;
+        if (busId !== 'ALL' && inc.busId !== busId) return false;
+        if (status !== 'ALL') {
+          const bus = jaipurFleet.find(b => b.id === inc.busId);
+          if (bus && bus.status !== status) return false;
+        }
+        return true;
+      });
+
+      renderMapMarkers();
+      populateIncidentFeed(currentFilteredIncidents);
+      populateTimelineStream(currentFilteredIncidents);
+      populateGridCards(currentFilteredIncidents);
+    }
+
+    function applyPreset(preset) {
+      if (preset === 'rush') {
+        document.getElementById('filter-type').value = 'ALL';
+        document.getElementById('filter-severity').value = '60';
+        document.getElementById('severity-val').innerText = '60%';
+        document.getElementById('filter-confidence').value = '80';
+      } else if (preset === 'hazard') {
+        document.getElementById('filter-type').value = 'Pothole';
+        document.getElementById('filter-severity').value = '80';
+        document.getElementById('severity-val').innerText = '80%';
+      } else if (preset === 'monsoon') {
+        document.getElementById('filter-type').value = 'Waterlogging';
+        document.getElementById('filter-severity').value = '0';
+        document.getElementById('severity-val').innerText = '0%';
+      }
+      applyFilters();
+    }
+
+    function resetFilters() {
+      document.getElementById('filter-type').value = 'ALL';
+      document.getElementById('filter-severity').value = '0';
+      document.getElementById('severity-val').innerText = 'ALL';
+      document.getElementById('filter-confidence').value = '0';
+      document.getElementById('filter-bus-id').value = 'ALL';
+      document.getElementById('filter-status').value = 'ALL';
+      document.getElementById('time-scrubber').value = '1440';
+      document.getElementById('scrubber-display').innerText = '24:00 IST';
+      selectedBusId = null;
+      applyFilters();
+      if (map) map.setView([26.8850, 75.8000], 12);
+    }
+
+    // TIME-BASED PLAYBACK
+    function handleTimeScrub(minutes) {
+      const hrs = Math.floor(minutes / 60).toString().padStart(2, '0');
+      const mins = (minutes % 60).toString().padStart(2, '0');
+      document.getElementById('scrubber-display').innerText = `${hrs}:${mins} IST`;
+      applyFilters();
+    }
+
+    function toggleTimelinePlay() {
+      isPlaying = !isPlaying;
+      const playIcon = document.getElementById('play-icon');
+      const playLabel = document.getElementById('play-label');
+
+      if (isPlaying) {
+        if (playIcon) playIcon.innerText = 'pause';
+        if (playLabel) playLabel.innerText = 'Pause';
+        const scrubber = document.getElementById('time-scrubber');
+        playbackInterval = setInterval(() => {
+          let val = parseInt(scrubber.value) + (15 * playbackSpeed);
+          if (val > 1440) val = 0;
+          scrubber.value = val;
+          handleTimeScrub(val);
+        }, 300);
+      } else {
+        if (playIcon) playIcon.innerText = 'play_arrow';
+        if (playLabel) playLabel.innerText = 'Play 24h';
+        if (playbackInterval) clearInterval(playbackInterval);
+      }
+    }
+
+    function setPlaybackSpeed(s) {
+      playbackSpeed = s;
+      ['1', '2', '4'].forEach(x => {
+        const btn = document.getElementById('btn-speed-' + x);
+        if (btn) {
+          btn.className = (x === s.toString()) 
+            ? 'h-7 px-2.5 rounded bg-[#FF0000] text-white font-bold text-xs transition-all' 
+            : 'h-7 px-2.5 rounded bg-[#161818] text-[#8A8A8A] hover:text-[#F4F2EE] text-xs font-medium border border-[#2A2C2C] transition-all';
+        }
+      });
+    }
+
+    // POPULATE FEEDS & VIEWS
+    function populateIncidentFeed(items) {
+      const container = document.getElementById('live-incident-feed');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (items.length === 0) {
+        container.innerHTML = '<div class="text-center py-8 text-[#666] text-xs font-mono">No active incidents match the current filters.</div>';
+        return;
+      }
+
+      items.forEach(inc => {
+        const color = inc.severity === 'HIGH' ? '#FF0000' : inc.severity === 'MEDIUM' ? '#FFC107' : '#71717A';
+        const div = document.createElement('div');
+        div.className = 'p-3 rounded bg-[#0A0A0A] border border-[#222] hover:border-[#444] cursor-pointer transition-all space-y-1.5';
+        div.onclick = () => openIncidentModalById(inc.id);
+        div.innerHTML = `
+          <div class="flex justify-between items-center text-[10px] font-mono">
+            <span class="h-5 px-2 rounded font-bold uppercase flex items-center" style="color: ${color}; background: ${color}15; border: 1px solid ${color}30;">${inc.type} [${inc.severity}]</span>
+            <span class="text-[#777] font-medium">${inc.time}</span>
+          </div>
+          <div class="text-xs text-[#F4F2EE] font-bold font-mono">${inc.id} · ${inc.busId}</div>
+          <p class="font-sans text-xs text-[#8A8A8A] line-clamp-2 leading-relaxed">${inc.desc}</p>
+          <div class="flex justify-between items-center text-[10px] font-mono text-[#8A8A8A] pt-1.5 border-t border-[#1C1C1C]">
+            <span>Conf: <strong class="text-[#4CAF50] font-bold">${inc.conf}%</strong></span>
+            <span class="text-[#FF0000] hover:underline font-bold flex items-center gap-0.5">Deep-Dive →</span>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function populateTimelineStream(items) {
+      const container = document.getElementById('timeline-stream-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (items.length === 0) {
+        container.innerHTML = '<div class="text-center py-8 text-[#666] text-xs font-mono">No timeline events match the filter criteria.</div>';
+        return;
+      }
+
+      items.forEach(inc => {
+        const color = inc.severity === 'HIGH' ? '#FF0000' : inc.severity === 'MEDIUM' ? '#FFC107' : '#71717A';
+        const div = document.createElement('div');
+        div.className = 'ml-9 p-3.5 rounded bg-[#0A0A0A] border border-[#222] hover:border-[#444] cursor-pointer relative space-y-1.5 transition-all';
+        div.onclick = () => openIncidentModalById(inc.id);
+        div.innerHTML = `
+          <div class="absolute -left-9 top-4 w-3.5 h-3.5 rounded-full border-2 border-[#0A0A0A]" style="background-color: ${color};"></div>
+          <div class="flex justify-between items-center text-xs font-mono">
+            <strong class="text-[#F4F2EE]">${inc.id} · ${inc.type} (${inc.busId})</strong>
+            <span class="text-[#777] text-[10px] font-medium">${inc.time}</span>
+          </div>
+          <p class="font-sans text-xs text-[#8A8A8A] leading-relaxed">${inc.desc}</p>
+          <div class="flex justify-between items-center text-[10px] font-mono text-[#8A8A8A] pt-1.5 border-t border-[#1C1C1C]">
+            <span>Assigned: <strong class="text-[#F4F2EE]">${inc.assigned}</strong></span>
+            <span>Status: <strong class="text-[#4CAF50]">${inc.status}</strong></span>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function populateGridCards(items) {
+      const container = document.getElementById('incident-grid-cards');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (items.length === 0) {
+        container.innerHTML = '<div class="col-span-full text-center py-8 text-[#666] text-xs font-mono">No docket cards match the filter criteria.</div>';
+        return;
+      }
+
+      items.forEach(inc => {
+        const color = inc.severity === 'HIGH' ? '#FF0000' : inc.severity === 'MEDIUM' ? '#FFC107' : '#71717A';
+        const div = document.createElement('div');
+        div.className = 'p-4 rounded bg-[#0A0A0A] border border-[#222] hover:border-[#444] space-y-3 cursor-pointer transition-all';
+        div.onclick = () => openIncidentModalById(inc.id);
+        div.innerHTML = `
+          <div class="flex justify-between items-start font-mono">
+            <span class="h-5 px-2 rounded text-[10px] font-bold uppercase flex items-center" style="color:${color}; background:${color}15; border: 1px solid ${color}30;">${inc.type} [${inc.severity}]</span>
+            <span class="text-[10px] text-[#8A8A8A] font-medium">${inc.time}</span>
+          </div>
+          <div class="text-sm font-bold font-mono text-[#F4F2EE]">${inc.id} · ${inc.busId}</div>
+          <p class="font-sans text-xs text-[#8A8A8A] line-clamp-2 leading-relaxed">${inc.desc}</p>
+          <div class="p-2.5 bg-[#111212] rounded text-[10px] font-mono space-y-1 border border-[#1C1C1C]">
+            <div class="flex justify-between"><span>Confidence:</span><strong class="text-[#4CAF50] font-bold">${inc.conf}%</strong></div>
+            <div class="flex justify-between"><span>Camera Angle:</span><strong class="text-[#F4F2EE]">${inc.camera}</strong></div>
+          </div>
+          <button class="btn-secondary h-8 w-full font-mono text-xs font-semibold hover:border-[#FF0000] hover:text-[#FF0000] transition-colors">
+            Inspect Full Docket →
+          </button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // INCIDENT DEEP-DIVE MODAL
+    function openIncidentModalById(id) {
+      const inc = allIncidents.find(i => i.id === id);
+      if (!inc) return;
+      selectedIncidentForModal = inc;
+
+      document.getElementById('modal-inc-id').innerText = inc.id;
+      document.getElementById('modal-inc-title').innerText = `${inc.type} Incident`;
+      document.getElementById('modal-frame-cam').innerText = `Cam: ${inc.camera}`;
+      document.getElementById('modal-frame-conf').innerText = `Conf: ${inc.conf}%`;
+      document.getElementById('modal-damage').innerText = inc.damage;
+      document.getElementById('modal-weather').innerText = inc.weather;
+      document.getElementById('modal-priority').innerText = inc.priority;
+      document.getElementById('modal-gps').innerText = `${inc.lat}°N, ${inc.lng}°E`;
+      document.getElementById('modal-bus').innerText = `${inc.busId} (${inc.location})`;
+      document.getElementById('modal-timestamp').innerText = inc.time;
+      document.getElementById('modal-status-select').value = inc.status;
+
+      document.getElementById('incident-detail-modal').classList.remove('hidden');
+      document.getElementById('incident-detail-modal').classList.add('flex');
+      playBeep(980);
+    }
+
+    function closeIncidentModal() {
+      document.getElementById('incident-detail-modal').classList.add('hidden');
+      document.getElementById('incident-detail-modal').classList.remove('flex');
+    }
+
+    function focusModalIncidentOnMap() {
+      if (!selectedIncidentForModal) return;
+      const busId = selectedIncidentForModal.busId;
+      closeIncidentModal();
+      setViewMode('map');
+      if (busId) {
+        selectBus(busId);
+      } else if (map) {
+        map.setView([selectedIncidentForModal.lat, selectedIncidentForModal.lng], 15);
+      }
+    }
+
+    function updateIncidentStatus(status) {
+      if (selectedIncidentForModal) {
+        selectedIncidentForModal.status = status;
+        applyFilters();
+      }
+    }
+
+    function escalateModalIncident() {
+      alert(`[ESCALATION DISPATCHED] Incident ${selectedIncidentForModal.id} transmitted to Rajasthan Police & Jaipur Municipal Authority with SHA-256 seal.`);
+      closeIncidentModal();
+    }
+
+    // QUICK JUMP HELPERS
+    function quickJump(target) {
+      if (target === 'recent') {
+        openIncidentModalById('INC-002'); // Most recent time 15:32 Tonk Road
+      } else if (target === 'severe') {
+        openIncidentModalById('INC-001'); // Highest severity (95 - Hit and Run)
+      } else if (target === 'offline') {
+        selectBus('BUS-009'); // Route 9 Offline
+      }
+    }
+
+    function quickJumpToBus(busId) {
+      selectBus(busId);
+    }
+
+    function handleGlobalSearch(q) {
+      const query = q.toLowerCase();
+      currentFilteredIncidents = allIncidents.filter(i => 
+        i.type.toLowerCase().includes(query) ||
+        i.desc.toLowerCase().includes(query) ||
+        i.busId.toLowerCase().includes(query) ||
+        (i.location && i.location.toLowerCase().includes(query))
+      );
+      renderMapMarkers();
+      populateIncidentFeed(currentFilteredIncidents);
+      populateTimelineStream(currentFilteredIncidents);
+      populateGridCards(currentFilteredIncidents);
+    }
+
+    // ACCESSIBILITY
+    function toggleHighContrast() {
+      document.body.classList.toggle('high-contrast');
+    }
+    function toggleFontSize() {
+      document.body.classList.toggle('large-font');
+    }
+
+    // ROLE PRESET LOGIC
+    function applyRolePreset(role) {
+      if (role === 'traffic') setViewMode('charts');
+      else if (role === 'maintenance') setViewMode('before-after');
+      else if (role === 'police') openHitAndRunPanel();
+      else if (role === 'planner') setViewMode('grid');
+    }
+
+    // MODAL TRIGGERS
+    function openHitAndRunPanel() {
+      document.getElementById('hitandrun-modal').classList.remove('hidden');
+      document.getElementById('hitandrun-modal').classList.add('flex');
+    }
+    function closeHitAndRunModal() {
+      document.getElementById('hitandrun-modal').classList.add('hidden');
+      document.getElementById('hitandrun-modal').classList.remove('flex');
+    }
+
+    function openDriverLeaderboard() {
+      document.getElementById('driver-modal').classList.remove('hidden');
+      document.getElementById('driver-modal').classList.add('flex');
+    }
+    function closeDriverModal() {
+      document.getElementById('driver-modal').classList.add('hidden');
+      document.getElementById('driver-modal').classList.remove('flex');
+    }
+
+    function openPedestrianAnalysis() {
+      document.getElementById('pedestrian-modal').classList.remove('hidden');
+      document.getElementById('pedestrian-modal').classList.add('flex');
+    }
+    function closePedestrianModal() {
+      document.getElementById('pedestrian-modal').classList.add('hidden');
+      document.getElementById('pedestrian-modal').classList.remove('flex');
+    }
+
+    function openReportModal() {
+      setViewMode('report');
+    }
+
+    // REAL FILE GENERATION & EXPORTS
+    function downloadReport(format) {
+      if (format === 'CSV') {
+        const headers = ['ID', 'Type', 'Severity', 'Bus_ID', 'Location', 'Latitude', 'Longitude', 'Time', 'Confidence_Pct', 'Status', 'Assigned_Agency', 'Description'];
+        const rows = currentFilteredIncidents.map(i => [
+          i.id,
+          `"${i.type}"`,
+          i.severity,
+          i.busId,
+          `"${i.location || ''}"`,
+          i.lat,
+          i.lng,
+          `"${i.time}"`,
+          i.conf,
+          `"${i.status}"`,
+          `"${i.assigned}"`,
+          `"${i.desc.replace(/"/g, '""')}"`
+        ]);
+        const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', `Jaipur_Incident_Report_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else if (format === 'GEOJSON') {
+        const geojson = {
+          type: 'FeatureCollection',
+          name: 'Jaipur_Transit_Defects_Mesh',
+          crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
+          features: currentFilteredIncidents.map(i => ({
+            type: 'Feature',
+            properties: {
+              id: i.id,
+              type: i.type,
+              severity: i.severity,
+              busId: i.busId,
+              location: i.location,
+              time: i.time,
+              confidence: i.conf,
+              status: i.status,
+              assigned: i.assigned,
+              description: i.desc
+            },
+            geometry: {
+              type: 'Point',
+              coordinates: [i.lng, i.lat]
+            }
+          }))
+        };
+        const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(geojson, null, 2));
+        const link = document.createElement('a');
+        link.setAttribute('href', dataStr);
+        link.setAttribute('download', `Jaipur_Defects_Layer_${new Date().toISOString().slice(0,10)}.geojson`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else if (format === 'PDF') {
+        window.print();
+      } else if (format === 'SHAPEFILE') {
+        alert('[GIS SHAPEFILE EXPORT] GeoJSON / Shapefile archive package generated with ESRI prj coordinate projection metadata.');
+      }
+    }
+
+    function escalateToAuthorities(caseId) {
+      alert(`[ESCALATION TRANSMITTED] ${caseId} dispatched to Rajasthan Police PCR Network.`);
+      closeHitAndRunModal();
+    }
+
+    // MODAL ESCAPE & BACKDROP CLICK LISTENERS
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeIncidentModal();
+        closeHitAndRunModal();
+        closeDriverModal();
+        closePedestrianModal();
+      }
+    });
+
+    ['incident-detail-modal', 'hitandrun-modal', 'driver-modal', 'pedestrian-modal'].forEach(id => {
+      const modal = document.getElementById(id);
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+          }
+        });
+      }
+    });
+
+    // CHART INITIALIZATION
+    function initAllCharts() {
+      const ctxTime = document.getElementById('chart-traffic-timeseries')?.getContext('2d');
+      if (ctxTime && !chartInstances.timeseries) {
+        chartInstances.timeseries = new Chart(ctxTime, {
+          type: 'line',
+          data: {
+            labels: ['06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00'],
+            datasets: [{
+              label: 'Vehicles Scanned / Hr',
+              data: [1200, 7800, 5200, 4900, 5400, 7030, 8400, 4200],
+              borderColor: '#FF0000',
+              backgroundColor: 'rgba(255, 0, 0, 0.05)',
+              fill: true,
+              tension: 0.3,
+              borderWidth: 2,
+              pointBackgroundColor: '#FF0000'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { grid: { color: '#1C1C1C' }, ticks: { color: '#8A8A8A', font: { family: 'JetBrains Mono', size: 9 } } },
+              y: { grid: { color: '#1C1C1C' }, ticks: { color: '#8A8A8A', font: { family: 'JetBrains Mono', size: 9 } } }
+            }
+          }
+        });
+      }
+
+      const ctxBreak = document.getElementById('chart-vehicle-breakdown')?.getContext('2d');
+      if (ctxBreak && !chartInstances.breakdown) {
+        chartInstances.breakdown = new Chart(ctxBreak, {
+          type: 'doughnut',
+          data: {
+            labels: ['Cars', 'Bikes', 'Autos', 'Buses', 'Trucks', 'Pedestrians'],
+            datasets: [{
+              data: [42, 28, 14, 8, 5, 3],
+              backgroundColor: ['#FF0000', '#FFC107', '#4CAF50', '#3B82F6', '#8B5CF6', '#71717A'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom', labels: { color: '#8A8A8A', font: { family: 'JetBrains Mono', size: 9 } } }
+            }
+          }
+        });
+      }
+
+      const ctxSeason = document.getElementById('chart-seasonality')?.getContext('2d');
+      if (ctxSeason && !chartInstances.seasonality) {
+        chartInstances.seasonality = new Chart(ctxSeason, {
+          type: 'bar',
+          data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul (Monsoon)', 'Aug (Peak)', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [
+              {
+                label: 'Waterlogging Incidents',
+                data: [1, 0, 0, 1, 2, 8, 28, 34, 18, 4, 1, 0],
+                backgroundColor: '#3B82F6',
+              },
+              {
+                label: 'Pothole Craters',
+                data: [12, 14, 11, 9, 8, 15, 38, 45, 30, 19, 14, 11],
+                backgroundColor: '#FF0000',
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom', labels: { color: '#8A8A8A', font: { family: 'JetBrains Mono', size: 9 } } }
+            },
+            scales: {
+              x: { grid: { color: '#1C1C1C' }, ticks: { color: '#8A8A8A', font: { family: 'JetBrains Mono', size: 9 } } },
+              y: { grid: { color: '#1C1C1C' }, ticks: { color: '#8A8A8A', font: { family: 'JetBrains Mono', size: 9 } } }
+            }
+          }
+        });
+      }
+    }
+
+    window.onload = function() {
+      initJaipurMap();
+      populateIncidentFeed(allIncidents);
+      populateTimelineStream(allIncidents);
+      populateGridCards(allIncidents);
+      initAllCharts();
+    };
+  </script>
+</body>
+</html>
