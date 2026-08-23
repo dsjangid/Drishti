@@ -3804,12 +3804,56 @@
                   const bx = minX * scaleX;
                   const by = minY * scaleY;
 
-                  // Pothole Ground Invariants:
-                  // 1. Must be on the drivable road plane (width >= height * 0.7)
-                  // 2. Reject vertical objects (poles, pedestrians, trees, doors)
-                  // 3. Scale bounds (45px to 380px width, 25px to 160px height)
-                  if (blobSize >= 8 && bw >= 45 && bh >= 22 && bw <= 380 && bh <= 160 && (bw >= bh * 0.75)) {
-                    const conf = Math.min(0.985, Math.max(0.90, 0.92 + (blobSize / 250.0)));
+                  // =========================================================
+                  // 3D CAVITY PROFILOMETRY & SHADOW DISCRIMINATION FILTER
+                  // =========================================================
+                  // 1. Compute internal core mean luminance and texture variance
+                  let coreSum = 0, coreSqSum = 0, corePixels = 0;
+                  for (let cy = minY; cy <= maxY; cy++) {
+                    for (let cx = minX; cx <= maxX; cx++) {
+                      const luma = gray[cy * W + cx];
+                      coreSum += luma;
+                      coreSqSum += luma * luma;
+                      corePixels++;
+                    }
+                  }
+                  const meanCore = corePixels > 0 ? coreSum / corePixels : 0;
+                  const varCore = corePixels > 0 ? Math.sqrt(Math.max(0, (coreSqSum / corePixels) - (meanCore * meanCore))) : 0;
+
+                  // 2. Compute surrounding asphalt rim luminance (the lip of the pothole)
+                  let rimSum = 0, rimPixels = 0;
+                  for (let cx = Math.max(0, minX - 2); cx <= Math.min(W - 1, maxX + 2); cx++) {
+                    // Top rim & Bottom rim
+                    if (minY - 2 >= 0) { rimSum += gray[(minY - 2) * W + cx]; rimPixels++; }
+                    if (maxY + 2 < H)  { rimSum += gray[(maxY + 2) * W + cx]; rimPixels++; }
+                  }
+                  for (let cy = minY; cy <= maxY; cy++) {
+                    // Left rim & Right rim
+                    if (minX - 2 >= 0) { rimSum += gray[cy * W + (minX - 2)]; rimPixels++; }
+                    if (maxX + 2 < W)  { rimSum += gray[cy * W + (maxX + 2)]; rimPixels++; }
+                  }
+                  const meanRim = rimPixels > 0 ? rimSum / rimPixels : meanCore;
+
+                  // 3. 3D Cavity Contrast Ratio (Crater Depth Index)
+                  const cavityContrast = meanRim > 0 ? (meanRim - meanCore) / (meanRim + 1.0) : 0;
+                  const fillDensity = corePixels > 0 ? blobSize / (float)((maxX - minX + 1) * (maxY - minY + 1)) : 0;
+
+                  // Pothole Acceptance Criteria:
+                  // - Significant Cavity Contrast (depression is noticeably darker than surrounding asphalt lip)
+                  // - Mean rim must be genuine illuminated road (meanRim >= 60)
+                  // - Texture variance check (pothole has broken aggregate variance, shadows are flat)
+                  // - Elliptical ground plane aspect ratio (0.75 <= bw/bh <= 3.8)
+                  // - Reject thin streaks, overhead tree branches, and expansive shadow zones
+                  if (
+                    blobSize >= 8 &&
+                    bw >= 48 && bh >= 24 &&
+                    bw <= 360 && bh <= 150 &&
+                    (bw >= bh * 0.75) && (bw <= bh * 3.8) &&
+                    cavityContrast >= 0.24 &&
+                    meanRim >= 60 &&
+                    varCore >= 6.5
+                  ) {
+                    const conf = Math.min(0.985, Math.max(0.90, 0.89 + (cavityContrast * 0.22)));
                     currentDefects.push({
                       x: bx,
                       y: by,
