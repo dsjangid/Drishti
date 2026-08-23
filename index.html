@@ -34,8 +34,8 @@
   </script>
 
   <!-- Leaflet GIS Mapping CDN -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -47,6 +47,10 @@
       color: #1E2320;
       min-height: 100vh;
       overflow-x: hidden;
+    }
+
+    body.modal-open {
+      overflow: hidden !important;
     }
 
     ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -141,12 +145,12 @@
       justify-content: center;
       font-weight: bold;
       font-size: 10px;
-      transition: all 0.2s ease;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       cursor: pointer;
     }
     .bus-marker-icon.active-bus {
       background: #4A62D6 !important;
-      box-shadow: 0 0 0 6px rgba(74, 98, 214, 0.45) !important;
+      box-shadow: 0 0 0 8px rgba(74, 98, 214, 0.45) !important;
       transform: scale(1.4) !important;
       z-index: 9999 !important;
     }
@@ -160,6 +164,11 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .incident-marker-pothole.selected-inc {
+      transform: scale(1.35);
+      box-shadow: 0 0 0 6px rgba(217, 119, 6, 0.4);
     }
     .incident-marker-critical {
       background: #D33838;
@@ -171,6 +180,12 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      animation: pulse-red 1.5s infinite;
+    }
+    @keyframes pulse-red {
+      0% { box-shadow: 0 0 0 0 rgba(211, 56, 56, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(211, 56, 56, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(211, 56, 56, 0); }
     }
     .incident-marker-water {
       background: #0284C7;
@@ -183,6 +198,14 @@
       justify-content: center;
       cursor: pointer;
     }
+
+    /* Modal Animation */
+    .modal-backdrop {
+      transition: opacity 0.25s ease-out;
+    }
+    .modal-content {
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease-out;
+    }
   </style>
 </head>
 <body class="flex min-h-screen">
@@ -191,7 +214,7 @@
   <div id="toast-container" class="fixed top-6 right-6 z-[9999] flex flex-col gap-2.5 pointer-events-none"></div>
 
   <!-- ========================================================================= -->
-  <!-- SLIM ICON SIDEBAR (EXACT MATCHING SCREENSHOT) -->
+  <!-- SLIM ICON SIDEBAR -->
   <!-- ========================================================================= -->
   <aside class="w-16 sm:w-20 glass-sidebar flex flex-col items-center justify-between py-6 px-2 shrink-0 select-none border-r border-black/[0.04]">
     
@@ -449,8 +472,8 @@
           <!-- 24H Time Playback Controller Strip -->
           <div class="flex items-center gap-2.5 bg-[#F4F7F0] px-4 py-2 rounded-full font-mono text-xs">
             <button onclick="togglePlayback()" id="btn-playback" class="text-[#1E2320] hover:text-blue-600 flex items-center gap-1.5 font-bold cursor-pointer">
-              <span class="material-symbols-outlined text-base">play_arrow</span>
-              <span>Play</span>
+              <span class="material-symbols-outlined text-base" id="playback-icon">play_arrow</span>
+              <span id="playback-text">Play</span>
             </button>
             
             <input 
@@ -490,11 +513,11 @@
     </div>
 
     <!-- ======================================================================= -->
-    <!-- VIEW 2: ONBOARD EDGE AI VISION (ALL 10 BUS CAMERAS & 4 INTERACTIVE ANGLES) -->
+    <!-- VIEW 2: ONBOARD EDGE AI VISION (VIDEO CANVAS & 4 INTERACTIVE ANGLES) -->
     <!-- ======================================================================= -->
     <div id="tab-view-edge-vision" class="hidden space-y-6">
       
-      <!-- Camera Bus Switcher Strip (Statically Pre-rendered for Instant Clickability) -->
+      <!-- Camera Bus Switcher Strip -->
       <div class="glass-card p-4 space-y-2.5">
         <div class="flex justify-between items-center text-xs">
           <span class="font-bold text-[#1E2320] text-xs font-mono uppercase tracking-wider flex items-center gap-2">
@@ -546,26 +569,31 @@
           </div>
 
           <div class="flex items-center gap-2.5 font-mono text-xs">
+            <span class="px-3 py-1.5 rounded-full bg-slate-900 text-slate-200 font-bold" id="hud-live-fps">60.0 FPS</span>
+            <span class="px-3 py-1.5 rounded-full bg-slate-900 text-emerald-400 font-bold" id="hud-live-bitrate">4.2 Mbps</span>
             <span class="px-3.5 py-1.5 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-bold" id="hud-cam-fps-badge">18.4 FPS Local NPU</span>
             <span class="px-3.5 py-1.5 rounded-full bg-[#EEF1FD] text-[#4A62D6] font-bold">82.4% Bandwidth Saved</span>
           </div>
         </div>
 
-        <!-- High-Tech Video Viewport Frame with Real Perspective Views -->
+        <!-- High-Tech Video Viewport Frame with Simulated Live Video Stream -->
         <div id="video-feed-viewport" class="relative w-full h-[420px] bg-[#141816] rounded-3xl overflow-hidden flex items-center justify-center select-none shadow-2xl border border-black/10 transition-all duration-300">
           
-          <!-- Dynamic Perspective Background Layer -->
-          <div id="camera-perspective-layer" class="absolute inset-0">
+          <!-- Animated HTML5 Canvas Simulated Video Feed (60 FPS) -->
+          <canvas id="video-canvas-stream" width="960" height="420" class="absolute inset-0 w-full h-full object-cover"></canvas>
+
+          <!-- Perspective HTML Overlay Layer -->
+          <div id="camera-perspective-layer" class="absolute inset-0 pointer-events-none">
             <!-- Dynamically populated per camera angle -->
           </div>
 
           <!-- Dynamic Bounding Boxes Container -->
-          <div id="camera-bounding-boxes-container" class="absolute inset-0">
+          <div id="camera-bounding-boxes-container" class="absolute inset-0 pointer-events-none">
             <!-- Dynamically populated per bus and per angle -->
           </div>
 
           <!-- Top HUD Overlay -->
-          <div class="absolute top-4 left-5 right-5 flex justify-between items-center text-[10px] font-mono text-slate-300 bg-black/80 px-4 py-2.5 rounded-full border border-slate-700/60 backdrop-blur-md shadow-lg">
+          <div class="absolute top-4 left-5 right-5 flex justify-between items-center text-[10px] font-mono text-slate-300 bg-black/80 px-4 py-2.5 rounded-full border border-slate-700/60 backdrop-blur-md shadow-lg pointer-events-auto">
             <span class="text-white font-bold flex items-center gap-1.5" id="hud-cam-bus-tag">
               <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
               <span>LIVE • BUS-003 • 1080p @ 60Hz</span>
@@ -574,8 +602,29 @@
             <span class="text-slate-300 font-bold" id="hud-cam-time">16:42:00 IST</span>
           </div>
 
+          <!-- Video Controls Toolbar Overlay (Play/Pause, Audio Mute, Fullscreen) -->
+          <div class="absolute bottom-4 left-5 right-5 flex justify-between items-center text-xs font-mono text-white bg-black/75 px-4 py-2 rounded-full border border-slate-700/60 backdrop-blur-md shadow-lg pointer-events-auto">
+            <div class="flex items-center gap-3">
+              <button onclick="toggleVideoPlay()" id="btn-video-play" class="hover:text-emerald-400 transition-colors flex items-center gap-1 font-bold">
+                <span class="material-symbols-outlined text-base" id="video-play-icon">pause</span>
+                <span id="video-play-text">PAUSE</span>
+              </button>
+              <button onclick="toggleVideoMute()" id="btn-video-mute" class="hover:text-amber-400 transition-colors flex items-center gap-1">
+                <span class="material-symbols-outlined text-base" id="video-mute-icon">volume_up</span>
+              </button>
+              <span class="text-slate-400 text-[10px]">1080p HD H.265 / Jetson Orin Hardware Decoder</span>
+            </div>
+            
+            <div class="flex items-center gap-3">
+              <span class="text-emerald-400 text-[10px] font-bold">LATENCY: 42ms</span>
+              <button onclick="toggleVideoFullscreen()" title="Fullscreen" class="hover:text-blue-400 transition-colors">
+                <span class="material-symbols-outlined text-base">fullscreen</span>
+              </button>
+            </div>
+          </div>
+
           <!-- Target Lock Banner (For Hit and Run simulation) -->
-          <div id="target-lock-hud" class="absolute inset-0 bg-rose-900/30 border-4 border-rose-500 hidden flex-col items-center justify-center p-4 backdrop-blur-[2px]">
+          <div id="target-lock-hud" class="absolute inset-0 bg-rose-900/40 border-4 border-rose-500 hidden flex-col items-center justify-center p-4 backdrop-blur-[2px] z-20 pointer-events-auto">
             <div class="bg-white border-2 border-rose-600 p-6 rounded-3xl text-center space-y-2.5 max-w-sm shadow-2xl">
               <span class="material-symbols-outlined text-4xl text-rose-600 animate-bounce">targeted</span>
               <strong class="text-rose-700 font-mono text-sm block tracking-widest uppercase">TARGET LOCK: RJ-14-CE-8821</strong>
@@ -583,6 +632,11 @@
               <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-mono text-xs font-bold inline-block">
                 OCR Confidence: 97.2% Match
               </span>
+              <div class="pt-2">
+                <button onclick="openHitAndRunPanel()" class="btn-pill-solid bg-rose-600 hover:bg-rose-700 w-full text-xs">
+                  Inspect Police FIR Trail &rarr;
+                </button>
+              </div>
             </div>
           </div>
 
@@ -747,11 +801,14 @@
           <div>
             <h3 class="font-bold text-[#1E2320] text-base flex items-center gap-2">
               <span class="material-symbols-outlined text-[#4A62D6]">memory</span>
-              <span>10-Bus Edge Hardware &amp; NPU Telemetry Matrix</span>
+              <span>10-Bus Edge Hardware &amp; NPU Telemetry Matrix (Live Telemetry)</span>
             </h3>
             <p class="text-xs text-[#717D75]">Live Jetson Orin thermals, inference FPS, latency, and camera operational health</p>
           </div>
-          <span class="px-3.5 py-1 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-mono text-xs font-bold">49/50 Cameras Active</span>
+          <div class="flex items-center gap-2">
+            <button onclick="updateHardwareMatrixLive()" class="px-2.5 py-1 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-700 font-mono text-[10px] font-bold">Refresh Live ⚡</button>
+            <span class="px-3.5 py-1 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-mono text-xs font-bold">49/50 Cameras Active</span>
+          </div>
         </div>
 
         <div class="overflow-x-auto font-mono text-xs">
@@ -779,10 +836,10 @@
   </main>
 
   <!-- ========================================================================= -->
-  <!-- MODAL 1: HIT AND RUN FORENSICS (GLASSMORPHIC) -->
+  <!-- MODAL 1: HIT AND RUN FORENSICS -->
   <!-- ========================================================================= -->
-  <div id="hitandrun-modal" onclick="if(event.target===this)closeHitAndRunPanel()" class="fixed inset-0 z-50 bg-[#1E2320]/40 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="bg-white/95 backdrop-blur-2xl max-w-2xl w-full rounded-[32px] p-7 text-xs space-y-4 shadow-2xl">
+  <div id="hitandrun-modal" class="modal-backdrop fixed inset-0 z-50 bg-[#1E2320]/40 backdrop-blur-md hidden opacity-0 items-center justify-center p-4">
+    <div class="modal-content bg-white/95 backdrop-blur-2xl max-w-2xl w-full rounded-[32px] p-7 text-xs space-y-4 shadow-2xl scale-95 opacity-0">
       
       <div class="flex justify-between items-center border-b border-black/[0.05] pb-3.5">
         <div class="flex items-center gap-2.5">
@@ -792,7 +849,7 @@
         <button onclick="closeHitAndRunPanel()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold cursor-pointer">✕</button>
       </div>
 
-      <div class="bg-[#FDECEC] rounded-3xl p-5 space-y-3">
+      <div class="bg-[#FDECEC] rounded-3xl p-5 space-y-3 border border-rose-200">
         <div class="flex justify-between items-start">
           <div>
             <span class="font-mono text-base text-slate-900 font-bold tracking-wider">RJ-14-CE-8821</span>
@@ -831,8 +888,8 @@
   <!-- ========================================================================= -->
   <!-- MODAL 2: DRIVER SAFETY LEADERBOARD -->
   <!-- ========================================================================= -->
-  <div id="driver-modal" onclick="if(event.target===this)closeDriverModal()" class="fixed inset-0 z-50 bg-[#1E2320]/40 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="bg-white/95 backdrop-blur-2xl max-w-2xl w-full rounded-[32px] p-7 text-xs space-y-4 shadow-2xl">
+  <div id="driver-modal" class="modal-backdrop fixed inset-0 z-50 bg-[#1E2320]/40 backdrop-blur-md hidden opacity-0 items-center justify-center p-4">
+    <div class="modal-content bg-white/95 backdrop-blur-2xl max-w-2xl w-full rounded-[32px] p-7 text-xs space-y-4 shadow-2xl scale-95 opacity-0">
       
       <div class="flex justify-between items-center border-b border-black/[0.05] pb-3.5">
         <div class="flex items-center gap-2.5">
@@ -892,8 +949,8 @@
   <!-- ========================================================================= -->
   <!-- MODAL 3: EXPORT REPORT BUILDER -->
   <!-- ========================================================================= -->
-  <div id="export-modal" onclick="if(event.target===this)closeExportModal()" class="fixed inset-0 z-50 bg-[#1E2320]/40 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="bg-white/95 backdrop-blur-2xl max-w-2xl w-full rounded-[32px] p-7 text-xs space-y-4 shadow-2xl">
+  <div id="export-modal" class="modal-backdrop fixed inset-0 z-50 bg-[#1E2320]/40 backdrop-blur-md hidden opacity-0 items-center justify-center p-4">
+    <div class="modal-content bg-white/95 backdrop-blur-2xl max-w-2xl w-full rounded-[32px] p-7 text-xs space-y-4 shadow-2xl scale-95 opacity-0">
       
       <div class="flex justify-between items-center border-b border-black/[0.05] pb-3.5">
         <div class="flex items-center gap-2.5">
@@ -939,8 +996,8 @@
   <!-- ========================================================================= -->
   <!-- MODAL 4: INCIDENT INSPECTOR DETAIL MODAL -->
   <!-- ========================================================================= -->
-  <div id="incident-modal" onclick="if(event.target===this)closeIncidentModal()" class="fixed inset-0 z-50 bg-[#1E2320]/40 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="bg-white/95 backdrop-blur-2xl max-w-xl w-full rounded-[32px] p-7 text-xs space-y-4 shadow-2xl">
+  <div id="incident-modal" class="modal-backdrop fixed inset-0 z-50 bg-[#1E2320]/40 backdrop-blur-md hidden opacity-0 items-center justify-center p-4">
+    <div class="modal-content bg-white/95 backdrop-blur-2xl max-w-xl w-full rounded-[32px] p-7 text-xs space-y-4 shadow-2xl scale-95 opacity-0">
       <div class="flex justify-between items-center border-b border-black/[0.05] pb-3.5">
         <div class="flex items-center gap-2">
           <span id="modal-badge-type" class="px-3 py-1 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-bold font-mono text-[10px]">POTHOLE</span>
@@ -961,7 +1018,7 @@
 
       <div class="flex justify-end gap-2.5 pt-3 border-t border-black/[0.05]">
         <button onclick="closeIncidentModal()" class="btn-pill-ghost">Close</button>
-        <button onclick="dispatchModalIncident()" class="btn-pill-solid">✓ Dispatch PWD Crew</button>
+        <button onclick="dispatchModalIncident()" id="btn-dispatch-crew" class="btn-pill-solid bg-[#1E8A44] hover:bg-[#166A33]">✓ Dispatch PWD Crew</button>
       </div>
     </div>
   </div>
@@ -985,6 +1042,11 @@
     let currentModalIncidentId = null;
     let currentCameraAngle = 'front';
     let chartInstances = {};
+    let searchDebounceTimer = null;
+    let liveVideoPlaying = true;
+    let liveVideoMuted = false;
+    let videoAnimFrame = null;
+    let roadOffset = 0;
 
     // 10 Jaipur Fleet Dataset with rich bus-specific camera detections and bounding boxes for all 4 angles
     const jaipurFleet = [
@@ -993,14 +1055,13 @@
         route: 'Route 1: JLN Marg', 
         lat: 26.8920, lng: 75.8150, baseLat: 26.8920, baseLng: 75.8150, 
         speed: 28, driver: 'Rajesh Sharma', status: 'ONLINE', score: 96, 
-        temp: 46, fps: 18.6, lat_ms: 41, 
+        temp: 46, fps: 18.6, lat_ms: 41, signal: '98%',
         scene: 'Passing Rajasthan University Gate · Pedestrian Crossings Monitored',
         angles: {
           front: {
             title: 'FRONT 1080p WINDSHIELD CAMERA',
             sub: 'Rajesh Sharma (Route 1: JLN Marg) · Passing Rajasthan University Gate',
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
-            bg: 'front',
             boxes: [
               { label: 'Automobile: Hatchback (97.1%)', dist: '14.2m · 38 km/h', color: 'blue', left: '28%', top: '36%', width: '180px', height: '110px' },
               { label: '🚶 Student Crossing (94.2%)', dist: '< 1.8m Flagged', color: 'rose', left: '12%', top: '42%', width: '100px', height: '150px' }
@@ -1010,7 +1071,6 @@
             title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
             sub: 'Continuous Asphalt Profilometry · JLN Marg Northbound',
             status: 'DOWNWARD ASPHALT SENSOR · 4K MACRO CAMERA',
-            bg: 'asphalt',
             boxes: [
               { label: 'Surface: Asphalt Raveling (89.6%)', dist: 'Depth: 4.2cm · 1.1 m²', color: 'amber', left: '38%', top: '45%', width: '220px', height: '130px' },
               { label: 'Z-Axis Vibration: 0.8g', dist: 'Surface Smoothness Normal', color: 'emerald', left: '70%', top: '25%', width: '160px', height: '70px' }
@@ -1020,7 +1080,6 @@
             title: 'LEFT BLINDSPOT & KERB CAMERA',
             sub: 'Bus Stand Passenger & Cyclist Safety Zone',
             status: 'LEFT KERB OPTICAL SENSOR · 120° FOV',
-            bg: 'blindspot',
             boxes: [
               { label: '🚶 4 Passengers Waiting (95.1%)', dist: 'RU Gate Bus Shelter', color: 'blue', left: '45%', top: '35%', width: '170px', height: '140px' },
               { label: '🚲 Cyclist (91.4%)', dist: '2.4m Safe Zone', color: 'emerald', left: '15%', top: '48%', width: '110px', height: '120px' }
@@ -1030,7 +1089,6 @@
             title: 'DRIVER DMS & CABIN IR CAMERA',
             sub: 'Driver Fatigue, Attention & Safety Verification',
             status: 'DRIVER MONITORING SYSTEM (DMS) · 60 FPS INFRARED',
-            bg: 'cabin',
             boxes: [
               { label: 'Driver: Rajesh Sharma (98.4%)', dist: 'Status: Alert & Focused', color: 'emerald', left: '25%', top: '25%', width: '220px', height: '180px' },
               { label: 'Seatbelt: Latched ✅', dist: 'No Phone in Hand', color: 'emerald', left: '55%', top: '65%', width: '160px', height: '65px' }
@@ -1043,14 +1101,13 @@
         route: 'Route 2: Ajmer Road', 
         lat: 26.8850, lng: 75.7450, baseLat: 26.8850, baseLng: 75.7450, 
         speed: 34, driver: 'Vikram Singh', status: 'ONLINE', score: 92, 
-        temp: 48, fps: 18.4, lat_ms: 42, 
+        temp: 48, fps: 18.4, lat_ms: 42, signal: '96%',
         scene: 'Approaching 200ft Bypass Underpass · Waterlogging Inundation Risk',
         angles: {
           front: {
             title: 'FRONT 1080p WINDSHIELD CAMERA',
             sub: 'Vikram Singh (Route 2: Ajmer Road) · Approaching 200ft Bypass Underpass',
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
-            bg: 'front',
             boxes: [
               { label: 'Automobile: Delivery Van (95.8%)', dist: '18.5m · 44 km/h', color: 'blue', left: '32%', top: '34%', width: '190px', height: '120px' },
               { label: '🌊 Waterlogging 25cm (96.2%)', dist: 'Drain Inundation Alert', color: 'sky', left: '58%', top: '65%', width: '160px', height: '80px' }
@@ -1060,7 +1117,6 @@
             title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
             sub: '200ft Bypass Inundation Depth Profilometry',
             status: 'DOWNWARD ASPHALT SENSOR · WATER DEPTH ULTRASONIC',
-            bg: 'asphalt',
             boxes: [
               { label: 'Submerged Asphalt (96.2%)', dist: 'Water Depth: 25cm', color: 'sky', left: '30%', top: '40%', width: '250px', height: '140px' }
             ]
@@ -1069,7 +1125,6 @@
             title: 'LEFT BLINDSPOT & KERB CAMERA',
             sub: 'Ajmer Road Flyover Kerb & Shoulder Scan',
             status: 'LEFT KERB OPTICAL SENSOR · 120° FOV',
-            bg: 'blindspot',
             boxes: [
               { label: 'Two-Wheeler Traffic (93.8%)', dist: '3.1m Lateral Dist', color: 'blue', left: '35%', top: '40%', width: '140px', height: '130px' }
             ]
@@ -1078,7 +1133,6 @@
             title: 'DRIVER DMS & CABIN IR CAMERA',
             sub: 'Vikram Singh Telemetry & Driver Score',
             status: 'DRIVER MONITORING SYSTEM (DMS) · 60 FPS INFRARED',
-            bg: 'cabin',
             boxes: [
               { label: 'Driver: Vikram Singh', dist: 'Score: 92/100 · Alert', color: 'emerald', left: '25%', top: '25%', width: '220px', height: '180px' }
             ]
@@ -1090,14 +1144,13 @@
         route: 'Route 3: Tonk Road', 
         lat: 26.8520, lng: 75.7920, baseLat: 26.8520, baseLng: 75.7920, 
         speed: 22, driver: 'Manoj Meena', status: 'INCIDENT', score: 78, 
-        temp: 52, fps: 18.2, lat_ms: 44, 
+        temp: 52, fps: 18.2, lat_ms: 44, signal: '97%',
         scene: 'Tonk Road Corridor · Severe 16cm Pothole Crater Detected',
         angles: {
           front: {
             title: 'FRONT 1080p WINDSHIELD CAMERA',
             sub: 'Manoj Meena (Route 3: Tonk Road) · Severe 16cm Pothole Crater Ahead',
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
-            bg: 'front',
             boxes: [
               { label: 'Automobile: Sedan (96.4%)', dist: '12.8m · 26 km/h', color: 'blue', left: '30%', top: '34%', width: '180px', height: '115px' },
               { label: '⚠️ Pothole (16cm) · 94.1%', dist: 'JDA Alert #DEF-892', color: 'amber', left: '60%', top: '66%', width: '150px', height: '80px' },
@@ -1108,7 +1161,6 @@
             title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
             sub: 'Tonk Road KM 4.2 · High Impact Crater Defect Measurement',
             status: 'DOWNWARD ASPHALT SENSOR · 4K MACRO SCANNER',
-            bg: 'asphalt',
             boxes: [
               { label: '⚠️ CRATER #DEF-892 (94.8%)', dist: 'Depth: 16.4cm · Area: 0.85m²', color: 'rose', left: '32%', top: '38%', width: '240px', height: '150px' },
               { label: 'Z-Axis Impact: 3.2g ⚠️', dist: 'Suspension Shock Warning', color: 'rose', left: '68%', top: '20%', width: '180px', height: '70px' },
@@ -1119,7 +1171,6 @@
             title: 'LEFT BLINDSPOT & KERB CAMERA',
             sub: 'Tonk Road Footpath & Service Lane Separation',
             status: 'LEFT KERB OPTICAL SENSOR · 120° FOV',
-            bg: 'blindspot',
             boxes: [
               { label: 'E-Rickshaw Boarding (94.2%)', dist: '1.9m Kerb Distance', color: 'blue', left: '40%', top: '35%', width: '160px', height: '140px' }
             ]
@@ -1128,7 +1179,6 @@
             title: 'DRIVER DMS & CABIN IR CAMERA',
             sub: 'Manoj Meena Telemetry · Harsh Braking Logged',
             status: 'DRIVER MONITORING SYSTEM (DMS) · 60 FPS INFRARED',
-            bg: 'cabin',
             boxes: [
               { label: 'Driver: Manoj Meena', dist: 'Score: 78/100 · Caution', color: 'amber', left: '25%', top: '25%', width: '220px', height: '180px' },
               { label: '⚠️ Harsh Braking Detected', dist: 'Decel: -0.62g (14:32 IST)', color: 'rose', left: '55%', top: '65%', width: '180px', height: '65px' }
@@ -1141,14 +1191,13 @@
         route: 'Route 4: Sikar Road', 
         lat: 26.9600, lng: 75.7750, baseLat: 26.9600, baseLng: 75.7750, 
         speed: 31, driver: 'Ramesh Kumar', status: 'ONLINE', score: 88, 
-        temp: 47, fps: 18.5, lat_ms: 41, 
+        temp: 47, fps: 18.5, lat_ms: 41, signal: '95%',
         scene: 'Sikar Road KM 7.1 · Asphalt Fracture & Surface Depression',
         angles: {
           front: {
             title: 'FRONT 1080p WINDSHIELD CAMERA',
             sub: 'Ramesh Kumar (Route 4: Sikar Road) · Sikar Road KM 7.1',
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
-            bg: 'front',
             boxes: [
               { label: 'Automobile: SUV (96.0%)', dist: '15.1m · 38 km/h', color: 'blue', left: '35%', top: '35%', width: '180px', height: '115px' },
               { label: '⚠️ Pothole Cluster (92.4%)', dist: 'Depth 12cm', color: 'amber', left: '55%', top: '68%', width: '140px', height: '75px' }
@@ -1158,7 +1207,6 @@
             title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
             sub: 'Sikar Road KM 7.1 Profilometry',
             status: 'DOWNWARD ASPHALT SENSOR',
-            bg: 'asphalt',
             boxes: [
               { label: 'Pothole Cluster #DEF-404 (92.4%)', dist: 'Depth: 12cm · 16 MT Hot-mix', color: 'amber', left: '35%', top: '40%', width: '220px', height: '130px' }
             ]
@@ -1167,7 +1215,6 @@
             title: 'LEFT BLINDSPOT & KERB CAMERA',
             sub: 'Sikar Road Commercial Corridor',
             status: 'LEFT KERB OPTICAL SENSOR',
-            bg: 'blindspot',
             boxes: [
               { label: 'Pedestrian Flow (91.0%)', dist: '2.8m Footpath Clear', color: 'emerald', left: '40%', top: '38%', width: '150px', height: '130px' }
             ]
@@ -1176,7 +1223,6 @@
             title: 'DRIVER DMS & CABIN IR CAMERA',
             sub: 'Ramesh Kumar Telemetry',
             status: 'DRIVER MONITORING SYSTEM',
-            bg: 'cabin',
             boxes: [
               { label: 'Driver: Ramesh Kumar', dist: 'Score: 88/100 · Normal', color: 'emerald', left: '25%', top: '25%', width: '220px', height: '180px' }
             ]
@@ -1188,14 +1234,13 @@
         route: 'Route 5: Airport Link', 
         lat: 26.8280, lng: 75.8050, baseLat: 26.8280, baseLng: 75.8050, 
         speed: 42, driver: 'Suresh Saini', status: 'ONLINE', score: 94, 
-        temp: 47, fps: 18.8, lat_ms: 40, 
+        temp: 47, fps: 18.8, lat_ms: 40, signal: '99%',
         scene: 'Airport T2 Junction · Hit-and-Run Intercept Plate OCR Target Lock',
         angles: {
           front: {
             title: 'FRONT 1080p WINDSHIELD CAMERA',
             sub: 'Suresh Saini (Route 5: Airport Link) · Airport T2 Junction Target Lock',
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR TARGET LOCK',
-            bg: 'front',
             boxes: [
               { label: '🚨 TARGET LOCK: RJ-14-CE-8821 (97.2%)', dist: 'White Fortuner SUV · 84 km/h', color: 'rose', left: '25%', top: '28%', width: '240px', height: '145px' }
             ]
@@ -1204,7 +1249,6 @@
             title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
             sub: 'Airport Link Smooth Expressway',
             status: 'DOWNWARD ASPHALT SENSOR',
-            bg: 'asphalt',
             boxes: [
               { label: 'Smooth Surface (98.1%)', dist: '0 Defects Detected', color: 'emerald', left: '35%', top: '40%', width: '200px', height: '100px' }
             ]
@@ -1213,7 +1257,6 @@
             title: 'LEFT BLINDSPOT & KERB CAMERA',
             sub: 'Airport Terminal 2 Drop-off Area',
             status: 'LEFT KERB OPTICAL SENSOR',
-            bg: 'blindspot',
             boxes: [
               { label: 'Taxi Queue (96.4%)', dist: '4.2m Distance', color: 'blue', left: '35%', top: '35%', width: '180px', height: '130px' }
             ]
@@ -1222,7 +1265,6 @@
             title: 'DRIVER DMS & CABIN IR CAMERA',
             sub: 'Suresh Saini Telemetry',
             status: 'DRIVER MONITORING SYSTEM',
-            bg: 'cabin',
             boxes: [
               { label: 'Driver: Suresh Saini', dist: 'Score: 94/100 · Exemplary', color: 'emerald', left: '25%', top: '25%', width: '220px', height: '180px' }
             ]
@@ -1234,14 +1276,13 @@
         route: 'Route 6: Agra Road', 
         lat: 26.9050, lng: 75.8650, baseLat: 26.9050, baseLng: 75.8650, 
         speed: 26, driver: 'Anil Yadav', status: 'ONLINE', score: 90, 
-        temp: 49, fps: 18.1, lat_ms: 43, 
+        temp: 49, fps: 18.1, lat_ms: 43, signal: '94%',
         scene: 'Transport Nagar Flyover · Expansion Joint Dip Flagged',
         angles: {
           front: {
             title: 'FRONT 1080p WINDSHIELD CAMERA',
             sub: 'Anil Yadav (Route 6: Agra Road) · Transport Nagar Flyover',
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
-            bg: 'front',
             boxes: [
               { label: 'Heavy Truck (95.4%)', dist: '22.0m · 32 km/h', color: 'blue', left: '25%', top: '28%', width: '220px', height: '150px' },
               { label: '⚠️ Expansion Joint Dip (93.1%)', dist: 'Impact 2.8g', color: 'amber', left: '58%', top: '70%', width: '150px', height: '70px' }
@@ -1251,7 +1292,6 @@
             title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
             sub: 'Flyover Joint Vibration Scanner',
             status: 'DOWNWARD ASPHALT SENSOR',
-            bg: 'asphalt',
             boxes: [
               { label: 'Expansion Joint Fracture (93.1%)', dist: 'Gap: 5.2cm · Impact 2.8g', color: 'amber', left: '30%', top: '40%', width: '230px', height: '120px' }
             ]
@@ -1260,7 +1300,6 @@
             title: 'LEFT BLINDSPOT & KERB CAMERA',
             sub: 'Transport Nagar Commercial Side',
             status: 'LEFT KERB OPTICAL SENSOR',
-            bg: 'blindspot',
             boxes: [
               { label: 'Heavy Transport Loading', dist: '3.5m Distance', color: 'blue', left: '35%', top: '35%', width: '170px', height: '130px' }
             ]
@@ -1269,7 +1308,6 @@
             title: 'DRIVER DMS & CABIN IR CAMERA',
             sub: 'Anil Yadav Telemetry',
             status: 'DRIVER MONITORING SYSTEM',
-            bg: 'cabin',
             boxes: [
               { label: 'Driver: Anil Yadav', dist: 'Score: 90/100 · Normal', color: 'emerald', left: '25%', top: '25%', width: '220px', height: '180px' }
             ]
@@ -1281,14 +1319,13 @@
         route: 'Route 7: Mansarovar', 
         lat: 26.8550, lng: 75.7600, baseLat: 26.8550, baseLng: 75.7600, 
         speed: 29, driver: 'Dinesh Gurjar', status: 'ONLINE', score: 89, 
-        temp: 48, fps: 18.3, lat_ms: 42, 
+        temp: 48, fps: 18.3, lat_ms: 42, signal: '97%',
         scene: 'Mansarovar Metro Pillar 84 · Road Shoulder Drop-off',
         angles: {
           front: {
             title: 'FRONT 1080p WINDSHIELD CAMERA',
             sub: 'Dinesh Gurjar (Route 7: Mansarovar) · Metro Pillar 84',
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
-            bg: 'front',
             boxes: [
               { label: 'Motorcycle: Two-Wheeler (94.1%)', dist: '8.4m · 24 km/h', color: 'blue', left: '18%', top: '45%', width: '90px', height: '120px' },
               { label: '⚠️ Shoulder Drop-off (88.4%)', dist: 'Depth 9cm', color: 'amber', left: '65%', top: '65%', width: '130px', height: '75px' }
@@ -1298,7 +1335,6 @@
             title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
             sub: 'Metro Corridor Shoulder Profilometry',
             status: 'DOWNWARD ASPHALT SENSOR',
-            bg: 'asphalt',
             boxes: [
               { label: 'Edge Breakdown (88.4%)', dist: 'Shoulder Depth: 9cm', color: 'amber', left: '35%', top: '40%', width: '200px', height: '120px' }
             ]
@@ -1307,7 +1343,6 @@
             title: 'LEFT BLINDSPOT & KERB CAMERA',
             sub: 'Mansarovar Metro Footpath Zone',
             status: 'LEFT KERB OPTICAL SENSOR',
-            bg: 'blindspot',
             boxes: [
               { label: 'Metro Commuters (95.0%)', dist: 'Kerb Safe Zone', color: 'emerald', left: '40%', top: '35%', width: '160px', height: '130px' }
             ]
@@ -1316,7 +1351,6 @@
             title: 'DRIVER DMS & CABIN IR CAMERA',
             sub: 'Dinesh Gurjar Telemetry',
             status: 'DRIVER MONITORING SYSTEM',
-            bg: 'cabin',
             boxes: [
               { label: 'Driver: Dinesh Gurjar', dist: 'Score: 89/100 · Normal', color: 'emerald', left: '25%', top: '25%', width: '220px', height: '180px' }
             ]
@@ -1328,14 +1362,13 @@
         route: 'Route 8: Jagatpura', 
         lat: 26.8350, lng: 75.8400, baseLat: 26.8350, baseLng: 75.8400, 
         speed: 35, driver: 'Sunil Verma', status: 'ONLINE', score: 91, 
-        temp: 46, fps: 18.7, lat_ms: 40, 
+        temp: 46, fps: 18.7, lat_ms: 40, signal: '98%',
         scene: 'Jagatpura 7 No. Stand · Municipal Drain Overflow Pool',
         angles: {
           front: {
             title: 'FRONT 1080p WINDSHIELD CAMERA',
             sub: 'Sunil Verma (Route 8: Jagatpura) · Jagatpura 7 No. Stand',
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
-            bg: 'front',
             boxes: [
               { label: 'Automobile: Compact (96.2%)', dist: '16.4m · 40 km/h', color: 'blue', left: '32%', top: '35%', width: '170px', height: '110px' },
               { label: '🌊 Drain Overflow (90.2%)', dist: 'Pool 14cm', color: 'sky', left: '55%', top: '68%', width: '150px', height: '75px' }
@@ -1345,7 +1378,6 @@
             title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
             sub: 'Jagatpura Road Water Pool Measurement',
             status: 'DOWNWARD ASPHALT SENSOR',
-            bg: 'asphalt',
             boxes: [
               { label: 'Drain Inundation #DEF-009 (90.2%)', dist: 'Standing Water: 14cm', color: 'sky', left: '32%', top: '42%', width: '230px', height: '130px' }
             ]
@@ -1354,7 +1386,6 @@
             title: 'LEFT BLINDSPOT & KERB CAMERA',
             sub: 'Jagatpura Commercial Market Kerb',
             status: 'LEFT KERB OPTICAL SENSOR',
-            bg: 'blindspot',
             boxes: [
               { label: 'Pedestrians near Shopfront (93.1%)', dist: '2.5m Distance', color: 'blue', left: '42%', top: '36%', width: '160px', height: '130px' }
             ]
@@ -1363,7 +1394,6 @@
             title: 'DRIVER DMS & CABIN IR CAMERA',
             sub: 'Sunil Verma Telemetry',
             status: 'DRIVER MONITORING SYSTEM',
-            bg: 'cabin',
             boxes: [
               { label: 'Driver: Sunil Verma', dist: 'Score: 91/100 · Alert', color: 'emerald', left: '25%', top: '25%', width: '220px', height: '180px' }
             ]
@@ -1375,14 +1405,13 @@
         route: 'Route 9: VKI Industrial', 
         lat: 26.9750, lng: 75.7600, baseLat: 26.9750, baseLng: 75.7600, 
         speed: 18, driver: 'Praveen Gurjar', status: 'CAUTION', score: 58, 
-        temp: 58, fps: 16.4, lat_ms: 49, 
+        temp: 58, fps: 16.4, lat_ms: 49, signal: '91%',
         scene: 'VKI Road No. 9 · Industrial Crater Cluster & High Vibration',
         angles: {
           front: {
             title: 'FRONT 1080p WINDSHIELD CAMERA',
             sub: 'Praveen Gurjar (Route 9: VKI Industrial) · Extreme Crater Cluster',
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
-            bg: 'front',
             boxes: [
               { label: 'Commercial Vehicle (93.7%)', dist: '11.0m · 20 km/h', color: 'blue', left: '26%', top: '32%', width: '185px', height: '125px' },
               { label: '⚠️ Severe Crater Cluster (95.0%)', dist: 'Impact >3.4g', color: 'rose', left: '58%', top: '65%', width: '170px', height: '85px' }
@@ -1392,7 +1421,6 @@
             title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
             sub: 'VKI Industrial Area Heavy Crater Scan',
             status: 'DOWNWARD ASPHALT SENSOR',
-            bg: 'asphalt',
             boxes: [
               { label: '⚠️ Severe Crater Cluster (95.0%)', dist: 'Depth: 18.2cm · 20 MT Hot-mix', color: 'rose', left: '30%', top: '38%', width: '260px', height: '150px' },
               { label: 'Z-Axis Impact: 3.4g ⚠️', dist: 'Axle Damage Risk Level: HIGH', color: 'rose', left: '65%', top: '22%', width: '190px', height: '70px' }
@@ -1402,7 +1430,6 @@
             title: 'LEFT BLINDSPOT & KERB CAMERA',
             sub: 'VKI Factory Gate Heavy Ingress',
             status: 'LEFT KERB OPTICAL SENSOR',
-            bg: 'blindspot',
             boxes: [
               { label: 'Forklift & Workers (94.2%)', dist: '3.8m Clearance', color: 'amber', left: '38%', top: '35%', width: '170px', height: '130px' }
             ]
@@ -1411,7 +1438,6 @@
             title: 'DRIVER DMS & CABIN IR CAMERA',
             sub: 'Praveen Gurjar Telemetry · High Fatigue Warning',
             status: 'DRIVER MONITORING SYSTEM · FATIGUE ALERT',
-            bg: 'cabin',
             boxes: [
               { label: 'Driver: Praveen Gurjar', dist: 'Score: 58/100 · HIGH RISK', color: 'rose', left: '25%', top: '25%', width: '220px', height: '180px' },
               { label: '⚠️ Eye Aspect Ratio: 0.18 (Drowsy)', dist: 'Buzzer Warning Triggered', color: 'rose', left: '55%', top: '65%', width: '190px', height: '65px' }
@@ -1424,14 +1450,13 @@
         route: 'Route 10: Walled City', 
         lat: 26.9260, lng: 75.8240, baseLat: 26.9260, baseLng: 75.8240, 
         speed: 14, driver: 'Mahesh Sharma', status: 'ONLINE', score: 95, 
-        temp: 45, fps: 18.9, lat_ms: 39, 
+        temp: 45, fps: 18.9, lat_ms: 39, signal: '98%',
         scene: 'Choti Chaupar Heritage Arc · Tourist Density & E-Rickshaw Flow',
         angles: {
           front: {
             title: 'FRONT 1080p WINDSHIELD CAMERA',
             sub: 'Mahesh Sharma (Route 10: Walled City) · Choti Chaupar Heritage Arc',
             status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
-            bg: 'front',
             boxes: [
               { label: 'E-Rickshaw Fleet (96.7%)', dist: '6.2m · 12 km/h', color: 'blue', left: '20%', top: '38%', width: '140px', height: '120px' },
               { label: '🚶 Tourist Group (93.4%)', dist: '< 2.0m Density', color: 'amber', left: '60%', top: '42%', width: '130px', height: '140px' }
@@ -1441,7 +1466,6 @@
             title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
             sub: 'Walled City Cobblestone & Asphalt Blend',
             status: 'DOWNWARD ASPHALT SENSOR',
-            bg: 'asphalt',
             boxes: [
               { label: 'Surface Depression (89.1%)', dist: 'Depth: 5cm · 4 MT Hot-mix', color: 'amber', left: '35%', top: '40%', width: '220px', height: '120px' }
             ]
@@ -1450,7 +1474,6 @@
             title: 'LEFT BLINDSPOT & KERB CAMERA',
             sub: 'Choti Chaupar Bazaar Heritage Footpath',
             status: 'LEFT KERB OPTICAL SENSOR',
-            bg: 'blindspot',
             boxes: [
               { label: 'Pedestrian Density: HIGH', dist: '1.2m Kerb Clearance', color: 'amber', left: '35%', top: '35%', width: '180px', height: '140px' }
             ]
@@ -1459,7 +1482,6 @@
             title: 'DRIVER DMS & CABIN IR CAMERA',
             sub: 'Mahesh Sharma Telemetry',
             status: 'DRIVER MONITORING SYSTEM',
-            bg: 'cabin',
             boxes: [
               { label: 'Driver: Mahesh Sharma', dist: 'Score: 95/100 · Exemplary', color: 'emerald', left: '25%', top: '25%', width: '220px', height: '180px' }
             ]
@@ -1470,27 +1492,27 @@
 
     // 18 Road Incidents Dataset
     const roadIncidents = [
-      { id: 'INC_001', type: 'POTHOLE', title: 'Severe Pothole Crater (16cm)', loc: 'Tonk Rd KM 4.2', lat: 26.8540, lng: 75.7940, bus: 'BUS-003', time: '15 December 2026', conf: 94.8, status: 'Pending', cost: '₹45,000', asphalt: '12 MT', severity: 'High 8/10', sevColor: 'emerald', logo: 'construction' },
-      { id: 'INC_002', type: 'WATERLOGGING', title: 'Underpass Waterlogging (25cm)', loc: 'Ajmer Rd 200ft Bypass', lat: 26.8820, lng: 75.7480, bus: 'BUS-002', time: '15 December 2026', conf: 96.2, status: 'In Progress', cost: '₹80,000', asphalt: 'Drainage Seal', severity: 'Medium 5/10', sevColor: 'blue', logo: 'water_drop' },
-      { id: 'INC_003', type: 'CRITICAL', title: 'Hit-and-Run Collision (RJ-14-CE-8821)', loc: 'Airport T2 Junction', lat: 26.8290, lng: 75.8070, bus: 'BUS-005', time: '15 December 2026', conf: 97.2, status: 'Critical', cost: 'N/A', asphalt: 'Police FIR', severity: 'High 9/10', sevColor: 'rose', logo: 'shield' },
-      { id: 'INC_004', type: 'POTHOLE', title: 'Deep Pothole Cluster', loc: 'Sikar Rd KM 7.1', lat: 26.9620, lng: 75.7780, bus: 'BUS-004', time: '15 December 2026', conf: 92.4, status: 'Pending', cost: '₹60,000', asphalt: '16 MT', severity: 'Medium 5/10', sevColor: 'blue', logo: 'construction' },
-      { id: 'INC_005', type: 'POTHOLE', title: 'Asphalt Raveling & Crack', loc: 'JLN Marg near RU Gate', lat: 26.8910, lng: 75.8160, bus: 'BUS-001', time: '15 December 2026', conf: 89.6, status: 'Resolved', cost: '₹25,000', asphalt: '6 MT', severity: 'Low 4/10', sevColor: 'emerald', logo: 'construction' },
-      { id: 'INC_006', type: 'WATERLOGGING', title: 'Monsoon Water Surge (18cm)', loc: 'Gopalpura Underpass', lat: 26.8620, lng: 75.7890, bus: 'BUS-003', time: '15 December 2026', conf: 91.5, status: 'In Progress', cost: '₹35,000', asphalt: 'Pump Deployed', severity: 'Medium 5/10', sevColor: 'blue', logo: 'water_drop' },
-      { id: 'INC_007', type: 'POTHOLE', title: 'Bridge Expansion Joint Dip', loc: 'Transport Nagar Flyover', lat: 26.9080, lng: 75.8670, bus: 'BUS-006', time: '15 December 2026', conf: 93.1, status: 'Pending', cost: '₹55,000', asphalt: '14 MT', severity: 'High 8/10', sevColor: 'emerald', logo: 'construction' },
-      { id: 'INC_008', type: 'POTHOLE', title: 'Edge Asphalt Breakdown', loc: 'Mansarovar Metro Pillar 84', lat: 26.8570, lng: 75.7620, bus: 'BUS-007', time: '15 December 2026', conf: 88.4, status: 'Pending', cost: '₹30,000', asphalt: '8 MT', severity: 'Low 5/10', sevColor: 'blue', logo: 'construction' },
-      { id: 'INC_009', type: 'WATERLOGGING', title: 'Drain Overflow', loc: 'Jagatpura 7 No. Stand', lat: 26.8370, lng: 75.8420, bus: 'BUS-008', time: '15 December 2026', conf: 90.2, status: 'Pending', cost: '₹40,000', asphalt: 'Declogging', severity: 'Medium 5/10', sevColor: 'blue', logo: 'water_drop' },
-      { id: 'INC_010', type: 'POTHOLE', title: 'Deep Pothole Crater', loc: 'VKI Road No. 9', lat: 26.9780, lng: 75.7620, bus: 'BUS-009', time: '15 December 2026', conf: 95.0, status: 'Pending', cost: '₹75,000', asphalt: '20 MT', severity: 'High 8/10', sevColor: 'emerald', logo: 'construction' },
-      { id: 'INC_011', type: 'POTHOLE', title: 'Shoulder Drop-off', loc: 'B2 Bypass Circle', lat: 26.8480, lng: 75.7980, bus: 'BUS-003', time: '15 December 2026', conf: 91.2, status: 'Resolved', cost: '₹20,000', asphalt: '5 MT', severity: 'Low 3/10', sevColor: 'emerald', logo: 'construction' },
-      { id: 'INC_012', type: 'WATERLOGGING', title: 'Water Accumulation', loc: 'Sikar Rd Underpass', lat: 26.9550, lng: 75.7720, bus: 'BUS-004', time: '15 December 2026', conf: 94.0, status: 'Pending', cost: '₹50,000', asphalt: 'Drainage', severity: 'Medium 6/10', sevColor: 'blue', logo: 'water_drop' },
-      { id: 'INC_013', type: 'POTHOLE', title: 'Crater on Bus Stop Lane', loc: 'SMS Hospital Gate', lat: 26.8990, lng: 75.8190, bus: 'BUS-001', time: '15 December 2026', conf: 93.7, status: 'Pending', cost: '₹35,000', asphalt: '9 MT', severity: 'High 8/10', sevColor: 'emerald', logo: 'construction' },
-      { id: 'INC_014', type: 'POTHOLE', title: 'Surface Depression', loc: 'Choti Chaupar Corner', lat: 26.9270, lng: 75.8230, bus: 'BUS-010', time: '15 December 2026', conf: 89.1, status: 'Resolved', cost: '₹15,000', asphalt: '4 MT', severity: 'Low 4/10', sevColor: 'emerald', logo: 'construction' },
-      { id: 'INC_015', type: 'WATERLOGGING', title: 'Road Inundation', loc: 'Durgapura Flyover Downramp', lat: 26.8510, lng: 75.7910, bus: 'BUS-003', time: '15 December 2026', conf: 95.4, status: 'In Progress', cost: '₹45,000', asphalt: 'Channeling', severity: 'Medium 6/10', sevColor: 'blue', logo: 'water_drop' },
-      { id: 'INC_016', type: 'POTHOLE', title: 'Deep Pothole (14cm)', loc: 'Civil Lines Crossing', lat: 26.8870, lng: 75.7780, bus: 'BUS-002', time: '15 December 2026', conf: 92.8, status: 'Pending', cost: '₹40,000', asphalt: '10 MT', severity: 'Medium 5/10', sevColor: 'blue', logo: 'construction' },
-      { id: 'INC_017', type: 'POTHOLE', title: 'Multiple Asphalt Cracks', loc: 'Malviya Nagar Sector 3', lat: 26.8420, lng: 75.8120, bus: 'BUS-005', time: '15 December 2026', conf: 87.5, status: 'Resolved', cost: '₹30,000', asphalt: '7 MT', severity: 'Low 3/10', sevColor: 'emerald', logo: 'construction' },
-      { id: 'INC_018', type: 'WATERLOGGING', title: 'Standing Water Pool', loc: 'Bani Park Underpass', lat: 26.9320, lng: 75.7920, bus: 'BUS-002', time: '15 December 2026', conf: 93.3, status: 'Resolved', cost: '₹35,000', asphalt: 'Drainage', severity: 'Medium 5/10', sevColor: 'blue', logo: 'water_drop' },
+      { id: 'INC_001', type: 'POTHOLE', title: 'Severe Pothole Crater (16cm)', loc: 'Tonk Rd KM 4.2', lat: 26.8540, lng: 75.7940, bus: 'BUS-003', time: '15 December 2026', minuteScrub: 1002, conf: 94.8, status: 'Pending', cost: '₹45,000', asphalt: '12 MT', severity: 'High 8/10', sevColor: 'emerald', logo: 'construction' },
+      { id: 'INC_002', type: 'WATERLOGGING', title: 'Underpass Waterlogging (25cm)', loc: 'Ajmer Rd 200ft Bypass', lat: 26.8820, lng: 75.7480, bus: 'BUS-002', time: '15 December 2026', minuteScrub: 940, conf: 96.2, status: 'In Progress', cost: '₹80,000', asphalt: 'Drainage Seal', severity: 'Medium 5/10', sevColor: 'blue', logo: 'water_drop' },
+      { id: 'INC_003', type: 'CRITICAL', title: 'Hit-and-Run Collision (RJ-14-CE-8821)', loc: 'Airport T2 Junction', lat: 26.8290, lng: 75.8070, bus: 'BUS-005', time: '15 December 2026', minuteScrub: 920, conf: 97.2, status: 'Critical', cost: 'N/A', asphalt: 'Police FIR', severity: 'High 9/10', sevColor: 'rose', logo: 'shield' },
+      { id: 'INC_004', type: 'POTHOLE', title: 'Deep Pothole Cluster', loc: 'Sikar Rd KM 7.1', lat: 26.9620, lng: 75.7780, bus: 'BUS-004', time: '15 December 2026', minuteScrub: 1010, conf: 92.4, status: 'Pending', cost: '₹60,000', asphalt: '16 MT', severity: 'Medium 5/10', sevColor: 'blue', logo: 'construction' },
+      { id: 'INC_005', type: 'POTHOLE', title: 'Asphalt Raveling & Crack', loc: 'JLN Marg near RU Gate', lat: 26.8910, lng: 75.8160, bus: 'BUS-001', time: '15 December 2026', minuteScrub: 880, conf: 89.6, status: 'Resolved', cost: '₹25,000', asphalt: '6 MT', severity: 'Low 4/10', sevColor: 'emerald', logo: 'construction' },
+      { id: 'INC_006', type: 'WATERLOGGING', title: 'Monsoon Water Surge (18cm)', loc: 'Gopalpura Underpass', lat: 26.8620, lng: 75.7890, bus: 'BUS-003', time: '15 December 2026', minuteScrub: 980, conf: 91.5, status: 'In Progress', cost: '₹35,000', asphalt: 'Pump Deployed', severity: 'Medium 5/10', sevColor: 'blue', logo: 'water_drop' },
+      { id: 'INC_007', type: 'POTHOLE', title: 'Bridge Expansion Joint Dip', loc: 'Transport Nagar Flyover', lat: 26.9080, lng: 75.8670, bus: 'BUS-006', time: '15 December 2026', minuteScrub: 1040, conf: 93.1, status: 'Pending', cost: '₹55,000', asphalt: '14 MT', severity: 'High 8/10', sevColor: 'emerald', logo: 'construction' },
+      { id: 'INC_008', type: 'POTHOLE', title: 'Edge Asphalt Breakdown', loc: 'Mansarovar Metro Pillar 84', lat: 26.8570, lng: 75.7620, bus: 'BUS-007', time: '15 December 2026', minuteScrub: 990, conf: 88.4, status: 'Pending', cost: '₹30,000', asphalt: '8 MT', severity: 'Low 5/10', sevColor: 'blue', logo: 'construction' },
+      { id: 'INC_009', type: 'WATERLOGGING', title: 'Drain Overflow', loc: 'Jagatpura 7 No. Stand', lat: 26.8370, lng: 75.8420, bus: 'BUS-008', time: '15 December 2026', minuteScrub: 930, conf: 90.2, status: 'Pending', cost: '₹40,000', asphalt: 'Declogging', severity: 'Medium 5/10', sevColor: 'blue', logo: 'water_drop' },
+      { id: 'INC_010', type: 'POTHOLE', title: 'Deep Pothole Crater', loc: 'VKI Road No. 9', lat: 26.9780, lng: 75.7620, bus: 'BUS-009', time: '15 December 2026', minuteScrub: 1050, conf: 95.0, status: 'Pending', cost: '₹75,000', asphalt: '20 MT', severity: 'High 8/10', sevColor: 'emerald', logo: 'construction' },
+      { id: 'INC_011', type: 'POTHOLE', title: 'Shoulder Drop-off', loc: 'B2 Bypass Circle', lat: 26.8480, lng: 75.7980, bus: 'BUS-003', time: '15 December 2026', minuteScrub: 890, conf: 91.2, status: 'Resolved', cost: '₹20,000', asphalt: '5 MT', severity: 'Low 3/10', sevColor: 'emerald', logo: 'construction' },
+      { id: 'INC_012', type: 'WATERLOGGING', title: 'Water Accumulation', loc: 'Sikar Rd Underpass', lat: 26.9550, lng: 75.7720, bus: 'BUS-004', time: '15 December 2026', minuteScrub: 960, conf: 94.0, status: 'Pending', cost: '₹50,000', asphalt: 'Drainage', severity: 'Medium 6/10', sevColor: 'blue', logo: 'water_drop' },
+      { id: 'INC_013', type: 'POTHOLE', title: 'Crater on Bus Stop Lane', loc: 'SMS Hospital Gate', lat: 26.8990, lng: 75.8190, bus: 'BUS-001', time: '15 December 2026', minuteScrub: 1015, conf: 93.7, status: 'Pending', cost: '₹35,000', asphalt: '9 MT', severity: 'High 8/10', sevColor: 'emerald', logo: 'construction' },
+      { id: 'INC_014', type: 'POTHOLE', title: 'Surface Depression', loc: 'Choti Chaupar Corner', lat: 26.9270, lng: 75.8230, bus: 'BUS-010', time: '15 December 2026', minuteScrub: 860, conf: 89.1, status: 'Resolved', cost: '₹15,000', asphalt: '4 MT', severity: 'Low 4/10', sevColor: 'emerald', logo: 'construction' },
+      { id: 'INC_015', type: 'WATERLOGGING', title: 'Road Inundation', loc: 'Durgapura Flyover Downramp', lat: 26.8510, lng: 75.7910, bus: 'BUS-003', time: '15 December 2026', minuteScrub: 975, conf: 95.4, status: 'In Progress', cost: '₹45,000', asphalt: 'Channeling', severity: 'Medium 6/10', sevColor: 'blue', logo: 'water_drop' },
+      { id: 'INC_016', type: 'POTHOLE', title: 'Deep Pothole (14cm)', loc: 'Civil Lines Crossing', lat: 26.8870, lng: 75.7780, bus: 'BUS-002', time: '15 December 2026', minuteScrub: 1025, conf: 92.8, status: 'Pending', cost: '₹40,000', asphalt: '10 MT', severity: 'Medium 5/10', sevColor: 'blue', logo: 'construction' },
+      { id: 'INC_017', type: 'POTHOLE', title: 'Multiple Asphalt Cracks', loc: 'Malviya Nagar Sector 3', lat: 26.8420, lng: 75.8120, bus: 'BUS-005', time: '15 December 2026', minuteScrub: 870, conf: 87.5, status: 'Resolved', cost: '₹30,000', asphalt: '7 MT', severity: 'Low 3/10', sevColor: 'emerald', logo: 'construction' },
+      { id: 'INC_018', type: 'WATERLOGGING', title: 'Standing Water Pool', loc: 'Bani Park Underpass', lat: 26.9320, lng: 75.7920, bus: 'BUS-002', time: '15 December 2026', minuteScrub: 850, conf: 93.3, status: 'Resolved', cost: '₹35,000', asphalt: 'Drainage', severity: 'Medium 5/10', sevColor: 'blue', logo: 'water_drop' },
     ];
 
-    // Web Audio Synthesizer
+    // Web Audio Synthesizer (Safely Handles User Gesture Activation)
     let audioCtx = null;
     function playBeep(freq = 880, duration = 0.08) {
       if (!audioAlertsEnabled) return;
@@ -1510,12 +1532,18 @@
       } catch (e) {}
     }
 
+    // TOAST NOTIFICATION ENGINE (WITH FALLBACK CREATION)
     function showToast(title, msg, type = 'info') {
-      const container = document.getElementById('toast-container');
-      if (!container) return;
+      let container = document.getElementById('toast-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.className = 'fixed top-6 right-6 z-[9999] flex flex-col gap-2.5 pointer-events-none';
+        document.body.appendChild(container);
+      }
 
       const toast = document.createElement('div');
-      toast.className = 'pointer-events-auto flex items-center gap-3 p-4 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl text-xs transition-all transform duration-300 translate-y-2 opacity-0 max-w-sm';
+      toast.className = 'pointer-events-auto flex items-center gap-3 p-4 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl text-xs transition-all transform duration-300 translate-y-2 opacity-0 max-w-sm border border-black/5';
       
       const icon = type === 'success' ? 'check' : type === 'danger' ? 'warning' : 'info';
       const iconColor = type === 'success' ? 'bg-[#E8F8EE] text-[#1E8A44]' : type === 'danger' ? 'bg-[#FDECEC] text-[#D33838]' : 'bg-[#EEF1FD] text-[#4A62D6]';
@@ -1539,9 +1567,169 @@
         if (toast && toast.classList) toast.classList.add('opacity-0', 'translate-y-2');
         setTimeout(() => {
           if (toast && toast.parentNode) toast.parentNode.removeChild(toast);
-          else if (toast && typeof toast.remove === 'function') toast.remove();
         }, 300);
       }, 3500);
+    }
+
+    // 60 FPS HTML5 CANVAS REAL VIDEO SIMULATION ENGINE
+    function initVideoCanvasStream() {
+      const canvas = document.getElementById('video-canvas-stream');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      function renderFrame() {
+        if (liveVideoPlaying) {
+          roadOffset = (roadOffset + 4) % 40;
+        }
+
+        ctx.fillStyle = '#141816';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        if (currentCameraAngle === 'front') {
+          // Dark road gradient
+          const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+          grad.addColorStop(0, '#101412');
+          grad.addColorStop(0.5, '#1A201C');
+          grad.addColorStop(1, '#0C0F0E');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // Vanishing road perspective lines
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(canvas.width * 0.45, canvas.height * 0.4);
+          ctx.lineTo(0, canvas.height);
+          ctx.moveTo(canvas.width * 0.55, canvas.height * 0.4);
+          ctx.lineTo(canvas.width, canvas.height);
+          ctx.stroke();
+
+          // Animated lane markings
+          ctx.strokeStyle = 'rgba(74, 98, 214, 0.4)';
+          ctx.setLineDash([15, 15]);
+          ctx.lineDashOffset = -roadOffset;
+          ctx.beginPath();
+          ctx.moveTo(canvas.width * 0.5, canvas.height * 0.4);
+          ctx.lineTo(canvas.width * 0.5, canvas.height);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          // Simulated passing vehicle silhouette
+          const carY = 160 + (roadOffset * 2) % 180;
+          ctx.fillStyle = 'rgba(30, 35, 32, 0.8)';
+          ctx.strokeStyle = '#4A62D6';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.roundRect(canvas.width * 0.35, carY, 140, 80, 8);
+          ctx.fill();
+          ctx.stroke();
+
+        } else if (currentCameraAngle === 'asphalt') {
+          // Macro asphalt surface
+          ctx.fillStyle = '#1C211E';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // Texture noise grid
+          ctx.strokeStyle = 'rgba(203, 213, 200, 0.08)';
+          ctx.lineWidth = 1;
+          for (let x = 0; x < canvas.width; x += 30) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, canvas.height);
+            ctx.stroke();
+          }
+          for (let y = (roadOffset % 30); y < canvas.height; y += 30) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(canvas.width, y);
+            ctx.stroke();
+          }
+
+          // Simulated crater defect graphic
+          ctx.fillStyle = 'rgba(211, 56, 56, 0.25)';
+          ctx.strokeStyle = '#D33838';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.ellipse(canvas.width * 0.48, canvas.height * 0.5, 90, 50, 0.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+        } else if (currentCameraAngle === 'blindspot') {
+          // Kerb perspective
+          ctx.fillStyle = '#171B19';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.strokeStyle = 'rgba(30, 138, 68, 0.5)';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(canvas.width * 0.35, 0);
+          ctx.lineTo(canvas.width * 0.35, canvas.height);
+          ctx.stroke();
+
+        } else if (currentCameraAngle === 'cabin') {
+          // Driver IR Camera
+          ctx.fillStyle = '#0D100F';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // Facial target reticle
+          ctx.strokeStyle = 'rgba(30, 138, 68, 0.6)';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(canvas.width * 0.5, canvas.height * 0.45, 75, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        // Live Frame Timestamp and FPS HUD on Canvas
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+        ctx.font = '10px "JetBrains Mono", monospace';
+        ctx.fillText(`REC 🟢 1080p60 · FPS: ${(59.5 + Math.random()).toFixed(1)} · BITRATE: 4.2Mbps`, 15, canvas.height - 15);
+
+        videoAnimFrame = requestAnimationFrame(renderFrame);
+      }
+
+      if (videoAnimFrame) cancelAnimationFrame(videoAnimFrame);
+      renderFrame();
+    }
+
+    function toggleVideoPlay() {
+      liveVideoPlaying = !liveVideoPlaying;
+      const icon = document.getElementById('video-play-icon');
+      const text = document.getElementById('video-play-text');
+      if (liveVideoPlaying) {
+        if (icon) icon.innerText = 'pause';
+        if (text) text.innerText = 'PAUSE';
+        showToast('Video Stream Resumed', 'Live 1080p NPU video feed playing.', 'info');
+      } else {
+        if (icon) icon.innerText = 'play_arrow';
+        if (text) text.innerText = 'PLAY';
+        showToast('Video Stream Paused', 'Optical video buffer paused on current frame.', 'info');
+      }
+      playBeep(640);
+    }
+
+    function toggleVideoMute() {
+      liveVideoMuted = !liveVideoMuted;
+      const icon = document.getElementById('video-mute-icon');
+      if (liveVideoMuted) {
+        if (icon) icon.innerText = 'volume_off';
+        showToast('Audio Muted', 'Onboard cabin microphone muted.', 'info');
+      } else {
+        if (icon) icon.innerText = 'volume_up';
+        showToast('Audio Unmuted', 'Onboard cabin microphone live.', 'info');
+      }
+      playBeep(640);
+    }
+
+    function toggleVideoFullscreen() {
+      const container = document.getElementById('video-feed-viewport');
+      if (!container) return;
+      if (!document.fullscreenElement) {
+        if (container.requestFullscreen) container.requestFullscreen();
+        showToast('Fullscreen View', 'Expanded 1080p optical stream.', 'info');
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
     }
 
     // DIRECT BUS SELECTION & TELEMETRY BINDING
@@ -1601,7 +1789,7 @@
         populateFleetCardsGrid(currentSearchQuery);
       }
       playBeep(720);
-      showToast('Bus Selected', `${bus.id} (${bus.route}) · Driver: ${bus.driver}`, 'info');
+      showToast('Bus Selected', `Loaded ${bus.id} (${bus.route}) · Driver: ${bus.driver}`, 'info');
     }
 
     // RENDER CAMERA VIEWPORT DYNAMICALLY BASED ON BUS & ANGLE
@@ -1620,80 +1808,6 @@
       if (hudStatus) hudStatus.innerText = angleData.status;
       const fpsBadge = document.getElementById('hud-cam-fps-badge');
       if (fpsBadge) fpsBadge.innerText = `${bus.fps} FPS Local NPU`;
-
-      // Render Perspective Layer Background
-      const bgLayer = document.getElementById('camera-perspective-layer');
-      if (bgLayer) {
-        if (currentCameraAngle === 'front') {
-          bgLayer.innerHTML = `
-            <div class="absolute inset-0 bg-gradient-to-b from-[#181E1B] via-[#101412] to-[#0A0D0C] opacity-95">
-              <div class="w-full h-full opacity-25 bg-[radial-gradient(#4A62D6_1px,transparent_1px)] [background-size:20px_20px]"></div>
-            </div>
-            <!-- Horizon & Forward Vanishing Lines -->
-            <div class="absolute inset-x-0 bottom-0 top-[45%] flex justify-center pointer-events-none">
-              <div class="w-1/2 h-full border-x-2 border-dashed border-slate-600/40"></div>
-            </div>
-            <!-- Lane Guidelines -->
-            <div class="absolute bottom-2 inset-x-12 flex justify-between text-[9px] font-mono text-emerald-400/80">
-              <span>◄ LEFT LANE (CLEAR)</span>
-              <span>FORWARD DISTANCE: 45m</span>
-              <span>RIGHT LANE (CLEAR) ►</span>
-            </div>
-          `;
-        } else if (currentCameraAngle === 'asphalt') {
-          bgLayer.innerHTML = `
-            <div class="absolute inset-0 bg-gradient-to-br from-[#1E2320] via-[#171B19] to-[#111413]">
-              <div class="w-full h-full opacity-35 bg-[radial-gradient(#CBD5C8_1.5px,transparent_1.5px)] [background-size:14px_14px]"></div>
-            </div>
-            <!-- Top-down Measurement Calipers & Grid -->
-            <div class="absolute inset-8 border border-amber-500/40 rounded-2xl flex flex-col justify-between p-3 pointer-events-none">
-              <div class="flex justify-between text-[9px] font-mono text-amber-400">
-                <span>[ASP-CALIPER X: 2.40m]</span>
-                <span>[MACRO RESOLUTION: 0.2mm/px]</span>
-                <span>[ASP-CALIPER Y: 1.80m]</span>
-              </div>
-              <div class="flex justify-between text-[9px] font-mono text-amber-400">
-                <span>LASER PROFILER: ACTIVE</span>
-                <span>ASPHALT CRATER DEPTH: MEASURED</span>
-              </div>
-            </div>
-          `;
-        } else if (currentCameraAngle === 'blindspot') {
-          bgLayer.innerHTML = `
-            <div class="absolute inset-0 bg-gradient-to-r from-[#171B19] via-[#101412] to-[#181E1B]">
-              <div class="w-full h-full opacity-20 bg-[radial-gradient(#4CAF50_1.5px,transparent_1.5px)] [background-size:18px_18px]"></div>
-            </div>
-            <!-- Kerb Separation Visualizer -->
-            <div class="absolute inset-y-0 left-1/3 w-0.5 border-l-2 border-emerald-400/60"></div>
-            <div class="absolute bottom-3 left-6 text-[9px] font-mono text-emerald-400">
-              <span>◄ VEHICLE CARRIAGEWAY</span>
-            </div>
-            <div class="absolute bottom-3 right-8 text-[9px] font-mono text-emerald-400">
-              <span>PEDESTRIAN FOOTPATH &amp; KERB ►</span>
-            </div>
-          `;
-        } else if (currentCameraAngle === 'cabin') {
-          bgLayer.innerHTML = `
-            <div class="absolute inset-0 bg-gradient-to-b from-[#101412] via-[#0D100F] to-[#0A0D0C]">
-              <div class="w-full h-full opacity-30 bg-[radial-gradient(#3B82F6_1px,transparent_1px)] [background-size:16px_16px]"></div>
-            </div>
-            <!-- Driver Facial Landmark Mesh Target Overlay -->
-            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div class="w-48 h-56 border border-emerald-500/40 rounded-full flex flex-col items-center justify-around py-4">
-                <div class="w-24 h-6 border-b border-emerald-400/60"></div>
-                <div class="w-8 h-8 border border-emerald-400/60 rounded-full"></div>
-                <div class="w-16 h-4 border-t border-emerald-400/60"></div>
-              </div>
-            </div>
-            <div class="absolute top-16 left-6 text-[9px] font-mono text-emerald-400 space-y-1 bg-black/60 p-2.5 rounded-xl border border-emerald-500/30">
-              <div>DRIVER DMS SENSORS: ONLINE</div>
-              <div>HEAD POSE: FORWARD (0.2° YAW)</div>
-              <div>EYE GAZE: ATTENTIVE ON ROAD</div>
-              <div>MOBILE PHONE: NOT DETECTED</div>
-            </div>
-          `;
-        }
-      }
 
       // Render Dynamic Bounding Boxes
       const boxContainer = document.getElementById('camera-bounding-boxes-container');
@@ -1716,13 +1830,14 @@
             bDiv.style.top = bx.top;
             bDiv.style.width = bx.width;
             bDiv.style.height = bx.height;
-            bDiv.className = `border-2 ${borderCol} rounded-2xl p-2 flex flex-col justify-between shadow-lg animate-pulse`;
+            bDiv.className = `border-2 ${borderCol} rounded-2xl p-2 flex flex-col justify-between shadow-lg animate-pulse pointer-events-auto cursor-pointer`;
+            bDiv.onclick = () => showToast('AI Detection Clicked', `${bx.label} · Range: ${bx.dist}`, 'info');
 
             bDiv.innerHTML = `
-              <div class="${tagBg} text-[9px] px-2 py-0.5 rounded-full font-mono font-bold self-start truncate max-w-full">
+              <div class="${tagBg} text-[9px] px-2 py-0.5 rounded-full font-mono font-bold self-start truncate max-w-full shadow-sm">
                 ${bx.label}
               </div>
-              <div class="text-[8px] text-slate-200 font-mono self-end bg-black/70 px-2 py-0.5 rounded-full">
+              <div class="text-[8px] text-slate-200 font-mono self-end bg-black/80 px-2 py-0.5 rounded-full backdrop-blur-md">
                 ${bx.dist}
               </div>
             `;
@@ -1732,7 +1847,7 @@
       }
     }
 
-    // SWITCH CAMERA ANGLE (FRONT, ASPHALT, BLINDSPOT, CABIN)
+    // SWITCH CAMERA ANGLE
     function switchCameraAngle(angleKey) {
       currentCameraAngle = angleKey;
       ['front', 'asphalt', 'blindspot', 'cabin'].forEach(a => {
@@ -1755,7 +1870,7 @@
         cabin: 'Driver Cabin & DMS'
       };
 
-      showToast('Camera Angle Switched', `Viewing ${angleNames[angleKey] || angleKey} feed.`, 'info');
+      showToast('Camera Angle Switched', `Viewing ${angleNames[angleKey] || angleKey} stream.`, 'info');
       playBeep(640);
     }
 
@@ -1984,7 +2099,7 @@
         document.getElementById('banner-action-sub').innerText = `Moved "${inc.loc}" to Resolved Today`;
       }
 
-      showToast('Docket Resolved', `Work order for ${inc.loc} marked complete.`, 'success');
+      showToast('Docket Resolved', `✓ Moved "${inc.loc}" to Resolved Today.`, 'success');
       updatePillCounts();
       populateBentoIncidentGrid(currentSearchQuery, currentFilter);
       populateDefectTable(currentSearchQuery);
@@ -2035,27 +2150,30 @@
       playBeep(640);
     }
 
-    // GLOBAL OMNI-SEARCH ENGINE (SEARCHES BUSES, ROADS, DRIVERS, INCIDENTS)
+    // GLOBAL OMNI-SEARCH ENGINE WITH DEBOUNCE (200ms)
     function handleGlobalSearch(val) {
-      currentSearchQuery = val || '';
-      populateBentoIncidentGrid(currentSearchQuery, currentFilter);
-      populateDefectTable(currentSearchQuery);
+      if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => {
+        currentSearchQuery = val || '';
+        populateBentoIncidentGrid(currentSearchQuery, currentFilter);
+        populateDefectTable(currentSearchQuery);
 
-      if (val && val.trim() !== '') {
-        const q = val.toUpperCase().trim();
-        const busMatch = jaipurFleet.find(b => 
-          b.id.toUpperCase() === q ||
-          b.id.toUpperCase().replace('-', '') === q ||
-          b.id.toUpperCase().replace('BUS-', '') === q ||
-          b.id.toUpperCase().endsWith('00' + q) ||
-          b.id.toUpperCase().endsWith('0' + q) ||
-          b.driver.toUpperCase().includes(q) || 
-          b.route.toUpperCase().includes(q)
-        );
-        if (busMatch) {
-          selectBusDirectly(busMatch.id, true);
+        if (val && val.trim() !== '') {
+          const q = val.toUpperCase().trim();
+          const busMatch = jaipurFleet.find(b => 
+            b.id.toUpperCase() === q ||
+            b.id.toUpperCase().replace('-', '') === q ||
+            b.id.toUpperCase().replace('BUS-', '') === q ||
+            b.id.toUpperCase().endsWith('00' + q) ||
+            b.id.toUpperCase().endsWith('0' + q) ||
+            b.driver.toUpperCase().includes(q) || 
+            b.route.toUpperCase().includes(q)
+          );
+          if (busMatch) {
+            selectBusDirectly(busMatch.id, true);
+          }
         }
-      }
+      }, 200);
     }
 
     // POPULATE DEFECT TABLE
@@ -2101,6 +2219,16 @@
       });
     }
 
+    // LIVE HARDWARE MATRIX REAL-TIME UPDATE (EVERY 2 SECONDS)
+    function updateHardwareMatrixLive() {
+      jaipurFleet.forEach(b => {
+        b.temp = Math.min(65, Math.max(40, b.temp + Math.floor(Math.random() * 3) - 1));
+        b.fps = (16.0 + Math.random() * 3.0).toFixed(1);
+        b.lat_ms = Math.min(60, Math.max(35, b.lat_ms + Math.floor(Math.random() * 5) - 2));
+      });
+      populateHardwareMatrix();
+    }
+
     function populateHardwareMatrix() {
       const tbody = document.getElementById('hardware-matrix-body');
       if (!tbody) return;
@@ -2109,18 +2237,23 @@
       jaipurFleet.forEach(b => {
         const tr = document.createElement('tr');
         tr.className = 'hover:bg-[#F4F7F0] transition-colors';
+        const tempColor = b.temp > 55 ? 'text-rose-600 font-bold bg-rose-50 px-2 py-0.5 rounded-full' : 'text-[#1E8A44] font-bold';
+        const latColor = b.lat_ms > 45 ? 'text-amber-700' : 'text-slate-700';
+
         tr.innerHTML = `
           <td class="py-2.5 px-3 font-bold text-[#1E2320]">${b.id}</td>
           <td class="py-2.5 px-3 text-[#4A62D6]">Jetson Orin Nano</td>
-          <td class="py-2.5 px-3 text-[#1E8A44] font-bold">${b.temp}°C</td>
+          <td class="py-2.5 px-3"><span class="${tempColor}">${b.temp}°C</span></td>
           <td class="py-2.5 px-3 font-bold">${b.fps}</td>
-          <td class="py-2.5 px-3">${b.lat_ms} ms</td>
-          <td class="py-2.5 px-3 text-[#1E8A44] font-bold">98% (LTE)</td>
+          <td class="py-2.5 px-3 ${latColor}">${b.lat_ms} ms</td>
+          <td class="py-2.5 px-3 text-[#1E8A44] font-bold">${b.signal || '98% (LTE)'}</td>
           <td class="py-2.5 px-3"><span class="text-[#1E8A44] font-bold">✅ Active</span></td>
         `;
         tbody.appendChild(tr);
       });
     }
+
+    setInterval(updateHardwareMatrixLive, 2000);
 
     // TAB SWITCHER WITH CONTEXT-AWARE HEADERS
     function setViewTab(tabName) {
@@ -2152,6 +2285,7 @@
         if (mainTitle) mainTitle.innerText = 'Onboard Edge AI Cameras';
         if (mainSubtitle) mainSubtitle.innerText = '1080p live windshield vision, license plate OCR, and spatial object detection';
         renderActiveCameraView();
+        initVideoCanvasStream();
       } else if (tabName === 'work-orders') {
         if (mainTitle) mainTitle.innerText = 'Municipal Defect Registry';
         if (mainSubtitle) mainSubtitle.innerText = '1,284 total defects logged across 32 Jaipur wards · PWD Work Orders & Repair ROI';
@@ -2164,7 +2298,7 @@
       playBeep(640);
     }
 
-    // INITIALIZE LIGHT GIS MAP & REACTIVE MARKERS
+    // INITIALIZE GIS MAP & REACTIVE MARKERS
     function initMap() {
       if (map) return;
 
@@ -2201,7 +2335,7 @@
         marker.bindTooltip(`<b>${b.id}</b> · ${b.route} (${b.speed} km/h)`, { direction: 'top', offset: [0, -10] });
       });
 
-      // 2. Road Incidents Filtered by Status (Skip when in pure fleet mode)
+      // 2. Road Incidents Filtered by Status
       if (filterType !== 'FLEET') {
         roadIncidents.forEach(inc => {
           if (busSpecificFilter && inc.bus !== busSpecificFilter) return;
@@ -2228,7 +2362,7 @@
       }
     }
 
-    // 24H TIME SCRUBBER & PLAYBACK SIMULATION
+    // 24H TIME SCRUBBER & REAL-TIME PLAYBACK SIMULATION WITH ACCURATE MULTIPLIER
     function handleTimeScrub(val) {
       currentScrubMinutes = parseInt(val);
       const hours = String(Math.floor(currentScrubMinutes / 60)).padStart(2, '0');
@@ -2237,32 +2371,52 @@
       const scrubLabel = document.getElementById('scrub-time-label');
       if (scrubLabel) scrubLabel.innerText = timeStr;
 
+      // Animate bus positions smoothly along orbital route
       const angle = (currentScrubMinutes / 1440) * Math.PI * 4;
       jaipurFleet.forEach((b, idx) => {
-        b.lat = b.baseLat + Math.sin(angle + idx) * 0.015;
-        b.lng = b.baseLng + Math.cos(angle + idx) * 0.015;
+        b.lat = b.baseLat + Math.sin(angle + idx * 0.5) * 0.012;
+        b.lng = b.baseLng + Math.cos(angle + idx * 0.5) * 0.012;
       });
 
       renderMarkers(currentFilter);
+      updateChartsForTimeline(currentScrubMinutes);
     }
 
     function togglePlayback() {
       isPlaying = !isPlaying;
-      const btn = document.getElementById('btn-playback');
+      const icon = document.getElementById('playback-icon');
+      const text = document.getElementById('playback-text');
+
       if (isPlaying) {
-        btn.innerHTML = '<span class="material-symbols-outlined text-sm text-rose-600">pause</span><span class="text-rose-600">Pause</span>';
-        playbackInterval = setInterval(() => {
-          currentScrubMinutes = (currentScrubMinutes + (2 * playbackSpeed)) % 1440;
-          const slider = document.getElementById('time-scrubber');
-          if (slider) slider.value = currentScrubMinutes;
-          handleTimeScrub(currentScrubMinutes);
-        }, 300);
+        if (icon) icon.innerText = 'pause';
+        if (text) text.innerText = 'Pause';
+        if (icon) icon.className = 'material-symbols-outlined text-base text-rose-600';
+        if (text) text.className = 'text-rose-600 font-bold';
+
+        startPlaybackInterval();
+        showToast('Playback Started', `Timeline advancing at ${playbackSpeed}x speed.`, 'info');
         playBeep(880);
       } else {
-        btn.innerHTML = '<span class="material-symbols-outlined text-sm">play_arrow</span><span>Play</span>';
-        clearInterval(playbackInterval);
+        if (icon) icon.innerText = 'play_arrow';
+        if (text) text.innerText = 'Play';
+        if (icon) icon.className = 'material-symbols-outlined text-base';
+        if (text) text.className = '';
+
+        if (playbackInterval) clearInterval(playbackInterval);
+        showToast('Playback Paused', 'Timeline paused at current position.', 'info');
         playBeep(440);
       }
+    }
+
+    function startPlaybackInterval() {
+      if (playbackInterval) clearInterval(playbackInterval);
+      const stepInterval = Math.max(50, 100 * (4 / (playbackSpeed * 4)));
+      playbackInterval = setInterval(() => {
+        currentScrubMinutes = (currentScrubMinutes + playbackSpeed) % 1440;
+        const slider = document.getElementById('time-scrubber');
+        if (slider) slider.value = currentScrubMinutes;
+        handleTimeScrub(currentScrubMinutes);
+      }, stepInterval);
     }
 
     function setPlaybackSpeed(spd) {
@@ -2271,10 +2425,60 @@
         const b = document.getElementById('btn-speed-' + s);
         if (b) b.className = s === spd ? 'px-2.5 py-0.5 rounded-full bg-[#1E2320] text-white text-[10px] font-bold cursor-pointer' : 'px-2.5 py-0.5 rounded-full bg-[#E2E8DC] hover:bg-[#D5DDCF] text-slate-700 text-[10px] font-bold cursor-pointer';
       });
+
+      if (isPlaying) {
+        startPlaybackInterval();
+      }
+
+      showToast('Playback Speed', `Speed set to ${spd}x.`, 'info');
       playBeep(640);
     }
 
-    // MODALS & DETAIL POPUPS
+    // MODAL ANIMATION & BODY SCROLL LOCK ENGINE
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (!modal) return;
+
+      document.body.classList.add('modal-open');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        const content = modal.querySelector('.modal-content');
+        if (content) {
+          content.classList.remove('scale-95', 'opacity-0');
+          content.classList.add('scale-100', 'opacity-100');
+        }
+      }, 10);
+
+      // Add click outside handler
+      modal.onclick = (e) => {
+        if (e.target === modal) closeModal(modalId);
+      };
+
+      playBeep(880);
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (!modal) return;
+
+      const content = modal.querySelector('.modal-content');
+      if (content) {
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+      }
+      modal.classList.add('opacity-0');
+
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.classList.remove('modal-open');
+      }, 250);
+    }
+
+    // MODALS HANDLERS
     function openIncidentDetail(incId) {
       currentModalIncidentId = incId;
       const inc = roadIncidents.find(i => i.id === incId);
@@ -2295,85 +2499,49 @@
       const asphElem = document.getElementById('modal-inc-asphalt');
       if (asphElem) asphElem.innerText = inc.asphalt;
 
-      const modal = document.getElementById('incident-modal');
-      if (modal) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        playBeep(880);
-      }
+      openModal('incident-modal');
     }
 
     function closeIncidentModal() {
-      const modal = document.getElementById('incident-modal');
-      if (modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-      }
+      closeModal('incident-modal');
     }
 
     function dispatchModalIncident() {
       if (currentModalIncidentId) {
         resolveIncidentDocket(currentModalIncidentId);
       } else {
-        showToast('Work Order Dispatched', 'JDA contractor assigned with hot-mix patch crew.', 'success');
+        showToast('Work Order Dispatched', '✓ JDA contractor assigned with hot-mix patch crew.', 'success');
       }
       closeIncidentModal();
     }
 
     function openHitAndRunPanel() {
-      const modal = document.getElementById('hitandrun-modal');
-      if (modal) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        playBeep(880);
-      }
+      openModal('hitandrun-modal');
     }
 
     function closeHitAndRunPanel() {
-      const modal = document.getElementById('hitandrun-modal');
-      if (modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-      }
+      closeModal('hitandrun-modal');
     }
 
     function openDriverLeaderboard() {
-      const modal = document.getElementById('driver-modal');
-      if (modal) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        playBeep(880);
-      }
+      openModal('driver-modal');
     }
 
     function closeDriverModal() {
-      const modal = document.getElementById('driver-modal');
-      if (modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-      }
+      closeModal('driver-modal');
     }
 
     function openExportModal() {
-      const modal = document.getElementById('export-modal');
-      if (modal) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        playBeep(720);
-      }
+      openModal('export-modal');
     }
 
     function closeExportModal() {
-      const modal = document.getElementById('export-modal');
-      if (modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-      }
+      closeModal('export-modal');
     }
 
     function transmitPoliceAlert() {
       playBeep(1200);
-      showToast('Police FIR Transmitted', 'Pursuit vector sent to Rajasthan Police PCR dispatch.', 'danger');
+      showToast('Police FIR Transmitted', '🚨 Pursuit vector sent to Rajasthan Police PCR dispatch.', 'danger');
       closeHitAndRunPanel();
     }
 
@@ -2385,12 +2553,7 @@
         playBeep(980);
         setTimeout(() => playBeep(1100), 150);
         setTimeout(() => playBeep(1320), 300);
-
-        setTimeout(() => {
-          openHitAndRunPanel();
-          hud.classList.add('hidden');
-          hud.classList.remove('flex');
-        }, 1500);
+        showToast('HIT & RUN DETECTED!', 'Target vehicle RJ-14-CE-8821 locked on optical camera.', 'danger');
       }
     }
 
@@ -2406,50 +2569,68 @@
         if (audioAlertsEnabled) {
           btn.innerHTML = '<span class="material-symbols-outlined text-lg">volume_up</span>';
           playBeep(880);
+          showToast('Audio Alerts Enabled', 'Sound notifications active.', 'info');
         } else {
           btn.innerHTML = '<span class="material-symbols-outlined text-lg text-slate-400">volume_off</span>';
+          showToast('Audio Alerts Muted', 'Sound notifications muted.', 'info');
         }
       }
     }
 
+    // EXPORT FUNCTIONALITY (CSV, PDF, GEOJSON, SHAPEFILE)
     function downloadReport(format) {
+      showToast('Generating Export', `Preparing ${format} download...`, 'info');
       playBeep(720);
-      if (format === 'PDF') {
-        window.print();
-      } else if (format === 'CSV') {
-        let csv = 'Docket_ID,Location,Type,Confidence,Status,Cost\n';
-        roadIncidents.forEach(i => {
-          csv += `"${i.id}","${i.loc}","${i.type}","${i.conf}%","${i.status}","${i.cost}"\n`;
-        });
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `Jaipur_Municipal_Road_Defects_${new Date().toISOString().slice(0,10)}.csv`;
-        a.click();
-        showToast('CSV Exported', 'Municipal road defects dataset downloaded.', 'success');
-      } else if (format === 'GEOJSON') {
-        const geojson = {
-          type: 'FeatureCollection',
-          features: roadIncidents.map(i => ({
-            type: 'Feature',
-            properties: { id: i.id, title: i.title, location: i.loc, confidence: i.conf, status: i.status },
-            geometry: { type: 'Point', coordinates: [i.lng, i.lat] }
-          }))
-        };
-        const blob = new Blob([JSON.stringify(geojson, null, 2)], { type: 'application/json' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `Jaipur_Defect_Layer_${new Date().toISOString().slice(0,10)}.geojson`;
-        a.click();
-        showToast('GeoJSON Exported', 'GIS layer downloaded.', 'success');
-      } else if (format === 'SHAPEFILE') {
-        alert('[GIS SHAPEFILE EXPORT] GeoJSON / Shapefile archive package generated with ESRI prj coordinate projection metadata.');
-      }
+
+      setTimeout(() => {
+        if (format === 'PDF') {
+          window.print();
+        } else if (format === 'CSV') {
+          let csv = 'Docket_ID,Location,Type,Confidence,Status,Cost,Asphalt_MT\n';
+          roadIncidents.forEach(i => {
+            csv += `"${i.id}","${i.loc}","${i.type}","${i.conf}%","${i.status}","${i.cost}","${i.asphalt}"\n`;
+          });
+          const blob = new Blob([csv], { type: 'text/csv' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `defects-2026-08-${new Date().toISOString().slice(0,10)}.csv`;
+          a.click();
+          showToast('Export Completed', `CSV downloaded: defects-2026-08-${new Date().toISOString().slice(0,10)}.csv`, 'success');
+        } else if (format === 'GEOJSON') {
+          const geojson = {
+            type: 'FeatureCollection',
+            features: roadIncidents.map(i => ({
+              type: 'Feature',
+              properties: { id: i.id, title: i.title, location: i.loc, confidence: i.conf, status: i.status },
+              geometry: { type: 'Point', coordinates: [i.lng, i.lat] }
+            }))
+          };
+          const blob = new Blob([JSON.stringify(geojson, null, 2)], { type: 'application/json' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `Jaipur_Defect_Layer_${new Date().toISOString().slice(0,10)}.geojson`;
+          a.click();
+          showToast('Export Completed', 'GeoJSON GIS layer downloaded.', 'success');
+        } else if (format === 'SHAPEFILE') {
+          const shapeMeta = {
+            format: 'ESRI Shapefile Archive',
+            projection: 'EPSG:4326 WGS84',
+            dockets: roadIncidents.length
+          };
+          const blob = new Blob([JSON.stringify(shapeMeta, null, 2)], { type: 'application/json' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `Jaipur_Defects_Shapefile_${new Date().toISOString().slice(0,10)}.json`;
+          a.click();
+          showToast('Export Completed', 'Shapefile GeoPackage archive generated.', 'success');
+        }
+      }, 300);
     }
 
-    // ANALYTICS CHARTS (LIGHT THEME)
+    // ANALYTICS CHARTS & TIMELINE UPDATES
     function initAnalyticsCharts() {
       const ctxTraffic = document.getElementById('chart-traffic-light')?.getContext('2d');
       if (ctxTraffic && typeof Chart !== 'undefined') {
@@ -2472,6 +2653,7 @@
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: { duration: 400 },
             plugins: { legend: { display: false } },
             scales: {
               x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { color: '#717D75', font: { family: 'Plus Jakarta Sans', size: 10 } } },
@@ -2497,11 +2679,23 @@
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: { duration: 400 },
             plugins: {
               legend: { position: 'bottom', labels: { color: '#1E2320', font: { family: 'Plus Jakarta Sans', size: 10 }, boxWidth: 12 } }
             }
           }
         });
+      }
+    }
+
+    function updateChartsForTimeline(scrubMinutes) {
+      if (chartInstances.trafficLight) {
+        const baseVal = Math.sin(scrubMinutes / 100) * 2000 + 5000;
+        chartInstances.trafficLight.data.datasets[0].data = [
+          baseVal * 0.3, baseVal * 1.2, baseVal * 0.9, baseVal * 0.8,
+          baseVal, baseVal * 1.3, baseVal * 1.4, baseVal * 0.7
+        ];
+        chartInstances.trafficLight.update('none');
       }
     }
 
@@ -2521,6 +2715,7 @@
       try { populateHardwareMatrix(); } catch (e) { console.error(e); }
       try { updatePillCounts(); } catch (e) { console.error(e); }
       try { selectBusDirectly('BUS-003', false); } catch (e) { console.error(e); }
+      try { initVideoCanvasStream(); } catch (e) { console.error(e); }
     }
 
     if (document.readyState === 'loading') {
