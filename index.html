@@ -256,7 +256,7 @@
     <!-- Top Title & Profile Header -->
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-[#1E2320] tracking-tight" id="main-view-title">Incident Dockets</h1>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-[#1E2320] tracking-tight" id="main-view-title">Incident Dockets &amp; Fleet Map</h1>
         <p class="text-xs text-[#717D75] mt-1" id="main-view-subtitle">Real-time edge-AI transit sensing across 10 municipal buses · Nagar Nigam Jaipur</p>
       </div>
 
@@ -490,21 +490,50 @@
     </div>
 
     <!-- ======================================================================= -->
-    <!-- VIEW 2: ONBOARD EDGE AI VISION (ALL 10 BUS CAMERAS) -->
+    <!-- VIEW 2: ONBOARD EDGE AI VISION (ALL 10 BUS CAMERAS & 4 INTERACTIVE ANGLES) -->
     <!-- ======================================================================= -->
     <div id="tab-view-edge-vision" class="hidden space-y-6">
       
-      <!-- Camera Bus Switcher Strip -->
+      <!-- Camera Bus Switcher Strip (Statically Pre-rendered for Instant Clickability) -->
       <div class="glass-card p-4 space-y-2.5">
         <div class="flex justify-between items-center text-xs">
           <span class="font-bold text-[#1E2320] text-xs font-mono uppercase tracking-wider flex items-center gap-2">
             <span class="material-symbols-outlined text-base text-[#4A62D6]">videocam</span>
-            <span>Switch Onboard Camera Unit (Click to view live stream):</span>
+            <span>Switch Onboard Camera Unit (Click any bus to view live stream):</span>
           </span>
           <span class="text-[11px] text-[#717D75] font-mono">10 Units Online · 1080p Optical Stream</span>
         </div>
         <div id="camera-tab-bus-selector" class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2 font-mono text-xs">
-          <!-- Dynamically populated -->
+          <button onclick="selectBusDirectly('BUS-001')" id="cam-pill-BUS-001" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
+            <span>BUS-001</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
+          </button>
+          <button onclick="selectBusDirectly('BUS-002')" id="cam-pill-BUS-002" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
+            <span>BUS-002</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
+          </button>
+          <button onclick="selectBusDirectly('BUS-003')" id="cam-pill-BUS-003" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#1E2320] text-white shadow-md flex items-center justify-between">
+            <span>BUS-003</span><span class="w-2 h-2 rounded-full bg-white"></span>
+          </button>
+          <button onclick="selectBusDirectly('BUS-004')" id="cam-pill-BUS-004" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
+            <span>BUS-004</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
+          </button>
+          <button onclick="selectBusDirectly('BUS-005')" id="cam-pill-BUS-005" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
+            <span>BUS-005</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
+          </button>
+          <button onclick="selectBusDirectly('BUS-006')" id="cam-pill-BUS-006" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
+            <span>BUS-006</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
+          </button>
+          <button onclick="selectBusDirectly('BUS-007')" id="cam-pill-BUS-007" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
+            <span>BUS-007</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
+          </button>
+          <button onclick="selectBusDirectly('BUS-008')" id="cam-pill-BUS-008" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
+            <span>BUS-008</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
+          </button>
+          <button onclick="selectBusDirectly('BUS-009')" id="cam-pill-BUS-009" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
+            <span>BUS-009</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
+          </button>
+          <button onclick="selectBusDirectly('BUS-010')" id="cam-pill-BUS-010" class="p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] flex items-center justify-between">
+            <span>BUS-010</span><span class="w-2 h-2 rounded-full bg-[#1E8A44]"></span>
+          </button>
         </div>
       </div>
 
@@ -517,36 +546,31 @@
           </div>
 
           <div class="flex items-center gap-2.5 font-mono text-xs">
-            <span class="px-3.5 py-1.5 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-bold">18.4 FPS Local NPU</span>
+            <span class="px-3.5 py-1.5 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-bold" id="hud-cam-fps-badge">18.4 FPS Local NPU</span>
             <span class="px-3.5 py-1.5 rounded-full bg-[#EEF1FD] text-[#4A62D6] font-bold">82.4% Bandwidth Saved</span>
           </div>
         </div>
 
-        <!-- High-Tech Video Viewport Frame with Explicit Min Height -->
-        <div class="relative w-full h-[400px] bg-[#141816] rounded-3xl overflow-hidden flex items-center justify-center select-none shadow-2xl border border-black/10">
+        <!-- High-Tech Video Viewport Frame with Real Perspective Views -->
+        <div id="video-feed-viewport" class="relative w-full h-[420px] bg-[#141816] rounded-3xl overflow-hidden flex items-center justify-center select-none shadow-2xl border border-black/10 transition-all duration-300">
           
-          <!-- Perspective Road Grid Background -->
-          <div class="absolute inset-0 bg-gradient-to-b from-[#181E1B] via-[#101412] to-[#0A0D0C] opacity-95">
-            <div class="w-full h-full opacity-25 bg-[radial-gradient(#4A62D6_1px,transparent_1px)] [background-size:20px_20px]"></div>
-          </div>
-
-          <!-- Central Horizon & Vanishing Road Lines -->
-          <div class="absolute inset-x-0 bottom-0 top-[45%] flex justify-center pointer-events-none">
-            <div class="w-1/2 h-full border-x-2 border-dashed border-slate-600/40"></div>
+          <!-- Dynamic Perspective Background Layer -->
+          <div id="camera-perspective-layer" class="absolute inset-0">
+            <!-- Dynamically populated per camera angle -->
           </div>
 
           <!-- Dynamic Bounding Boxes Container -->
           <div id="camera-bounding-boxes-container" class="absolute inset-0">
-            <!-- Dynamically populated per bus -->
+            <!-- Dynamically populated per bus and per angle -->
           </div>
 
           <!-- Top HUD Overlay -->
-          <div class="absolute top-4 left-5 right-5 flex justify-between items-center text-[10px] font-mono text-slate-300 bg-black/75 px-4 py-2.5 rounded-full border border-slate-700/60 backdrop-blur-md shadow-lg">
+          <div class="absolute top-4 left-5 right-5 flex justify-between items-center text-[10px] font-mono text-slate-300 bg-black/80 px-4 py-2.5 rounded-full border border-slate-700/60 backdrop-blur-md shadow-lg">
             <span class="text-white font-bold flex items-center gap-1.5" id="hud-cam-bus-tag">
               <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
               <span>LIVE • BUS-003 • 1080p @ 60Hz</span>
             </span>
-            <span class="text-emerald-400 font-semibold hidden sm:inline" id="hud-cam-status-tag">YOLOv8-NANO + LICENSE PLATE OCR</span>
+            <span class="text-emerald-400 font-semibold hidden sm:inline" id="hud-cam-status-tag">FRONT WINDSHIELD · YOLOv8-NANO + OCR</span>
             <span class="text-slate-300 font-bold" id="hud-cam-time">16:42:00 IST</span>
           </div>
 
@@ -564,13 +588,22 @@
 
         </div>
 
-        <!-- Video Controls & Angle Switcher -->
+        <!-- Video Controls & 4-Angle Switcher -->
         <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
-          <div class="flex items-center gap-2 text-xs">
-            <span class="text-[#717D75] font-medium">Camera Angle:</span>
-            <button onclick="switchCameraAngle('Front 1080p')" id="btn-angle-front" class="px-4 py-2 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold cursor-pointer">Front 1080p</button>
-            <button onclick="switchCameraAngle('Downward Asphalt')" id="btn-angle-asphalt" class="btn-pill-ghost font-mono text-xs font-semibold">Downward Road</button>
-            <button onclick="switchCameraAngle('Left Blindspot')" id="btn-angle-blindspot" class="btn-pill-ghost font-mono text-xs font-semibold">Left Blindspot</button>
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <span class="text-[#717D75] font-bold font-mono">OPTICAL SENSORS:</span>
+            <button onclick="switchCameraAngle('front')" id="btn-angle-front" class="px-4 py-2 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold cursor-pointer shadow-sm">
+              📷 Front 1080p
+            </button>
+            <button onclick="switchCameraAngle('asphalt')" id="btn-angle-asphalt" class="btn-pill-ghost font-mono text-xs font-semibold">
+              🔍 Downward Road (Pothole Scanner)
+            </button>
+            <button onclick="switchCameraAngle('blindspot')" id="btn-angle-blindspot" class="btn-pill-ghost font-mono text-xs font-semibold">
+              🚶 Left Blindspot (Kerb &amp; Footpath)
+            </button>
+            <button onclick="switchCameraAngle('cabin')" id="btn-angle-cabin" class="btn-pill-ghost font-mono text-xs font-semibold">
+              👁️ Driver DMS (Fatigue &amp; Cabin)
+            </button>
           </div>
 
           <div class="flex items-center gap-2.5">
@@ -950,129 +983,488 @@
     let currentSearchQuery = '';
     let busSpecificFilter = null;
     let currentModalIncidentId = null;
+    let currentCameraAngle = 'front';
     let chartInstances = {};
 
-    // 10 Jaipur Fleet Dataset with rich bus-specific camera detections and bounding boxes
+    // 10 Jaipur Fleet Dataset with rich bus-specific camera detections and bounding boxes for all 4 angles
     const jaipurFleet = [
       { 
         id: 'BUS-001', 
         route: 'Route 1: JLN Marg', 
         lat: 26.8920, lng: 75.8150, baseLat: 26.8920, baseLng: 75.8150, 
         speed: 28, driver: 'Rajesh Sharma', status: 'ONLINE', score: 96, 
-        cam: 'Front 1080p', temp: 46, fps: 18.6, lat_ms: 41, 
+        temp: 46, fps: 18.6, lat_ms: 41, 
         scene: 'Passing Rajasthan University Gate · Pedestrian Crossings Monitored',
-        boxes: [
-          { label: 'Automobile: Hatchback (97.1%)', dist: '14.2m', color: 'blue', left: '28%', top: '36%', width: '180px', height: '110px' },
-          { label: '🚶 Student Crossing (94.2%)', dist: '< 1.8m Flagged', color: 'rose', left: '12%', top: '42%', width: '100px', height: '150px' }
-        ]
+        angles: {
+          front: {
+            title: 'FRONT 1080p WINDSHIELD CAMERA',
+            sub: 'Rajesh Sharma (Route 1: JLN Marg) · Passing Rajasthan University Gate',
+            status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
+            bg: 'front',
+            boxes: [
+              { label: 'Automobile: Hatchback (97.1%)', dist: '14.2m · 38 km/h', color: 'blue', left: '28%', top: '36%', width: '180px', height: '110px' },
+              { label: '🚶 Student Crossing (94.2%)', dist: '< 1.8m Flagged', color: 'rose', left: '12%', top: '42%', width: '100px', height: '150px' }
+            ]
+          },
+          asphalt: {
+            title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
+            sub: 'Continuous Asphalt Profilometry · JLN Marg Northbound',
+            status: 'DOWNWARD ASPHALT SENSOR · 4K MACRO CAMERA',
+            bg: 'asphalt',
+            boxes: [
+              { label: 'Surface: Asphalt Raveling (89.6%)', dist: 'Depth: 4.2cm · 1.1 m²', color: 'amber', left: '38%', top: '45%', width: '220px', height: '130px' },
+              { label: 'Z-Axis Vibration: 0.8g', dist: 'Surface Smoothness Normal', color: 'emerald', left: '70%', top: '25%', width: '160px', height: '70px' }
+            ]
+          },
+          blindspot: {
+            title: 'LEFT BLINDSPOT & KERB CAMERA',
+            sub: 'Bus Stand Passenger & Cyclist Safety Zone',
+            status: 'LEFT KERB OPTICAL SENSOR · 120° FOV',
+            bg: 'blindspot',
+            boxes: [
+              { label: '🚶 4 Passengers Waiting (95.1%)', dist: 'RU Gate Bus Shelter', color: 'blue', left: '45%', top: '35%', width: '170px', height: '140px' },
+              { label: '🚲 Cyclist (91.4%)', dist: '2.4m Safe Zone', color: 'emerald', left: '15%', top: '48%', width: '110px', height: '120px' }
+            ]
+          },
+          cabin: {
+            title: 'DRIVER DMS & CABIN IR CAMERA',
+            sub: 'Driver Fatigue, Attention & Safety Verification',
+            status: 'DRIVER MONITORING SYSTEM (DMS) · 60 FPS INFRARED',
+            bg: 'cabin',
+            boxes: [
+              { label: 'Driver: Rajesh Sharma (98.4%)', dist: 'Status: Alert & Focused', color: 'emerald', left: '25%', top: '25%', width: '220px', height: '180px' },
+              { label: 'Seatbelt: Latched ✅', dist: 'No Phone in Hand', color: 'emerald', left: '55%', top: '65%', width: '160px', height: '65px' }
+            ]
+          }
+        }
       },
       { 
         id: 'BUS-002', 
         route: 'Route 2: Ajmer Road', 
         lat: 26.8850, lng: 75.7450, baseLat: 26.8850, baseLng: 75.7450, 
         speed: 34, driver: 'Vikram Singh', status: 'ONLINE', score: 92, 
-        cam: 'Front 1080p', temp: 48, fps: 18.4, lat_ms: 42, 
+        temp: 48, fps: 18.4, lat_ms: 42, 
         scene: 'Approaching 200ft Bypass Underpass · Waterlogging Inundation Risk',
-        boxes: [
-          { label: 'Automobile: Delivery Van (95.8%)', dist: '18.5m', color: 'blue', left: '32%', top: '34%', width: '190px', height: '120px' },
-          { label: '🌊 Waterlogging 25cm (96.2%)', dist: 'Drain Inundation', color: 'sky', left: '58%', top: '65%', width: '160px', height: '80px' }
-        ]
+        angles: {
+          front: {
+            title: 'FRONT 1080p WINDSHIELD CAMERA',
+            sub: 'Vikram Singh (Route 2: Ajmer Road) · Approaching 200ft Bypass Underpass',
+            status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
+            bg: 'front',
+            boxes: [
+              { label: 'Automobile: Delivery Van (95.8%)', dist: '18.5m · 44 km/h', color: 'blue', left: '32%', top: '34%', width: '190px', height: '120px' },
+              { label: '🌊 Waterlogging 25cm (96.2%)', dist: 'Drain Inundation Alert', color: 'sky', left: '58%', top: '65%', width: '160px', height: '80px' }
+            ]
+          },
+          asphalt: {
+            title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
+            sub: '200ft Bypass Inundation Depth Profilometry',
+            status: 'DOWNWARD ASPHALT SENSOR · WATER DEPTH ULTRASONIC',
+            bg: 'asphalt',
+            boxes: [
+              { label: 'Submerged Asphalt (96.2%)', dist: 'Water Depth: 25cm', color: 'sky', left: '30%', top: '40%', width: '250px', height: '140px' }
+            ]
+          },
+          blindspot: {
+            title: 'LEFT BLINDSPOT & KERB CAMERA',
+            sub: 'Ajmer Road Flyover Kerb & Shoulder Scan',
+            status: 'LEFT KERB OPTICAL SENSOR · 120° FOV',
+            bg: 'blindspot',
+            boxes: [
+              { label: 'Two-Wheeler Traffic (93.8%)', dist: '3.1m Lateral Dist', color: 'blue', left: '35%', top: '40%', width: '140px', height: '130px' }
+            ]
+          },
+          cabin: {
+            title: 'DRIVER DMS & CABIN IR CAMERA',
+            sub: 'Vikram Singh Telemetry & Driver Score',
+            status: 'DRIVER MONITORING SYSTEM (DMS) · 60 FPS INFRARED',
+            bg: 'cabin',
+            boxes: [
+              { label: 'Driver: Vikram Singh', dist: 'Score: 92/100 · Alert', color: 'emerald', left: '25%', top: '25%', width: '220px', height: '180px' }
+            ]
+          }
+        }
       },
       { 
         id: 'BUS-003', 
         route: 'Route 3: Tonk Road', 
         lat: 26.8520, lng: 75.7920, baseLat: 26.8520, baseLng: 75.7920, 
         speed: 22, driver: 'Manoj Meena', status: 'INCIDENT', score: 78, 
-        cam: 'Front 1080p', temp: 52, fps: 18.2, lat_ms: 44, 
+        temp: 52, fps: 18.2, lat_ms: 44, 
         scene: 'Tonk Road Corridor · Severe 16cm Pothole Crater Detected',
-        boxes: [
-          { label: 'Automobile: Sedan (96.4%)', dist: '12.8m', color: 'blue', left: '30%', top: '34%', width: '180px', height: '115px' },
-          { label: '⚠️ Pothole (16cm) · 94.1%', dist: 'JDA Alert #DEF-892', color: 'amber', left: '60%', top: '66%', width: '150px', height: '80px' },
-          { label: '🚶 Pedestrian (94.2%)', dist: '< 1.5m Flagged', color: 'rose', left: '10%', top: '40%', width: '100px', height: '145px' }
-        ]
+        angles: {
+          front: {
+            title: 'FRONT 1080p WINDSHIELD CAMERA',
+            sub: 'Manoj Meena (Route 3: Tonk Road) · Severe 16cm Pothole Crater Ahead',
+            status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
+            bg: 'front',
+            boxes: [
+              { label: 'Automobile: Sedan (96.4%)', dist: '12.8m · 26 km/h', color: 'blue', left: '30%', top: '34%', width: '180px', height: '115px' },
+              { label: '⚠️ Pothole (16cm) · 94.1%', dist: 'JDA Alert #DEF-892', color: 'amber', left: '60%', top: '66%', width: '150px', height: '80px' },
+              { label: '🚶 Pedestrian (94.2%)', dist: '< 1.5m Flagged', color: 'rose', left: '10%', top: '40%', width: '100px', height: '145px' }
+            ]
+          },
+          asphalt: {
+            title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
+            sub: 'Tonk Road KM 4.2 · High Impact Crater Defect Measurement',
+            status: 'DOWNWARD ASPHALT SENSOR · 4K MACRO SCANNER',
+            bg: 'asphalt',
+            boxes: [
+              { label: '⚠️ CRATER #DEF-892 (94.8%)', dist: 'Depth: 16.4cm · Area: 0.85m²', color: 'rose', left: '32%', top: '38%', width: '240px', height: '150px' },
+              { label: 'Z-Axis Impact: 3.2g ⚠️', dist: 'Suspension Shock Warning', color: 'rose', left: '68%', top: '20%', width: '180px', height: '70px' },
+              { label: 'Required: 12 MT Hot-Mix', dist: 'Est Cost: ₹45,000', color: 'amber', left: '10%', top: '65%', width: '170px', height: '70px' }
+            ]
+          },
+          blindspot: {
+            title: 'LEFT BLINDSPOT & KERB CAMERA',
+            sub: 'Tonk Road Footpath & Service Lane Separation',
+            status: 'LEFT KERB OPTICAL SENSOR · 120° FOV',
+            bg: 'blindspot',
+            boxes: [
+              { label: 'E-Rickshaw Boarding (94.2%)', dist: '1.9m Kerb Distance', color: 'blue', left: '40%', top: '35%', width: '160px', height: '140px' }
+            ]
+          },
+          cabin: {
+            title: 'DRIVER DMS & CABIN IR CAMERA',
+            sub: 'Manoj Meena Telemetry · Harsh Braking Logged',
+            status: 'DRIVER MONITORING SYSTEM (DMS) · 60 FPS INFRARED',
+            bg: 'cabin',
+            boxes: [
+              { label: 'Driver: Manoj Meena', dist: 'Score: 78/100 · Caution', color: 'amber', left: '25%', top: '25%', width: '220px', height: '180px' },
+              { label: '⚠️ Harsh Braking Detected', dist: 'Decel: -0.62g (14:32 IST)', color: 'rose', left: '55%', top: '65%', width: '180px', height: '65px' }
+            ]
+          }
+        }
       },
       { 
         id: 'BUS-004', 
         route: 'Route 4: Sikar Road', 
         lat: 26.9600, lng: 75.7750, baseLat: 26.9600, baseLng: 75.7750, 
         speed: 31, driver: 'Ramesh Kumar', status: 'ONLINE', score: 88, 
-        cam: 'Front 1080p', temp: 47, fps: 18.5, lat_ms: 41, 
+        temp: 47, fps: 18.5, lat_ms: 41, 
         scene: 'Sikar Road KM 7.1 · Asphalt Fracture & Surface Depression',
-        boxes: [
-          { label: 'Automobile: SUV (96.0%)', dist: '15.1m', color: 'blue', left: '35%', top: '35%', width: '180px', height: '115px' },
-          { label: '⚠️ Pothole Cluster (92.4%)', dist: 'Depth 12cm', color: 'amber', left: '55%', top: '68%', width: '140px', height: '75px' }
-        ]
+        angles: {
+          front: {
+            title: 'FRONT 1080p WINDSHIELD CAMERA',
+            sub: 'Ramesh Kumar (Route 4: Sikar Road) · Sikar Road KM 7.1',
+            status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
+            bg: 'front',
+            boxes: [
+              { label: 'Automobile: SUV (96.0%)', dist: '15.1m · 38 km/h', color: 'blue', left: '35%', top: '35%', width: '180px', height: '115px' },
+              { label: '⚠️ Pothole Cluster (92.4%)', dist: 'Depth 12cm', color: 'amber', left: '55%', top: '68%', width: '140px', height: '75px' }
+            ]
+          },
+          asphalt: {
+            title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
+            sub: 'Sikar Road KM 7.1 Profilometry',
+            status: 'DOWNWARD ASPHALT SENSOR',
+            bg: 'asphalt',
+            boxes: [
+              { label: 'Pothole Cluster #DEF-404 (92.4%)', dist: 'Depth: 12cm · 16 MT Hot-mix', color: 'amber', left: '35%', top: '40%', width: '220px', height: '130px' }
+            ]
+          },
+          blindspot: {
+            title: 'LEFT BLINDSPOT & KERB CAMERA',
+            sub: 'Sikar Road Commercial Corridor',
+            status: 'LEFT KERB OPTICAL SENSOR',
+            bg: 'blindspot',
+            boxes: [
+              { label: 'Pedestrian Flow (91.0%)', dist: '2.8m Footpath Clear', color: 'emerald', left: '40%', top: '38%', width: '150px', height: '130px' }
+            ]
+          },
+          cabin: {
+            title: 'DRIVER DMS & CABIN IR CAMERA',
+            sub: 'Ramesh Kumar Telemetry',
+            status: 'DRIVER MONITORING SYSTEM',
+            bg: 'cabin',
+            boxes: [
+              { label: 'Driver: Ramesh Kumar', dist: 'Score: 88/100 · Normal', color: 'emerald', left: '25%', top: '25%', width: '220px', height: '180px' }
+            ]
+          }
+        }
       },
       { 
         id: 'BUS-005', 
         route: 'Route 5: Airport Link', 
         lat: 26.8280, lng: 75.8050, baseLat: 26.8280, baseLng: 75.8050, 
         speed: 42, driver: 'Suresh Saini', status: 'ONLINE', score: 94, 
-        cam: 'Front 1080p', temp: 47, fps: 18.8, lat_ms: 40, 
+        temp: 47, fps: 18.8, lat_ms: 40, 
         scene: 'Airport T2 Junction · Hit-and-Run Intercept Plate OCR Target Lock',
-        boxes: [
-          { label: '🚨 TARGET LOCK: RJ-14-CE-8821 (97.2%)', dist: 'White Fortuner SUV', color: 'rose', left: '25%', top: '28%', width: '240px', height: '145px' }
-        ]
+        angles: {
+          front: {
+            title: 'FRONT 1080p WINDSHIELD CAMERA',
+            sub: 'Suresh Saini (Route 5: Airport Link) · Airport T2 Junction Target Lock',
+            status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR TARGET LOCK',
+            bg: 'front',
+            boxes: [
+              { label: '🚨 TARGET LOCK: RJ-14-CE-8821 (97.2%)', dist: 'White Fortuner SUV · 84 km/h', color: 'rose', left: '25%', top: '28%', width: '240px', height: '145px' }
+            ]
+          },
+          asphalt: {
+            title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
+            sub: 'Airport Link Smooth Expressway',
+            status: 'DOWNWARD ASPHALT SENSOR',
+            bg: 'asphalt',
+            boxes: [
+              { label: 'Smooth Surface (98.1%)', dist: '0 Defects Detected', color: 'emerald', left: '35%', top: '40%', width: '200px', height: '100px' }
+            ]
+          },
+          blindspot: {
+            title: 'LEFT BLINDSPOT & KERB CAMERA',
+            sub: 'Airport Terminal 2 Drop-off Area',
+            status: 'LEFT KERB OPTICAL SENSOR',
+            bg: 'blindspot',
+            boxes: [
+              { label: 'Taxi Queue (96.4%)', dist: '4.2m Distance', color: 'blue', left: '35%', top: '35%', width: '180px', height: '130px' }
+            ]
+          },
+          cabin: {
+            title: 'DRIVER DMS & CABIN IR CAMERA',
+            sub: 'Suresh Saini Telemetry',
+            status: 'DRIVER MONITORING SYSTEM',
+            bg: 'cabin',
+            boxes: [
+              { label: 'Driver: Suresh Saini', dist: 'Score: 94/100 · Exemplary', color: 'emerald', left: '25%', top: '25%', width: '220px', height: '180px' }
+            ]
+          }
+        }
       },
       { 
         id: 'BUS-006', 
         route: 'Route 6: Agra Road', 
         lat: 26.9050, lng: 75.8650, baseLat: 26.9050, baseLng: 75.8650, 
         speed: 26, driver: 'Anil Yadav', status: 'ONLINE', score: 90, 
-        cam: 'Front 1080p', temp: 49, fps: 18.1, lat_ms: 43, 
+        temp: 49, fps: 18.1, lat_ms: 43, 
         scene: 'Transport Nagar Flyover · Expansion Joint Dip Flagged',
-        boxes: [
-          { label: 'Heavy Truck (95.4%)', dist: '22.0m', color: 'blue', left: '25%', top: '28%', width: '220px', height: '150px' },
-          { label: '⚠️ Expansion Joint Dip (93.1%)', dist: 'Impact 2.8g', color: 'amber', left: '58%', top: '70%', width: '150px', height: '70px' }
-        ]
+        angles: {
+          front: {
+            title: 'FRONT 1080p WINDSHIELD CAMERA',
+            sub: 'Anil Yadav (Route 6: Agra Road) · Transport Nagar Flyover',
+            status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
+            bg: 'front',
+            boxes: [
+              { label: 'Heavy Truck (95.4%)', dist: '22.0m · 32 km/h', color: 'blue', left: '25%', top: '28%', width: '220px', height: '150px' },
+              { label: '⚠️ Expansion Joint Dip (93.1%)', dist: 'Impact 2.8g', color: 'amber', left: '58%', top: '70%', width: '150px', height: '70px' }
+            ]
+          },
+          asphalt: {
+            title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
+            sub: 'Flyover Joint Vibration Scanner',
+            status: 'DOWNWARD ASPHALT SENSOR',
+            bg: 'asphalt',
+            boxes: [
+              { label: 'Expansion Joint Fracture (93.1%)', dist: 'Gap: 5.2cm · Impact 2.8g', color: 'amber', left: '30%', top: '40%', width: '230px', height: '120px' }
+            ]
+          },
+          blindspot: {
+            title: 'LEFT BLINDSPOT & KERB CAMERA',
+            sub: 'Transport Nagar Commercial Side',
+            status: 'LEFT KERB OPTICAL SENSOR',
+            bg: 'blindspot',
+            boxes: [
+              { label: 'Heavy Transport Loading', dist: '3.5m Distance', color: 'blue', left: '35%', top: '35%', width: '170px', height: '130px' }
+            ]
+          },
+          cabin: {
+            title: 'DRIVER DMS & CABIN IR CAMERA',
+            sub: 'Anil Yadav Telemetry',
+            status: 'DRIVER MONITORING SYSTEM',
+            bg: 'cabin',
+            boxes: [
+              { label: 'Driver: Anil Yadav', dist: 'Score: 90/100 · Normal', color: 'emerald', left: '25%', top: '25%', width: '220px', height: '180px' }
+            ]
+          }
+        }
       },
       { 
         id: 'BUS-007', 
         route: 'Route 7: Mansarovar', 
         lat: 26.8550, lng: 75.7600, baseLat: 26.8550, baseLng: 75.7600, 
         speed: 29, driver: 'Dinesh Gurjar', status: 'ONLINE', score: 89, 
-        cam: 'Front 1080p', temp: 48, fps: 18.3, lat_ms: 42, 
+        temp: 48, fps: 18.3, lat_ms: 42, 
         scene: 'Mansarovar Metro Pillar 84 · Road Shoulder Drop-off',
-        boxes: [
-          { label: 'Motorcycle: Two-Wheeler (94.1%)', dist: '8.4m', color: 'blue', left: '18%', top: '45%', width: '90px', height: '120px' },
-          { label: '⚠️ Shoulder Drop-off (88.4%)', dist: 'Depth 9cm', color: 'amber', left: '65%', top: '65%', width: '130px', height: '75px' }
-        ]
+        angles: {
+          front: {
+            title: 'FRONT 1080p WINDSHIELD CAMERA',
+            sub: 'Dinesh Gurjar (Route 7: Mansarovar) · Metro Pillar 84',
+            status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
+            bg: 'front',
+            boxes: [
+              { label: 'Motorcycle: Two-Wheeler (94.1%)', dist: '8.4m · 24 km/h', color: 'blue', left: '18%', top: '45%', width: '90px', height: '120px' },
+              { label: '⚠️ Shoulder Drop-off (88.4%)', dist: 'Depth 9cm', color: 'amber', left: '65%', top: '65%', width: '130px', height: '75px' }
+            ]
+          },
+          asphalt: {
+            title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
+            sub: 'Metro Corridor Shoulder Profilometry',
+            status: 'DOWNWARD ASPHALT SENSOR',
+            bg: 'asphalt',
+            boxes: [
+              { label: 'Edge Breakdown (88.4%)', dist: 'Shoulder Depth: 9cm', color: 'amber', left: '35%', top: '40%', width: '200px', height: '120px' }
+            ]
+          },
+          blindspot: {
+            title: 'LEFT BLINDSPOT & KERB CAMERA',
+            sub: 'Mansarovar Metro Footpath Zone',
+            status: 'LEFT KERB OPTICAL SENSOR',
+            bg: 'blindspot',
+            boxes: [
+              { label: 'Metro Commuters (95.0%)', dist: 'Kerb Safe Zone', color: 'emerald', left: '40%', top: '35%', width: '160px', height: '130px' }
+            ]
+          },
+          cabin: {
+            title: 'DRIVER DMS & CABIN IR CAMERA',
+            sub: 'Dinesh Gurjar Telemetry',
+            status: 'DRIVER MONITORING SYSTEM',
+            bg: 'cabin',
+            boxes: [
+              { label: 'Driver: Dinesh Gurjar', dist: 'Score: 89/100 · Normal', color: 'emerald', left: '25%', top: '25%', width: '220px', height: '180px' }
+            ]
+          }
+        }
       },
       { 
         id: 'BUS-008', 
         route: 'Route 8: Jagatpura', 
         lat: 26.8350, lng: 75.8400, baseLat: 26.8350, baseLng: 75.8400, 
         speed: 35, driver: 'Sunil Verma', status: 'ONLINE', score: 91, 
-        cam: 'Front 1080p', temp: 46, fps: 18.7, lat_ms: 40, 
+        temp: 46, fps: 18.7, lat_ms: 40, 
         scene: 'Jagatpura 7 No. Stand · Municipal Drain Overflow Pool',
-        boxes: [
-          { label: 'Automobile: Compact (96.2%)', dist: '16.4m', color: 'blue', left: '32%', top: '35%', width: '170px', height: '110px' },
-          { label: '🌊 Drain Overflow (90.2%)', dist: 'Pool 14cm', color: 'sky', left: '55%', top: '68%', width: '150px', height: '75px' }
-        ]
+        angles: {
+          front: {
+            title: 'FRONT 1080p WINDSHIELD CAMERA',
+            sub: 'Sunil Verma (Route 8: Jagatpura) · Jagatpura 7 No. Stand',
+            status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
+            bg: 'front',
+            boxes: [
+              { label: 'Automobile: Compact (96.2%)', dist: '16.4m · 40 km/h', color: 'blue', left: '32%', top: '35%', width: '170px', height: '110px' },
+              { label: '🌊 Drain Overflow (90.2%)', dist: 'Pool 14cm', color: 'sky', left: '55%', top: '68%', width: '150px', height: '75px' }
+            ]
+          },
+          asphalt: {
+            title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
+            sub: 'Jagatpura Road Water Pool Measurement',
+            status: 'DOWNWARD ASPHALT SENSOR',
+            bg: 'asphalt',
+            boxes: [
+              { label: 'Drain Inundation #DEF-009 (90.2%)', dist: 'Standing Water: 14cm', color: 'sky', left: '32%', top: '42%', width: '230px', height: '130px' }
+            ]
+          },
+          blindspot: {
+            title: 'LEFT BLINDSPOT & KERB CAMERA',
+            sub: 'Jagatpura Commercial Market Kerb',
+            status: 'LEFT KERB OPTICAL SENSOR',
+            bg: 'blindspot',
+            boxes: [
+              { label: 'Pedestrians near Shopfront (93.1%)', dist: '2.5m Distance', color: 'blue', left: '42%', top: '36%', width: '160px', height: '130px' }
+            ]
+          },
+          cabin: {
+            title: 'DRIVER DMS & CABIN IR CAMERA',
+            sub: 'Sunil Verma Telemetry',
+            status: 'DRIVER MONITORING SYSTEM',
+            bg: 'cabin',
+            boxes: [
+              { label: 'Driver: Sunil Verma', dist: 'Score: 91/100 · Alert', color: 'emerald', left: '25%', top: '25%', width: '220px', height: '180px' }
+            ]
+          }
+        }
       },
       { 
         id: 'BUS-009', 
         route: 'Route 9: VKI Industrial', 
         lat: 26.9750, lng: 75.7600, baseLat: 26.9750, baseLng: 75.7600, 
         speed: 18, driver: 'Praveen Gurjar', status: 'CAUTION', score: 58, 
-        cam: 'Front 1080p', temp: 58, fps: 16.4, lat_ms: 49, 
+        temp: 58, fps: 16.4, lat_ms: 49, 
         scene: 'VKI Road No. 9 · Industrial Crater Cluster & High Vibration',
-        boxes: [
-          { label: 'Commercial Vehicle (93.7%)', dist: '11.0m', color: 'blue', left: '26%', top: '32%', width: '185px', height: '125px' },
-          { label: '⚠️ Severe Crater Cluster (95.0%)', dist: 'Impact >3.4g', color: 'rose', left: '58%', top: '65%', width: '170px', height: '85px' }
-        ]
+        angles: {
+          front: {
+            title: 'FRONT 1080p WINDSHIELD CAMERA',
+            sub: 'Praveen Gurjar (Route 9: VKI Industrial) · Extreme Crater Cluster',
+            status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
+            bg: 'front',
+            boxes: [
+              { label: 'Commercial Vehicle (93.7%)', dist: '11.0m · 20 km/h', color: 'blue', left: '26%', top: '32%', width: '185px', height: '125px' },
+              { label: '⚠️ Severe Crater Cluster (95.0%)', dist: 'Impact >3.4g', color: 'rose', left: '58%', top: '65%', width: '170px', height: '85px' }
+            ]
+          },
+          asphalt: {
+            title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
+            sub: 'VKI Industrial Area Heavy Crater Scan',
+            status: 'DOWNWARD ASPHALT SENSOR',
+            bg: 'asphalt',
+            boxes: [
+              { label: '⚠️ Severe Crater Cluster (95.0%)', dist: 'Depth: 18.2cm · 20 MT Hot-mix', color: 'rose', left: '30%', top: '38%', width: '260px', height: '150px' },
+              { label: 'Z-Axis Impact: 3.4g ⚠️', dist: 'Axle Damage Risk Level: HIGH', color: 'rose', left: '65%', top: '22%', width: '190px', height: '70px' }
+            ]
+          },
+          blindspot: {
+            title: 'LEFT BLINDSPOT & KERB CAMERA',
+            sub: 'VKI Factory Gate Heavy Ingress',
+            status: 'LEFT KERB OPTICAL SENSOR',
+            bg: 'blindspot',
+            boxes: [
+              { label: 'Forklift & Workers (94.2%)', dist: '3.8m Clearance', color: 'amber', left: '38%', top: '35%', width: '170px', height: '130px' }
+            ]
+          },
+          cabin: {
+            title: 'DRIVER DMS & CABIN IR CAMERA',
+            sub: 'Praveen Gurjar Telemetry · High Fatigue Warning',
+            status: 'DRIVER MONITORING SYSTEM · FATIGUE ALERT',
+            bg: 'cabin',
+            boxes: [
+              { label: 'Driver: Praveen Gurjar', dist: 'Score: 58/100 · HIGH RISK', color: 'rose', left: '25%', top: '25%', width: '220px', height: '180px' },
+              { label: '⚠️ Eye Aspect Ratio: 0.18 (Drowsy)', dist: 'Buzzer Warning Triggered', color: 'rose', left: '55%', top: '65%', width: '190px', height: '65px' }
+            ]
+          }
+        }
       },
       { 
         id: 'BUS-010', 
         route: 'Route 10: Walled City', 
         lat: 26.9260, lng: 75.8240, baseLat: 26.9260, baseLng: 75.8240, 
         speed: 14, driver: 'Mahesh Sharma', status: 'ONLINE', score: 95, 
-        cam: 'Front 1080p', temp: 45, fps: 18.9, lat_ms: 39, 
+        temp: 45, fps: 18.9, lat_ms: 39, 
         scene: 'Choti Chaupar Heritage Arc · Tourist Density & E-Rickshaw Flow',
-        boxes: [
-          { label: 'E-Rickshaw Fleet (96.7%)', dist: '6.2m', color: 'blue', left: '20%', top: '38%', width: '140px', height: '120px' },
-          { label: '🚶 Tourist Group (93.4%)', dist: '< 2.0m Density', color: 'amber', left: '60%', top: '42%', width: '130px', height: '140px' }
-        ]
+        angles: {
+          front: {
+            title: 'FRONT 1080p WINDSHIELD CAMERA',
+            sub: 'Mahesh Sharma (Route 10: Walled City) · Choti Chaupar Heritage Arc',
+            status: 'FRONT WINDSHIELD · YOLOv8-NANO + OCR',
+            bg: 'front',
+            boxes: [
+              { label: 'E-Rickshaw Fleet (96.7%)', dist: '6.2m · 12 km/h', color: 'blue', left: '20%', top: '38%', width: '140px', height: '120px' },
+              { label: '🚶 Tourist Group (93.4%)', dist: '< 2.0m Density', color: 'amber', left: '60%', top: '42%', width: '130px', height: '140px' }
+            ]
+          },
+          asphalt: {
+            title: 'DOWNWARD ROAD CRACK & POTHOLE SCANNER',
+            sub: 'Walled City Cobblestone & Asphalt Blend',
+            status: 'DOWNWARD ASPHALT SENSOR',
+            bg: 'asphalt',
+            boxes: [
+              { label: 'Surface Depression (89.1%)', dist: 'Depth: 5cm · 4 MT Hot-mix', color: 'amber', left: '35%', top: '40%', width: '220px', height: '120px' }
+            ]
+          },
+          blindspot: {
+            title: 'LEFT BLINDSPOT & KERB CAMERA',
+            sub: 'Choti Chaupar Bazaar Heritage Footpath',
+            status: 'LEFT KERB OPTICAL SENSOR',
+            bg: 'blindspot',
+            boxes: [
+              { label: 'Pedestrian Density: HIGH', dist: '1.2m Kerb Clearance', color: 'amber', left: '35%', top: '35%', width: '180px', height: '140px' }
+            ]
+          },
+          cabin: {
+            title: 'DRIVER DMS & CABIN IR CAMERA',
+            sub: 'Mahesh Sharma Telemetry',
+            status: 'DRIVER MONITORING SYSTEM',
+            bg: 'cabin',
+            boxes: [
+              { label: 'Driver: Mahesh Sharma', dist: 'Score: 95/100 · Exemplary', color: 'emerald', left: '25%', top: '25%', width: '220px', height: '180px' }
+            ]
+          }
+        }
       },
     ];
 
@@ -1158,7 +1550,7 @@
       const bus = jaipurFleet.find(b => b.id === busId);
       if (!bus) return;
 
-      // 1. Update Top Selector Buttons Style
+      // 1. Update Top Selector Buttons Style (Tab 1)
       jaipurFleet.forEach(b => {
         const p = document.getElementById(`bus-pill-${b.id}`);
         const isSel = (b.id === busId);
@@ -1173,8 +1565,18 @@
         }
       });
 
-      // 2. Update Camera Tab Selector Pills Style
-      populateCameraBusSelector();
+      // 2. Update Camera Tab Selector Buttons Style (Tab 2)
+      jaipurFleet.forEach(b => {
+        const cp = document.getElementById(`cam-pill-${b.id}`);
+        const isSel = (b.id === busId);
+        if (cp) {
+          cp.className = `p-2.5 rounded-2xl text-center font-mono text-xs font-bold transition-all cursor-pointer flex items-center justify-between ${
+            isSel ? 'bg-[#1E2320] text-white shadow-md' : 'bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]'
+          }`;
+          const dot = cp.querySelector('span.w-2');
+          if (dot) dot.className = `w-2 h-2 rounded-full ${isSel ? 'bg-white' : 'bg-[#1E8A44]'}`;
+        }
+      });
 
       // 3. Update Command Center Active Bus Telemetry Banner
       const hudId = document.getElementById('hud-selected-bus-id');
@@ -1186,34 +1588,135 @@
       const btnFilterLabel = document.getElementById('btn-filter-bus-label');
       if (btnFilterLabel) btnFilterLabel.innerText = `Show Dockets Detected By ${bus.id}`;
 
-      // 4. Update Camera Feed Tab Text
+      // 4. Update Camera Viewport Content for Currently Selected Angle
+      renderActiveCameraView();
+
+      // 5. Fly Map to selected bus & update active marker state
+      if (map && triggerMapFly) {
+        map.flyTo([bus.lat, bus.lng], 14, { duration: 0.8 });
+      }
+
+      renderMarkers(currentFilter);
+      if (currentFilter === 'FLEET') {
+        populateFleetCardsGrid(currentSearchQuery);
+      }
+      playBeep(720);
+      showToast('Bus Selected', `${bus.id} (${bus.route}) · Driver: ${bus.driver}`, 'info');
+    }
+
+    // RENDER CAMERA VIEWPORT DYNAMICALLY BASED ON BUS & ANGLE
+    function renderActiveCameraView() {
+      const bus = jaipurFleet.find(b => b.id === selectedBusId) || jaipurFleet[2];
+      const angleData = (bus.angles && bus.angles[currentCameraAngle]) ? bus.angles[currentCameraAngle] : bus.angles.front;
+
+      // Update Titles & Subtitles
       const camTitle = document.getElementById('edge-cam-title');
-      if (camTitle) camTitle.innerText = `${bus.id} · FRONT 1080p WINDSHIELD CAMERA`;
+      if (camTitle) camTitle.innerText = `${bus.id} · ${angleData.title}`;
       const camSub = document.getElementById('edge-cam-subtitle');
-      if (camSub) camSub.innerText = `${bus.driver} (${bus.route}) · ${bus.scene}`;
+      if (camSub) camSub.innerText = angleData.sub;
       const hudTag = document.getElementById('hud-cam-bus-tag');
       if (hudTag) hudTag.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span><span>LIVE • ${bus.id} • 1080p @ 60Hz</span>`;
+      const hudStatus = document.getElementById('hud-cam-status-tag');
+      if (hudStatus) hudStatus.innerText = angleData.status;
+      const fpsBadge = document.getElementById('hud-cam-fps-badge');
+      if (fpsBadge) fpsBadge.innerText = `${bus.fps} FPS Local NPU`;
 
-      // 5. Render Dynamic Bounding Boxes in Camera Feed
+      // Render Perspective Layer Background
+      const bgLayer = document.getElementById('camera-perspective-layer');
+      if (bgLayer) {
+        if (currentCameraAngle === 'front') {
+          bgLayer.innerHTML = `
+            <div class="absolute inset-0 bg-gradient-to-b from-[#181E1B] via-[#101412] to-[#0A0D0C] opacity-95">
+              <div class="w-full h-full opacity-25 bg-[radial-gradient(#4A62D6_1px,transparent_1px)] [background-size:20px_20px]"></div>
+            </div>
+            <!-- Horizon & Forward Vanishing Lines -->
+            <div class="absolute inset-x-0 bottom-0 top-[45%] flex justify-center pointer-events-none">
+              <div class="w-1/2 h-full border-x-2 border-dashed border-slate-600/40"></div>
+            </div>
+            <!-- Lane Guidelines -->
+            <div class="absolute bottom-2 inset-x-12 flex justify-between text-[9px] font-mono text-emerald-400/80">
+              <span>◄ LEFT LANE (CLEAR)</span>
+              <span>FORWARD DISTANCE: 45m</span>
+              <span>RIGHT LANE (CLEAR) ►</span>
+            </div>
+          `;
+        } else if (currentCameraAngle === 'asphalt') {
+          bgLayer.innerHTML = `
+            <div class="absolute inset-0 bg-gradient-to-br from-[#1E2320] via-[#171B19] to-[#111413]">
+              <div class="w-full h-full opacity-35 bg-[radial-gradient(#CBD5C8_1.5px,transparent_1.5px)] [background-size:14px_14px]"></div>
+            </div>
+            <!-- Top-down Measurement Calipers & Grid -->
+            <div class="absolute inset-8 border border-amber-500/40 rounded-2xl flex flex-col justify-between p-3 pointer-events-none">
+              <div class="flex justify-between text-[9px] font-mono text-amber-400">
+                <span>[ASP-CALIPER X: 2.40m]</span>
+                <span>[MACRO RESOLUTION: 0.2mm/px]</span>
+                <span>[ASP-CALIPER Y: 1.80m]</span>
+              </div>
+              <div class="flex justify-between text-[9px] font-mono text-amber-400">
+                <span>LASER PROFILER: ACTIVE</span>
+                <span>ASPHALT CRATER DEPTH: MEASURED</span>
+              </div>
+            </div>
+          `;
+        } else if (currentCameraAngle === 'blindspot') {
+          bgLayer.innerHTML = `
+            <div class="absolute inset-0 bg-gradient-to-r from-[#171B19] via-[#101412] to-[#181E1B]">
+              <div class="w-full h-full opacity-20 bg-[radial-gradient(#4CAF50_1.5px,transparent_1.5px)] [background-size:18px_18px]"></div>
+            </div>
+            <!-- Kerb Separation Visualizer -->
+            <div class="absolute inset-y-0 left-1/3 w-0.5 border-l-2 border-emerald-400/60"></div>
+            <div class="absolute bottom-3 left-6 text-[9px] font-mono text-emerald-400">
+              <span>◄ VEHICLE CARRIAGEWAY</span>
+            </div>
+            <div class="absolute bottom-3 right-8 text-[9px] font-mono text-emerald-400">
+              <span>PEDESTRIAN FOOTPATH &amp; KERB ►</span>
+            </div>
+          `;
+        } else if (currentCameraAngle === 'cabin') {
+          bgLayer.innerHTML = `
+            <div class="absolute inset-0 bg-gradient-to-b from-[#101412] via-[#0D100F] to-[#0A0D0C]">
+              <div class="w-full h-full opacity-30 bg-[radial-gradient(#3B82F6_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            </div>
+            <!-- Driver Facial Landmark Mesh Target Overlay -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div class="w-48 h-56 border border-emerald-500/40 rounded-full flex flex-col items-center justify-around py-4">
+                <div class="w-24 h-6 border-b border-emerald-400/60"></div>
+                <div class="w-8 h-8 border border-emerald-400/60 rounded-full"></div>
+                <div class="w-16 h-4 border-t border-emerald-400/60"></div>
+              </div>
+            </div>
+            <div class="absolute top-16 left-6 text-[9px] font-mono text-emerald-400 space-y-1 bg-black/60 p-2.5 rounded-xl border border-emerald-500/30">
+              <div>DRIVER DMS SENSORS: ONLINE</div>
+              <div>HEAD POSE: FORWARD (0.2° YAW)</div>
+              <div>EYE GAZE: ATTENTIVE ON ROAD</div>
+              <div>MOBILE PHONE: NOT DETECTED</div>
+            </div>
+          `;
+        }
+      }
+
+      // Render Dynamic Bounding Boxes
       const boxContainer = document.getElementById('camera-bounding-boxes-container');
       if (boxContainer) {
         boxContainer.innerHTML = '';
-        if (bus.boxes && bus.boxes.length > 0) {
-          bus.boxes.forEach(bx => {
+        if (angleData.boxes && angleData.boxes.length > 0) {
+          angleData.boxes.forEach(bx => {
             const bDiv = document.createElement('div');
             const borderCol = bx.color === 'rose' ? 'border-rose-500 bg-rose-500/15' :
                               bx.color === 'amber' ? 'border-amber-400 bg-amber-500/20' :
-                              bx.color === 'sky' ? 'border-sky-400 bg-sky-500/20' : 'border-blue-400 bg-blue-500/10';
+                              bx.color === 'sky' ? 'border-sky-400 bg-sky-500/20' : 
+                              bx.color === 'emerald' ? 'border-emerald-400 bg-emerald-500/20' : 'border-blue-400 bg-blue-500/10';
             const tagBg = bx.color === 'rose' ? 'bg-rose-600 text-white' :
                           bx.color === 'amber' ? 'bg-amber-500 text-slate-900' :
-                          bx.color === 'sky' ? 'bg-sky-600 text-white' : 'bg-[#4A62D6] text-white';
+                          bx.color === 'sky' ? 'bg-sky-600 text-white' : 
+                          bx.color === 'emerald' ? 'bg-emerald-600 text-white' : 'bg-[#4A62D6] text-white';
 
             bDiv.style.position = 'absolute';
             bDiv.style.left = bx.left;
             bDiv.style.top = bx.top;
             bDiv.style.width = bx.width;
             bDiv.style.height = bx.height;
-            bDiv.className = `border-2 ${borderCol} rounded-2xl p-1.5 flex flex-col justify-between shadow-lg animate-pulse`;
+            bDiv.className = `border-2 ${borderCol} rounded-2xl p-2 flex flex-col justify-between shadow-lg animate-pulse`;
 
             bDiv.innerHTML = `
               <div class="${tagBg} text-[9px] px-2 py-0.5 rounded-full font-mono font-bold self-start truncate max-w-full">
@@ -1227,34 +1730,33 @@
           });
         }
       }
-
-      // 6. Fly Map to selected bus & update active marker state
-      if (map && triggerMapFly) {
-        map.flyTo([bus.lat, bus.lng], 14, { duration: 0.8 });
-      }
-
-      renderMarkers(currentFilter);
-      if (currentFilter === 'FLEET') {
-        populateFleetCardsGrid(currentSearchQuery);
-      }
-      playBeep(720);
-      showToast('Bus Inspected', `${bus.id} (${bus.route}) · Driver: ${bus.driver}`, 'info');
     }
 
-    function populateCameraBusSelector() {
-      const camStrip = document.getElementById('camera-tab-bus-selector');
-      if (!camStrip) return;
-      camStrip.innerHTML = '';
-      jaipurFleet.forEach(b => {
-        const isSel = (b.id === selectedBusId);
-        const camBtn = document.createElement('button');
-        camBtn.onclick = () => selectBusDirectly(b.id, false);
-        camBtn.className = `p-2 rounded-xl text-center font-mono text-xs font-bold transition-all cursor-pointer flex items-center justify-between ${
-          isSel ? 'bg-[#1E2320] text-white shadow-md' : 'bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320]'
-        }`;
-        camBtn.innerHTML = `<span>${b.id}</span><span class="w-1.5 h-1.5 rounded-full ${isSel ? 'bg-white' : 'bg-[#1E8A44]'}"></span>`;
-        camStrip.appendChild(camBtn);
+    // SWITCH CAMERA ANGLE (FRONT, ASPHALT, BLINDSPOT, CABIN)
+    function switchCameraAngle(angleKey) {
+      currentCameraAngle = angleKey;
+      ['front', 'asphalt', 'blindspot', 'cabin'].forEach(a => {
+        const b = document.getElementById('btn-angle-' + a);
+        if (b) {
+          if (a === angleKey) {
+            b.className = 'px-4 py-2 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold cursor-pointer shadow-sm';
+          } else {
+            b.className = 'btn-pill-ghost font-mono text-xs font-semibold';
+          }
+        }
       });
+
+      renderActiveCameraView();
+
+      const angleNames = {
+        front: 'Front 1080p Windshield',
+        asphalt: 'Downward Asphalt & Pothole Scanner',
+        blindspot: 'Left Blindspot & Footpath',
+        cabin: 'Driver Cabin & DMS'
+      };
+
+      showToast('Camera Angle Switched', `Viewing ${angleNames[angleKey] || angleKey} feed.`, 'info');
+      playBeep(640);
     }
 
     function filterDocketsByBus(busId) {
@@ -1649,7 +2151,7 @@
       } else if (tabName === 'edge-vision') {
         if (mainTitle) mainTitle.innerText = 'Onboard Edge AI Cameras';
         if (mainSubtitle) mainSubtitle.innerText = '1080p live windshield vision, license plate OCR, and spatial object detection';
-        populateCameraBusSelector();
+        renderActiveCameraView();
       } else if (tabName === 'work-orders') {
         if (mainTitle) mainTitle.innerText = 'Municipal Defect Registry';
         if (mainSubtitle) mainSubtitle.innerText = '1,284 total defects logged across 32 Jaipur wards · PWD Work Orders & Repair ROI';
@@ -1875,20 +2377,6 @@
       closeHitAndRunPanel();
     }
 
-    function switchCameraAngle(angle) {
-      ['front', 'asphalt', 'blindspot'].forEach(a => {
-        const b = document.getElementById('btn-angle-' + a);
-        if (b) b.className = 'btn-pill-ghost font-mono text-xs font-semibold';
-      });
-
-      if (angle === 'Front 1080p') document.getElementById('btn-angle-front').className = 'px-4 py-2 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold cursor-pointer';
-      else if (angle === 'Downward Asphalt') document.getElementById('btn-angle-asphalt').className = 'px-4 py-2 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold cursor-pointer';
-      else if (angle === 'Left Blindspot') document.getElementById('btn-angle-blindspot').className = 'px-4 py-2 rounded-full bg-[#1E2320] text-white font-mono text-xs font-semibold cursor-pointer';
-
-      showToast('Camera Angle Switched', `Viewing ${angle} stream.`, 'info');
-      playBeep(640);
-    }
-
     function triggerHitAndRunSimulation() {
       const hud = document.getElementById('target-lock-hud');
       if (hud) {
@@ -2032,7 +2520,6 @@
       try { populateDefectTable(); } catch (e) { console.error(e); }
       try { populateHardwareMatrix(); } catch (e) { console.error(e); }
       try { updatePillCounts(); } catch (e) { console.error(e); }
-      try { populateCameraBusSelector(); } catch (e) { console.error(e); }
       try { selectBusDirectly('BUS-003', false); } catch (e) { console.error(e); }
     }
 
