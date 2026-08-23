@@ -3602,13 +3602,13 @@
           
           YOLO_NEURAL_TELEMETRY_DB['custom-upload'] = data.detections.flatMap(d => {
             return d.objects.map(obj => {
-              const [bx, by, bw, bh] = obj.bbox;
+              const norm = obj.bbox_norm || [obj.bbox[0]/1920, obj.bbox[1]/1080, obj.bbox[2]/1920, obj.bbox[3]/1080];
               return {
                 time: d.time_sec,
-                bx: bx / 1920.0,
-                by: by / 1080.0,
-                bw: bw / 1920.0,
-                bh: bh / 1080.0,
+                bx: norm[0],
+                by: norm[1],
+                bw: norm[2],
+                bh: norm[3],
                 conf: obj.confidence,
                 sev: obj.severity,
                 color: obj.color,

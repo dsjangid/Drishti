@@ -104,6 +104,7 @@ class DeepPotholeInferenceEngine:
                         "class": "POTHOLE",
                         "confidence": f"{score * 100:.1f}%",
                         "bbox": [bx, by, bw, bh],
+                        "bbox_norm": [round(bx / max(1, w), 4), round(by / max(1, h), 4), round(bw / max(1, w), 4), round(bh / max(1, h), 4)],
                         "severity": sev,
                         "color": color,
                         "depth_cm": depth_cm,
