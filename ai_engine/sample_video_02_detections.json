@@ -1,0 +1,462 @@
+{
+  "video": "/Users/meydivyansh/dashboard/sample_videos/02_10072023.mp4",
+  "fps": 29.970001220703125,
+  "detections": [
+    {
+      "frame": 58,
+      "time_sec": 1.94,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "46.2%",
+          "bbox": [
+            841,
+            880,
+            368,
+            82
+          ],
+          "severity": "High Severity",
+          "color": "#E11D48",
+          "depth_cm": 24.0,
+          "repair_cost": "\u20b948,000",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 64,
+      "time_sec": 2.14,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "63.9%",
+          "bbox": [
+            738,
+            927,
+            503,
+            121
+          ],
+          "severity": "High Severity",
+          "color": "#E11D48",
+          "depth_cm": 24.0,
+          "repair_cost": "\u20b948,000",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 74,
+      "time_sec": 2.47,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "38.7%",
+          "bbox": [
+            416,
+            740,
+            100,
+            53
+          ],
+          "severity": "Low Severity",
+          "color": "#10B981",
+          "depth_cm": 7.1,
+          "repair_cost": "\u20b99,500",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 104,
+      "time_sec": 3.47,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "37.6%",
+          "bbox": [
+            822,
+            921,
+            177,
+            33
+          ],
+          "severity": "Low Severity",
+          "color": "#10B981",
+          "depth_cm": 7.4,
+          "repair_cost": "\u20b99,500",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 106,
+      "time_sec": 3.54,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "40.7%",
+          "bbox": [
+            823,
+            931,
+            192,
+            35
+          ],
+          "severity": "Moderate Severity",
+          "color": "#F59E0B",
+          "depth_cm": 9.8,
+          "repair_cost": "\u20b924,000",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 108,
+      "time_sec": 3.6,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "58.8%",
+          "bbox": [
+            818,
+            944,
+            202,
+            36
+          ],
+          "severity": "Moderate Severity",
+          "color": "#F59E0B",
+          "depth_cm": 11.6,
+          "repair_cost": "\u20b924,000",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 110,
+      "time_sec": 3.67,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "64.9%",
+          "bbox": [
+            814,
+            957,
+            207,
+            39
+          ],
+          "severity": "High Severity",
+          "color": "#E11D48",
+          "depth_cm": 14.1,
+          "repair_cost": "\u20b948,000",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 114,
+      "time_sec": 3.8,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "68.0%",
+          "bbox": [
+            803,
+            990,
+            258,
+            48
+          ],
+          "severity": "High Severity",
+          "color": "#E11D48",
+          "depth_cm": 18.4,
+          "repair_cost": "\u20b948,000",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 118,
+      "time_sec": 3.94,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "50.3%",
+          "bbox": [
+            793,
+            1029,
+            308,
+            50
+          ],
+          "severity": "High Severity",
+          "color": "#E11D48",
+          "depth_cm": 21.4,
+          "repair_cost": "\u20b948,000",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 142,
+      "time_sec": 4.74,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "41.3%",
+          "bbox": [
+            690,
+            868,
+            151,
+            47
+          ],
+          "severity": "Moderate Severity",
+          "color": "#F59E0B",
+          "depth_cm": 11.1,
+          "repair_cost": "\u20b924,000",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 144,
+      "time_sec": 4.8,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "49.3%",
+          "bbox": [
+            667,
+            875,
+            169,
+            51
+          ],
+          "severity": "High Severity",
+          "color": "#E11D48",
+          "depth_cm": 14.6,
+          "repair_cost": "\u20b948,000",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 146,
+      "time_sec": 4.87,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "69.4%",
+          "bbox": [
+            656,
+            885,
+            180,
+            57
+          ],
+          "severity": "High Severity",
+          "color": "#E11D48",
+          "depth_cm": 16.3,
+          "repair_cost": "\u20b948,000",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 148,
+      "time_sec": 4.94,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "71.0%",
+          "bbox": [
+            658,
+            897,
+            174,
+            63
+          ],
+          "severity": "High Severity",
+          "color": "#E11D48",
+          "depth_cm": 17.0,
+          "repair_cost": "\u20b948,000",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 160,
+      "time_sec": 5.34,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "36.2%",
+          "bbox": [
+            678,
+            996,
+            104,
+            83
+          ],
+          "severity": "High Severity",
+          "color": "#E11D48",
+          "depth_cm": 14.6,
+          "repair_cost": "\u20b948,000",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 188,
+      "time_sec": 6.27,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "39.4%",
+          "bbox": [
+            194,
+            941,
+            221,
+            94
+          ],
+          "severity": "High Severity",
+          "color": "#E11D48",
+          "depth_cm": 24.0,
+          "repair_cost": "\u20b948,000",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 192,
+      "time_sec": 6.41,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "53.0%",
+          "bbox": [
+            329,
+            1044,
+            67,
+            25
+          ],
+          "severity": "Low Severity",
+          "color": "#10B981",
+          "depth_cm": 5.0,
+          "repair_cost": "\u20b99,500",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        },
+        {
+          "class": "POTHOLE",
+          "confidence": "41.9%",
+          "bbox": [
+            591,
+            972,
+            101,
+            37
+          ],
+          "severity": "Low Severity",
+          "color": "#10B981",
+          "depth_cm": 6.2,
+          "repair_cost": "\u20b99,500",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 270,
+      "time_sec": 9.01,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "50.5%",
+          "bbox": [
+            263,
+            2,
+            1091,
+            525
+          ],
+          "severity": "High Severity",
+          "color": "#E11D48",
+          "depth_cm": 24.0,
+          "repair_cost": "\u20b948,000",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 272,
+      "time_sec": 9.08,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "50.1%",
+          "bbox": [
+            237,
+            1,
+            1122,
+            540
+          ],
+          "severity": "High Severity",
+          "color": "#E11D48",
+          "depth_cm": 24.0,
+          "repair_cost": "\u20b948,000",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 274,
+      "time_sec": 9.14,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "55.8%",
+          "bbox": [
+            266,
+            3,
+            1115,
+            615
+          ],
+          "severity": "High Severity",
+          "color": "#E11D48",
+          "depth_cm": 24.0,
+          "repair_cost": "\u20b948,000",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 280,
+      "time_sec": 9.34,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "43.0%",
+          "bbox": [
+            210,
+            2,
+            1217,
+            620
+          ],
+          "severity": "High Severity",
+          "color": "#E11D48",
+          "depth_cm": 24.0,
+          "repair_cost": "\u20b948,000",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    },
+    {
+      "frame": 338,
+      "time_sec": 11.28,
+      "objects": [
+        {
+          "class": "POTHOLE",
+          "confidence": "43.3%",
+          "bbox": [
+            1815,
+            990,
+            102,
+            76
+          ],
+          "severity": "Moderate Severity",
+          "color": "#F59E0B",
+          "depth_cm": 13.2,
+          "repair_cost": "\u20b924,000",
+          "contractor": "Rajeshwar Infra Ltd (48h SLA)"
+        }
+      ]
+    }
+  ]
+}
