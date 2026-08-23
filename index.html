@@ -3582,12 +3582,22 @@
 
     function toggleLabVideoPlay() {
       const vid = document.getElementById('lab-video-element');
-      isLabPlaying = !isLabPlaying;
       if (vid && vid.src) {
-        if (isLabPlaying) vid.play();
-        else vid.pause();
+        if (vid.paused) {
+          vid.play().then(() => {
+            isLabPlaying = true;
+            updateLabPlayBtnIcon();
+          }).catch(e => console.log(e));
+        } else {
+          vid.pause();
+          isLabPlaying = false;
+          updateLabPlayBtnIcon();
+        }
+      } else {
+        isLabPlaying = !isLabPlaying;
+        updateLabPlayBtnIcon();
       }
-      updateLabPlayBtnIcon();
+      showToast('Playback', isLabPlaying ? 'Video Resumed' : 'Video Paused', 'info');
     }
 
     function updateLabPlayBtnIcon() {
@@ -3614,6 +3624,12 @@
       const vid = document.getElementById('lab-video-element');
       if (vid && vid.duration) {
         vid.currentTime = (val / 100) * vid.duration;
+        const timecode = document.getElementById('lab-video-timecode');
+        if (timecode) {
+          const cur = Math.floor(vid.currentTime);
+          const tot = Math.floor(vid.duration);
+          timecode.innerText = `${String(Math.floor(cur/60)).padStart(2,'0')}:${String(cur%60).padStart(2,'0')} / ${String(Math.floor(tot/60)).padStart(2,'0')}:${String(tot%60).padStart(2,'0')}`;
+        }
       }
     }
 
@@ -3755,7 +3771,7 @@
 
       function renderFrame() {
         const vid = document.getElementById('lab-video-element');
-        const hasCustomVideo = vid && vid.src && !vid.paused && vid.readyState >= 2;
+        const hasCustomVideo = vid && vid.src && vid.readyState >= 2;
 
         if (hasCustomVideo) {
           if (isLabMirrored) {
@@ -3774,8 +3790,13 @@
             const tot = Math.floor(vid.duration);
             timecode.innerText = `${String(Math.floor(cur/60)).padStart(2,'0')}:${String(cur%60).padStart(2,'0')} / ${String(Math.floor(tot/60)).padStart(2,'0')}:${String(tot%60).padStart(2,'0')}`;
           }
+
+          const scrubber = document.getElementById('lab-video-scrubber');
+          if (scrubber && vid.duration && isLabPlaying) {
+            scrubber.value = (vid.currentTime / vid.duration) * 100;
+          }
         } else {
-          frameCounter++;
+          if (isLabPlaying) frameCounter++;
           const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
           grad.addColorStop(0, '#1E2320');
           grad.addColorStop(0.4, '#2B332F');
@@ -3803,7 +3824,9 @@
           ctx.setLineDash([]);
         }
 
-        const t = (Date.now() / 1000);
+        const t = (vid && vid.src && vid.readyState >= 2) 
+          ? vid.currentTime 
+          : (isLabPlaying ? (Date.now() / 1000) : (frameCounter / 30));
 
         // Scenario 1: RAD Pothole Corridor with NISER iWatchRoad Severity Grading
         if (activeLabClip === 'rad-pothole') {
