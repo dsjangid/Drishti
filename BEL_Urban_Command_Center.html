@@ -3321,6 +3321,7 @@
     const labBenchmarkClips = {
       'rad-pothole': {
         name: 'RAD Pothole Corridor',
+        file: 'sample_videos/rad_pothole_corridor.mp4',
         desc: 'Kaggle RAD dataset with severe crater & JDA hot-mix',
         badge: '16cm Depth',
         latency: '16.4',
@@ -3342,6 +3343,7 @@
       },
       'hit-and-run': {
         name: 'Hit & Run Suspect Intercept',
+        file: 'sample_videos/hit_and_run_intercept.mp4',
         desc: 'High-speed Toyota Fortuner OCR plate capture',
         badge: 'RJ-14 ANPR',
         latency: '14.2',
@@ -3361,6 +3363,7 @@
       },
       'school-zone': {
         name: 'School Zone VRU',
+        file: 'sample_videos/school_zone_pedestrians.mp4',
         desc: 'Pedestrian crossing density & Pelican signal alert',
         badge: 'TTC < 1.8s',
         latency: '15.8',
@@ -3380,6 +3383,7 @@
       },
       'traffic-flow': {
         name: 'Peak Mixed Traffic',
+        file: 'sample_videos/urban_traffic_pcu_flow.mp4',
         desc: 'Cars, bikes, autos & bottleneck speed vectors',
         badge: '6-Class PCU',
         latency: '18.1',
@@ -3402,6 +3406,8 @@
     function initVideoLab() {
       populateLabEventsTable();
       startLabCanvasRenderer();
+      // Load initial benchmark video
+      loadSampleVideoClip('rad-pothole');
     }
 
     function populateLabEventsTable() {
@@ -3486,9 +3492,15 @@
       if (cCost) cCost.innerText = data.cost;
 
       const vid = document.getElementById('lab-video-element');
-      if (vid) {
-        vid.pause();
-        vid.classList.add('hidden');
+      if (vid && data.file) {
+        vid.src = data.file;
+        vid.muted = isLabMuted;
+        vid.playbackRate = labPlaybackRate;
+        vid.classList.remove('hidden');
+        vid.play().then(() => {
+          isLabPlaying = true;
+          updateLabPlayBtnIcon();
+        }).catch(() => {});
       }
 
       populateLabEventsTable();
