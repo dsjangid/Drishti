@@ -3836,7 +3836,7 @@
 
                   // 3. 3D Cavity Contrast Ratio (Crater Depth Index)
                   const cavityContrast = meanRim > 0 ? (meanRim - meanCore) / (meanRim + 1.0) : 0;
-                  const fillDensity = corePixels > 0 ? blobSize / (float)((maxX - minX + 1) * (maxY - minY + 1)) : 0;
+                  const fillDensity = corePixels > 0 ? blobSize / ((maxX - minX + 1) * (maxY - minY + 1)) : 0;
 
                   // Pothole Acceptance Criteria:
                   // - Significant Cavity Contrast (depression is noticeably darker than surrounding asphalt lip)
@@ -4198,45 +4198,49 @@
           }
         } else if (activeLabClip === 'custom-upload') {
           // REAL-TIME COMPUTER VISION FRAME INFERENCE (Pixel Profilometry & Edge Extraction)
-          const cvResults = roadVisionEngine.analyzeFrame(canvas, labLayers, isLabMirrored);
+          try {
+            const cvResults = roadVisionEngine.analyzeFrame(canvas, labLayers, isLabMirrored);
 
-          // 1. Draw Real Detected Road Potholes & Surface Distress
-          if (labLayers.defects && cvResults.defects.length > 0) {
-            for (const defect of cvResults.defects) {
-              const defGrading = gradePotholeIWatchRoad(defect.w, defect.h, 0.95);
+            // 1. Draw Real Detected Road Potholes & Surface Distress
+            if (labLayers.defects && cvResults.defects && cvResults.defects.length > 0) {
+              for (const defect of cvResults.defects) {
+                const defGrading = gradePotholeIWatchRoad(defect.w, defect.h, 0.95);
+                drawYoloBox(
+                  defect.x, defect.y, defect.w, defect.h,
+                  defect.type || 'POTHOLE', defect.confidence, defGrading.color,
+                  `Grade: ${defGrading.grade} [${defGrading.depthCm}cm · ${defGrading.materials}]`,
+                  'Contractor: Rajeshwar Infra Ltd (48h SLA)'
+                );
+              }
+            }
+
+            // 2. Draw Real Detected Vehicles & Transit Units
+            if (labLayers.vehicles && cvResults.vehicles && cvResults.vehicles.length > 0) {
+              for (const veh of cvResults.vehicles) {
+                drawYoloBox(
+                  veh.x, veh.y, veh.w, veh.h,
+                  veh.type, veh.confidence, '#4A62D6',
+                  `Speed: ${Math.round(30 + (veh.w % 14))} km/h · Forward Flow`,
+                  'PCU Vector: 1.8 · Free Flow'
+                );
+              }
+            }
+
+            // 3. ANPR Plate OCR on Detected Lead Vehicle
+            if (labLayers.anpr && cvResults.vehicles && cvResults.vehicles.length > 0) {
+              const leadVeh = cvResults.vehicles[0];
+              const anprW = Math.min(110, leadVeh.w * 0.45);
+              const anprH = 30;
+              const anprX = leadVeh.x + (leadVeh.w - anprW) / 2;
+              const anprY = leadVeh.y + leadVeh.h - 38;
               drawYoloBox(
-                defect.x, defect.y, defect.w, defect.h,
-                defect.type || 'POTHOLE', defect.confidence, defGrading.color,
-                `Grade: ${defGrading.grade} [${defGrading.depthCm}cm · ${defGrading.materials}]`,
-                'Contractor: Rajeshwar Infra Ltd (48h SLA)'
+                anprX, anprY, anprW, anprH,
+                'ANPR OCR', '97.8%', '#10B981',
+                'KA-50-MA-1587 · High Confidence'
               );
             }
-          }
-
-          // 2. Draw Real Detected Vehicles & Transit Units
-          if (labLayers.vehicles && cvResults.vehicles.length > 0) {
-            for (const veh of cvResults.vehicles) {
-              drawYoloBox(
-                veh.x, veh.y, veh.w, veh.h,
-                veh.type, veh.confidence, '#4A62D6',
-                `Speed: ${Math.round(30 + (veh.w % 14))} km/h · Forward Flow`,
-                'PCU Vector: 1.8 · Free Flow'
-              );
-            }
-          }
-
-          // 3. ANPR Plate OCR on Detected Lead Vehicle
-          if (labLayers.anpr && cvResults.vehicles.length > 0) {
-            const leadVeh = cvResults.vehicles[0];
-            const anprW = Math.min(110, leadVeh.w * 0.45);
-            const anprH = 30;
-            const anprX = leadVeh.x + (leadVeh.w - anprW) / 2;
-            const anprY = leadVeh.y + leadVeh.h - 38;
-            drawYoloBox(
-              anprX, anprY, anprW, anprH,
-              'ANPR OCR', '97.8%', '#10B981',
-              'KA-50-MA-1587 · High Confidence'
-            );
+          } catch (cvErr) {
+            console.warn('[CV Perception Engine]', cvErr);
           }
         }
 
