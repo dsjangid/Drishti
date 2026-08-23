@@ -6,6 +6,7 @@ ai_output/
 datasets/
 runs/
 temp_rad_images/
+ai_engine/iwatchroad_ref/
 *.pt
 *.onnx
 *.engine

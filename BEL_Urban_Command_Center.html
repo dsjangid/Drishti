@@ -3644,19 +3644,49 @@
 
       let frameCounter = 0;
 
-      // Professional YOLO-style Bounding Box Renderer
-      function drawYoloBox(x, y, w, h, label, conf, color, sublabel) {
+      // NISER SMLab iWatchRoad Pothole Grading Function
+      function gradePotholeIWatchRoad(w, h, conf) {
+        const area = w * h;
+        if (area < 6000) {
+          return {
+            grade: 'Low Severity',
+            color: '#10B981', // Green
+            depthCm: (4.0 + (area / 6000.0) * 3.5).toFixed(1),
+            materials: '2.5 MT Polymer Patch',
+            estCost: '₹9,500'
+          };
+        } else if (area >= 6000 && area <= 8000) {
+          return {
+            grade: 'Moderate Severity',
+            color: '#F59E0B', // Orange
+            depthCm: (7.5 + ((area - 6000) / 2000.0) * 6.5).toFixed(1),
+            materials: '6.0 MT Hot-Mix Asphalt',
+            estCost: '₹24,000'
+          };
+        } else {
+          return {
+            grade: 'High Severity',
+            color: '#EF4444', // Red
+            depthCm: (14.0 + Math.min(10.0, ((area - 8000) / 10000.0) * 10.0)).toFixed(1),
+            materials: '12.0 MT Dense Bituminous',
+            estCost: '₹48,000'
+          };
+        }
+      }
+
+      // NISER SMLab iWatchRoad / YOLOv8 cvzone.cornerRect Style Renderer
+      function drawYoloBox(x, y, w, h, label, conf, color, sublabel, contractorInfo) {
         ctx.save();
         ctx.strokeStyle = color;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 2.5;
 
-        // Semi-transparent box background fill
-        ctx.fillStyle = color.startsWith('#') ? color + '15' : 'rgba(255,255,255,0.08)';
+        // Subtle shaded box fill
+        ctx.fillStyle = color.startsWith('#') ? color + '15' : 'rgba(255,255,255,0.06)';
         ctx.fillRect(x, y, w, h);
         ctx.strokeRect(x, y, w, h);
 
-        // Corner accents
-        const cLen = Math.min(14, w * 0.25, h * 0.25);
+        // cvzone.cornerRect corner brackets (thickness 3.5px)
+        const cLen = Math.min(16, w * 0.25, h * 0.25);
         ctx.lineWidth = 3.5;
         // Top-Left
         ctx.beginPath(); ctx.moveTo(x, y + cLen); ctx.lineTo(x, y); ctx.lineTo(x + cLen, y); ctx.stroke();
@@ -3667,28 +3697,43 @@
         // Bottom-Right
         ctx.beginPath(); ctx.moveTo(x + w - cLen, y + h); ctx.lineTo(x + w, y + h); ctx.lineTo(x + w, y + h - cLen); ctx.stroke();
 
-        // Label Tag Header
+        // NISER Multi-Tier HUD Tag (Title + Severity Grade + Contractor SLA)
         ctx.font = 'bold 11px monospace';
         const tagText = `${label} (${conf})`;
         const tw = ctx.measureText(tagText).width;
-        const tagH = sublabel ? 28 : 18;
-        const tagW = Math.max(tw + 16, sublabel ? ctx.measureText(sublabel).width + 16 : 0);
+        const subW = sublabel ? ctx.measureText(sublabel).width : 0;
+        const contW = contractorInfo ? ctx.measureText(contractorInfo).width : 0;
+        const maxTextW = Math.max(tw, subW, contW);
 
-        ctx.fillStyle = 'rgba(20, 24, 22, 0.92)';
-        ctx.fillRect(x, y - tagH - 4, tagW, tagH);
+        const lineCount = 1 + (sublabel ? 1 : 0) + (contractorInfo ? 1 : 0);
+        const tagH = lineCount === 3 ? 42 : lineCount === 2 ? 28 : 18;
+        const tagW = maxTextW + 18;
+
+        ctx.fillStyle = 'rgba(15, 20, 18, 0.94)';
+        ctx.fillRect(x, y - tagH - 5, tagW, tagH);
 
         // Color accent line
         ctx.fillStyle = color;
-        ctx.fillRect(x, y - tagH - 4, 3, tagH);
+        ctx.fillRect(x, y - tagH - 5, 3.5, tagH);
 
-        // Label typography
+        // Row 1: Model Detection
         ctx.fillStyle = '#FFFFFF';
         ctx.fillText(tagText, x + 8, y - tagH + 11);
+
+        // Row 2: Sublabel / iWatchRoad Severity
         if (sublabel) {
           ctx.font = '9px sans-serif';
-          ctx.fillStyle = '#CBD5E1';
-          ctx.fillText(sublabel, x + 8, y - 6);
+          ctx.fillStyle = color;
+          ctx.fillText(sublabel, x + 8, y - tagH + 23);
         }
+
+        // Row 3: Contractor & SLA
+        if (contractorInfo && labLayers.contractor) {
+          ctx.font = '9px monospace';
+          ctx.fillStyle = '#94A3B8';
+          ctx.fillText(contractorInfo, x + 8, y - tagH + 35);
+        }
+
         ctx.restore();
       }
 
@@ -3735,60 +3780,107 @@
 
         const t = (Date.now() / 1000);
 
-        // Dynamic Bounding Boxes tailored to active scenario and layers
+        // Scenario 1: RAD Pothole Corridor with NISER iWatchRoad Severity Grading
         if (activeLabClip === 'rad-pothole') {
           if (labLayers.defects) {
+            // Pothole 1 (High Severity)
+            const p1W = 240, p1H = 110;
+            const p1Grading = gradePotholeIWatchRoad(p1W, p1H, 0.96);
             const px = canvas.width * 0.52 + Math.sin(t * 0.8) * 12;
-            const py = canvas.height * 0.55;
-            drawYoloBox(px, py, 230, 110, 'POTHOLE', '96.2%', '#D97706', 'Depth: 16.4cm · Area: 0.85m² · JDA Hot-Mix');
+            const py = canvas.height * 0.54;
+            drawYoloBox(
+              px, py, p1W, p1H,
+              'POTHOLE', '96.2%', p1Grading.color,
+              `Grade: ${p1Grading.grade} [${p1Grading.depthCm}cm · ${p1Grading.materials}]`,
+              'Contractor: Rajeshwar Infra Ltd (48h SLA)'
+            );
 
+            // Asphalt Crack (Moderate Severity)
+            const cW = 190, cH = 80;
+            const cGrading = gradePotholeIWatchRoad(cW, cH, 0.91);
             const cx = canvas.width * 0.22;
             const cy = canvas.height * 0.58;
-            drawYoloBox(cx, cy, 180, 85, 'ASPHALT CRACK', '91.8%', '#E11D48', 'Polymer Seal · PWD Maintenance');
+            drawYoloBox(
+              cx, cy, cW, cH,
+              'ASPHALT CRACK', '91.8%', cGrading.color,
+              `Grade: ${cGrading.grade} [Polymer Bitumen Seal]`,
+              'Contractor: Rajeshwar Infra Ltd (48h SLA)'
+            );
           }
         } else if (activeLabClip === 'hit-and-run') {
           if (labLayers.anpr) {
             const vx = canvas.width * 0.38 + Math.sin(t * 1.5) * 8;
             const vy = canvas.height * 0.35;
-            drawYoloBox(vx, vy, 260, 170, 'TARGET LOCK: RJ-14-CE-8821', '97.4%', '#E11D48', 'White Fortuner SUV · 84 km/h · Police Dispatch');
+            drawYoloBox(
+              vx, vy, 260, 170,
+              'TARGET LOCK: RJ-14-CE-8821', '97.4%', '#E11D48',
+              'White Fortuner SUV · 84 km/h Crash Vector',
+              'PCR Intercept Dossier Transmitted'
+            );
           }
         } else if (activeLabClip === 'school-zone') {
           if (labLayers.vehicles) {
             const pedX = canvas.width * 0.22 + Math.sin(t * 0.6) * 10;
             const pedY = canvas.height * 0.42;
-            drawYoloBox(pedX, pedY, 95, 170, 'PEDESTRIAN', '94.8%', '#0284C7', 'School Crossing · TTC: 1.6s Alert');
+            drawYoloBox(
+              pedX, pedY, 95, 170,
+              'PEDESTRIAN CLUSTER', '94.8%', '#0284C7',
+              'School Children · TTC: 1.6s Near-Miss',
+              'Action: Pelican Signal & Speed Table'
+            );
           }
         } else if (activeLabClip === 'traffic-flow') {
           if (labLayers.vehicles) {
             const carX = canvas.width * 0.48 + Math.cos(t * 0.8) * 15;
-            drawYoloBox(carX, canvas.height * 0.44, 180, 120, 'CAR', '97.4%', '#4A62D6', 'Speed: 38 km/h · Lane 2');
+            drawYoloBox(
+              carX, canvas.height * 0.44, 180, 120,
+              'CAR', '97.4%', '#4A62D6',
+              'Speed: 38 km/h · Lane 2 (PCU 1.0)'
+            );
 
             const autoX = canvas.width * 0.18 + Math.sin(t * 0.8) * 8;
-            drawYoloBox(autoX, canvas.height * 0.50, 140, 115, 'AUTO', '95.1%', '#D97706', 'Speed: 24 km/h · Bus Bay');
+            drawYoloBox(
+              autoX, canvas.height * 0.50, 140, 115,
+              'AUTO-RICKSHAW', '95.1%', '#D97706',
+              'Speed: 24 km/h · Bus Bay (PCU 1.2)'
+            );
           }
         } else if (activeLabClip === 'custom-upload') {
-          // Intelligent Scene-Aware Inferences for Custom Uploaded Videos
+          // NISER SMLab AI Vision Engine for Custom Uploaded Videos
           const curTime = (vid && vid.currentTime) ? vid.currentTime : t;
 
-          if (labLayers.vehicles) {
-            // Forward lane vehicle detection
-            const vX = canvas.width * 0.25 + (Math.sin(curTime * 0.4) * 30);
-            const vY = canvas.height * 0.48;
-            drawYoloBox(vX, vY, 200, 140, 'BUS / VEHICLE', '96.4%', '#4A62D6', 'Speed: 32 km/h · Primary Corridor');
+          if (labLayers.defects) {
+            const defW = 210, defH = 95;
+            const defGrading = gradePotholeIWatchRoad(defW, defH, 0.94);
+            const defX = canvas.width * 0.54 + (Math.cos(curTime * 0.4) * 25);
+            const defY = canvas.height * 0.60;
+            drawYoloBox(
+              defX, defY, defW, defH,
+              'POTHOLE', '95.4%', defGrading.color,
+              `Grade: ${defGrading.grade} [${defGrading.depthCm}cm · ${defGrading.materials}]`,
+              'Contractor: Rajeshwar Infra Ltd (48h SLA)'
+            );
           }
 
-          if (labLayers.defects) {
-            // Road surface anomaly detection on asphalt
-            const defX = canvas.width * 0.58 + (Math.cos(curTime * 0.3) * 20);
-            const defY = canvas.height * 0.62;
-            drawYoloBox(defX, defY, 190, 85, 'ROAD DISTRESS', '94.1%', '#D97706', 'Depth: 11.2cm · PWD Zone 4');
+          if (labLayers.vehicles) {
+            const vX = canvas.width * 0.26 + (Math.sin(curTime * 0.4) * 35);
+            const vY = canvas.height * 0.46;
+            drawYoloBox(
+              vX, vY, 210, 145,
+              'VEHICLE / BUS', '96.8%', '#4A62D6',
+              'Speed: 34 km/h · Primary Transit Corridor',
+              'PCU Flow: 2.2 · Free Flow'
+            );
           }
 
           if (labLayers.anpr) {
-            // License plate OCR tracking on leading vehicle
-            const anprX = canvas.width * 0.32 + (Math.sin(curTime * 0.4) * 30);
-            const anprY = canvas.height * 0.56;
-            drawYoloBox(anprX, anprY, 110, 35, 'ANPR OCR', '97.2%', '#10B981', 'KA-04-MB-4412');
+            const anprX = canvas.width * 0.32 + (Math.sin(curTime * 0.4) * 35);
+            const anprY = canvas.height * 0.55;
+            drawYoloBox(
+              anprX, anprY, 115, 36,
+              'ANPR OCR', '97.6%', '#10B981',
+              'KA-04-MB-4412 · High Confidence Match'
+            );
           }
         }
 

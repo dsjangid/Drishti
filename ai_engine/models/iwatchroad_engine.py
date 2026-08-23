@@ -19,9 +19,9 @@ from typing import Dict, Any, List, Optional, Tuple
 
 
 class DefectSeverityGrade:
-    LOW = "Low"
-    MODERATE = "Moderate"
-    HIGH = "High"
+    LOW = "Low Severity"
+    MODERATE = "Moderate Severity"
+    HIGH = "High Severity"
 
 
 class PotholeLifecycleStatus:
@@ -89,13 +89,39 @@ class IWatchRoadContractorTracker:
         }
 
 
+def grade_pothole(width: int, height: int, confidence: float = 0.0) -> Tuple[str, Tuple[int, int, int], float]:
+    """
+    NISER SMLab iWatchRoad Pothole Grading Function.
+    Area-based severity classification:
+    - Area < 6000 px: Low Severity (Green)
+    - Area 6000-8000 px: Moderate Severity (Orange)
+    - Area > 8000 px: High Severity (Red)
+    """
+    area = width * height
+
+    if area < 6000:
+        grade = DefectSeverityGrade.LOW
+        color = (0, 255, 0)  # Green
+        depth_cm = round(4.0 + (area / 6000.0) * 3.5, 1)
+    elif 6000 <= area <= 8000:
+        grade = DefectSeverityGrade.MODERATE
+        color = (0, 165, 255)  # Orange
+        depth_cm = round(7.5 + ((area - 6000) / 2000.0) * 6.5, 1)
+    else:
+        grade = DefectSeverityGrade.HIGH
+        color = (0, 0, 255)  # Red
+        depth_cm = round(14.0 + min(10.0, ((area - 8000) / 10000.0) * 10.0), 1)
+
+    return grade, color, depth_cm
+
+
 class IWatchRoadDetector:
     """
     iWatchRoad YOLOv8-inspired Road Defect & Pothole Detection Pipeline.
     Supports YOLOv8 PyTorch/ONNX inference with fallback OpenCV gradient profilometry.
     """
 
-    def __init__(self, yolo_weights_path: Optional[str] = None, conf_thresh: float = 0.65):
+    def __init__(self, yolo_weights_path: Optional[str] = None, conf_thresh: float = 0.40):
         self.conf_thresh = conf_thresh
         self.yolo_model = None
         self.contractor_tracker = IWatchRoadContractorTracker()
@@ -110,18 +136,9 @@ class IWatchRoadDetector:
                 print(f"[iWatchRoad] YOLOv8 native load skipped ({e}). Using optimized edge CV engine.")
 
     def grade_severity(self, box_w: int, box_h: int, img_w: int, img_h: int) -> Tuple[str, float]:
-        """
-        Grades defect severity (Low / Moderate / High) based on iWatchRoad dimension heuristics.
-        """
-        area_pct = (box_w * box_h) / (img_w * img_h) * 100.0
-        depth_cm = min(24.0, max(4.0, round((box_h / float(img_h)) * 48.0 + 3.0, 1)))
-
-        if area_pct > 4.5 or depth_cm > 15.0:
-            return DefectSeverityGrade.HIGH, depth_cm
-        elif area_pct > 1.8 or depth_cm > 8.0:
-            return DefectSeverityGrade.MODERATE, depth_cm
-        else:
-            return DefectSeverityGrade.LOW, depth_cm
+        """NISER SMLab dimension grading wrapper."""
+        grade, _, depth_cm = grade_pothole(box_w, box_h)
+        return grade, depth_cm
 
     def process_dashcam_frame(
         self,
