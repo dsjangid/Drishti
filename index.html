@@ -586,11 +586,14 @@
           </div>
         </div>
 
-        <!-- High-Tech Video Viewport Frame with Simulated Live Video Stream -->
+        <!-- High-Tech Video Viewport Frame with Real Vehicle Dashcam Video Stream -->
         <div id="video-feed-viewport" class="relative w-full h-[420px] bg-[#141816] rounded-3xl overflow-hidden flex items-center justify-center select-none shadow-2xl border border-black/10 transition-all duration-300">
           
-          <!-- Animated HTML5 Canvas Simulated Video Feed (60 FPS) -->
-          <canvas id="video-canvas-stream" width="960" height="420" class="absolute inset-0 w-full h-full object-cover"></canvas>
+          <!-- Real 1080p Vehicle Dashcam MP4 Video Stream -->
+          <video id="real-dashcam-video" src="bus_dashcam_1080p.mp4" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0"></video>
+
+          <!-- Animated HTML5 Canvas Overlay Layer (Bounding Boxes & Visual Mesh) -->
+          <canvas id="video-canvas-stream" width="960" height="420" class="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none"></canvas>
 
           <!-- Perspective HTML Overlay Layer -->
           <div id="camera-perspective-layer" class="absolute inset-0 pointer-events-none">
@@ -1766,29 +1769,34 @@
 
     function toggleVideoPlay() {
       liveVideoPlaying = !liveVideoPlaying;
+      const video = document.getElementById('real-dashcam-video');
       const icon = document.getElementById('video-play-icon');
       const text = document.getElementById('video-play-text');
       if (liveVideoPlaying) {
+        if (video) video.play();
         if (icon) icon.innerText = 'pause';
         if (text) text.innerText = 'PAUSE';
-        showToast('Video Stream Resumed', 'Live 1080p NPU video feed playing.', 'info');
+        showToast('Video Stream Resumed', 'Real 1080p vehicle dashcam stream playing.', 'info');
       } else {
+        if (video) video.pause();
         if (icon) icon.innerText = 'play_arrow';
         if (text) text.innerText = 'PLAY';
-        showToast('Video Stream Paused', 'Optical video buffer paused on current frame.', 'info');
+        showToast('Video Stream Paused', 'Vehicle video stream paused on active frame.', 'info');
       }
       playBeep(640);
     }
 
     function toggleVideoMute() {
       liveVideoMuted = !liveVideoMuted;
+      const video = document.getElementById('real-dashcam-video');
       const icon = document.getElementById('video-mute-icon');
+      if (video) video.muted = liveVideoMuted;
       if (liveVideoMuted) {
         if (icon) icon.innerText = 'volume_off';
-        showToast('Audio Muted', 'Onboard cabin microphone muted.', 'info');
+        showToast('Audio Muted', 'Vehicle audio channel muted.', 'info');
       } else {
         if (icon) icon.innerText = 'volume_up';
-        showToast('Audio Unmuted', 'Onboard cabin microphone live.', 'info');
+        showToast('Audio Unmuted', 'Vehicle audio channel live.', 'info');
       }
       playBeep(640);
     }
