@@ -92,8 +92,49 @@
     </div>
   </section>
 
-  <!-- INTERACTIVE EDGE NEURAL PIPELINE INSPECTOR (NEW CONTENT) -->
+  <!-- 4-STEP PIPELINE CARDS -->
   <section class="py-16 bg-white border-y border-[#E5E7EB]">
+    <div class="max-w-7xl mx-auto px-6 space-y-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <div class="p-6 rounded-3xl bg-[#F3F4F6] border border-[#E5E7EB] space-y-4 relative shadow-sm">
+          <span class="w-8 h-8 rounded-full bg-[#121316] text-white font-mono text-xs font-bold flex items-center justify-center">01</span>
+          <h3 class="font-bold text-[#121316] text-base">Public Bus Sensing</h3>
+          <p class="text-xs text-[#6B7280] leading-relaxed">
+            1080p optical windshield cameras &amp; downward macro asphalt sensors mounted on JCTSL buses capture continuous road surface video.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-3xl bg-[#F3F4F6] border border-[#E5E7EB] space-y-4 relative shadow-sm">
+          <span class="w-8 h-8 rounded-full bg-[#121316] text-white font-mono text-xs font-bold flex items-center justify-center">02</span>
+          <h3 class="font-bold text-[#121316] text-base">Onboard NPU Inference</h3>
+          <p class="text-xs text-[#6B7280] leading-relaxed">
+            Local NVIDIA Jetson Orin NPU runs YOLOv8x-PotholeGuard model at 14.8ms latency, detecting craters, depth, and license plates.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-3xl bg-[#F3F4F6] border border-[#E5E7EB] space-y-4 relative shadow-sm">
+          <span class="w-8 h-8 rounded-full bg-[#121316] text-white font-mono text-xs font-bold flex items-center justify-center">03</span>
+          <h3 class="font-bold text-[#121316] text-base">Bandwidth Compression</h3>
+          <p class="text-xs text-[#6B7280] leading-relaxed">
+            Saves 98.4% bandwidth by transmitting encrypted lightweight JSON telemetry dockets with GPS coordinates over 4G LTE.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-3xl bg-[#F3F4F6] border border-[#10B981] space-y-4 relative shadow-sm">
+          <span class="w-8 h-8 rounded-full bg-[#10B981] text-white font-mono text-xs font-bold flex items-center justify-center">04</span>
+          <h3 class="font-bold text-[#121316] text-base">PWD Work Order Dispatch</h3>
+          <p class="text-xs text-[#6B7280] leading-relaxed">
+            Command Center dashboard routes dockets directly to Zone Engineers with exact hot-mix asphalt tonnage calculations.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE EDGE NEURAL PIPELINE INSPECTOR (CLEAN LIGHT THEME) -->
+  <section class="py-16 bg-[#F3F4F6]">
     <div class="max-w-7xl mx-auto px-6 space-y-8">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -101,59 +142,56 @@
           <h2 class="text-2xl sm:text-3xl font-black text-[#121316] tracking-tight">4-Stage Deep Learning Pipeline</h2>
         </div>
 
-        <!-- Pipeline Stage Selector Buttons -->
         <div class="flex items-center gap-2 font-mono text-xs overflow-x-auto pb-2">
           <button onclick="setPipeStage(1)" id="btn-pipe-1" class="px-3.5 py-1.5 rounded-full bg-[#121316] text-white font-bold transition-all whitespace-nowrap">Stage 1: Optical</button>
-          <button onclick="setPipeStage(2)" id="btn-pipe-2" class="px-3.5 py-1.5 rounded-full bg-[#F3F4F6] text-[#6B7280] font-bold hover:bg-[#E5E7EB] transition-all whitespace-nowrap">Stage 2: YOLOv8</button>
-          <button onclick="setPipeStage(3)" id="btn-pipe-3" class="px-3.5 py-1.5 rounded-full bg-[#F3F4F6] text-[#6B7280] font-bold hover:bg-[#E5E7EB] transition-all whitespace-nowrap">Stage 3: Depth Mesh</button>
-          <button onclick="setPipeStage(4)" id="btn-pipe-4" class="px-3.5 py-1.5 rounded-full bg-[#F3F4F6] text-[#6B7280] font-bold hover:bg-[#E5E7EB] transition-all whitespace-nowrap">Stage 4: PWD Dispatch</button>
+          <button onclick="setPipeStage(2)" id="btn-pipe-2" class="px-3.5 py-1.5 rounded-full bg-white text-[#6B7280] border border-[#E5E7EB] font-bold hover:bg-[#E5E7EB] transition-all whitespace-nowrap">Stage 2: YOLOv8</button>
+          <button onclick="setPipeStage(3)" id="btn-pipe-3" class="px-3.5 py-1.5 rounded-full bg-white text-[#6B7280] border border-[#E5E7EB] font-bold hover:bg-[#E5E7EB] transition-all whitespace-nowrap">Stage 3: Depth Mesh</button>
+          <button onclick="setPipeStage(4)" id="btn-pipe-4" class="px-3.5 py-1.5 rounded-full bg-white text-[#6B7280] border border-[#E5E7EB] font-bold hover:bg-[#E5E7EB] transition-all whitespace-nowrap">Stage 4: PWD Dispatch</button>
         </div>
       </div>
 
-      <!-- Stage Interactive Card Display -->
-      <div class="p-8 rounded-[32px] bg-[#121316] text-white shadow-xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center font-mono">
+      <div class="p-8 rounded-[32px] bg-white border border-[#E5E7EB] shadow-lg grid grid-cols-1 lg:grid-cols-12 gap-8 items-center font-mono">
         <div class="lg:col-span-7 space-y-4">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 text-[#10B981] text-[10px] font-bold">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#10B981]/10 text-[#10B981] text-[10px] font-bold">
             <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
             <span id="pipe-tag">STAGE 01 · REAL-TIME CAPTURE</span>
           </div>
 
-          <h3 class="text-2xl font-bold text-white font-sans" id="pipe-title">Dual Optical 1080p Stream Processing</h3>
+          <h3 class="text-2xl font-bold text-[#121316] font-sans" id="pipe-title">Dual Optical 1080p Stream Processing</h3>
 
-          <p class="text-xs text-slate-300 font-sans leading-relaxed" id="pipe-desc">
+          <p class="text-xs text-[#6B7280] font-sans leading-relaxed" id="pipe-desc">
             Dual Sony IMX327 CMOS sensors capture 60 FPS HDR optical video streams through wide-angle windshield optical lenses and downward macro pavement profilometers.
           </p>
 
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 text-xs">
-            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
-              <span class="text-[9px] text-slate-500 block uppercase">INPUT TENSOR</span>
-              <strong class="text-white block font-bold" id="pipe-metric-1">1080p @ 60 FPS</strong>
+            <div class="p-3.5 rounded-2xl bg-[#F3F4F6] border border-[#E5E7EB]">
+              <span class="text-[9px] text-[#6B7280] block uppercase font-bold">INPUT TENSOR</span>
+              <strong class="text-[#121316] block font-bold" id="pipe-metric-1">1080p @ 60 FPS</strong>
             </div>
 
-            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
-              <span class="text-[9px] text-slate-500 block uppercase">HARDWARE POWER</span>
+            <div class="p-3.5 rounded-2xl bg-[#F3F4F6] border border-[#E5E7EB]">
+              <span class="text-[9px] text-[#6B7280] block uppercase font-bold">HARDWARE POWER</span>
               <strong class="text-[#10B981] block font-bold" id="pipe-metric-2">15.2W Envelope</strong>
             </div>
 
-            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
-              <span class="text-[9px] text-slate-500 block uppercase">STAGE LATENCY</span>
-              <strong class="text-white block font-bold" id="pipe-metric-3">2.1 ms Ingest</strong>
+            <div class="p-3.5 rounded-2xl bg-[#F3F4F6] border border-[#E5E7EB]">
+              <span class="text-[9px] text-[#6B7280] block uppercase font-bold">STAGE LATENCY</span>
+              <strong class="text-[#121316] block font-bold" id="pipe-metric-3">2.1 ms Ingest</strong>
             </div>
           </div>
         </div>
 
-        <!-- Visual Flow Diagram Card (5 Cols) -->
-        <div class="lg:col-span-5 p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-3 text-xs">
-          <span class="text-slate-400 text-[10px] uppercase font-bold block border-b border-slate-800 pb-2">Active Execution Log</span>
+        <div class="lg:col-span-5 p-6 rounded-2xl bg-[#F3F4F6] border border-[#E5E7EB] space-y-3 text-xs">
+          <span class="text-[#6B7280] text-[10px] uppercase font-bold block border-b border-[#E5E7EB] pb-2">Active Execution Log</span>
           
           <div class="space-y-2 text-[11px] font-mono">
-            <div class="flex items-center gap-2 text-emerald-400">
+            <div class="flex items-center gap-2 text-[#10B981] font-bold">
               <span>&gt;</span> <span id="pipe-log-1">Camera Stream Mounted on Bus BUS-003 OK</span>
             </div>
-            <div class="flex items-center gap-2 text-slate-300">
+            <div class="flex items-center gap-2 text-[#121316]">
               <span>&gt;</span> <span id="pipe-log-2">60 FPS Frame Grabber Buffer Active</span>
             </div>
-            <div class="flex items-center gap-2 text-slate-400">
+            <div class="flex items-center gap-2 text-[#6B7280]">
               <span>&gt;</span> <span id="pipe-log-3">Passing RGB Normalized Tensors to NPU</span>
             </div>
           </div>
@@ -163,24 +201,24 @@
   </section>
 
   <!-- HARDWARE SPECS BOARD -->
-  <section class="py-20 bg-[#F3F4F6]">
+  <section class="py-20 bg-white border-t border-[#E5E7EB]">
     <div class="max-w-7xl mx-auto px-6 space-y-8">
       <h2 class="text-2xl sm:text-3xl font-extrabold text-[#121316]">Edge NPU Hardware Specifications</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-xs">
-        <div class="p-6 rounded-3xl bg-white border border-[#E5E7EB] space-y-2 shadow-sm">
+        <div class="p-6 rounded-3xl bg-[#F3F4F6] border border-[#E5E7EB] space-y-2 shadow-sm">
           <span class="text-[#6B7280] text-[10px] uppercase font-bold block">EDGE PROCESSOR</span>
           <strong class="text-[#121316] text-sm block">NVIDIA Jetson Orin Nano</strong>
           <p class="text-[#6B7280] font-sans text-xs">40 TOPS AI performance, 15W power envelope powered directly by bus alternator system.</p>
         </div>
 
-        <div class="p-6 rounded-3xl bg-white border border-[#E5E7EB] space-y-2 shadow-sm">
+        <div class="p-6 rounded-3xl bg-[#F3F4F6] border border-[#E5E7EB] space-y-2 shadow-sm">
           <span class="text-[#6B7280] text-[10px] uppercase font-bold block">OPTICAL SENSORS</span>
           <strong class="text-[#121316] text-sm block">Dual Sony IMX327 CMOS</strong>
           <p class="text-[#6B7280] font-sans text-xs">1080p 60 FPS HDR optical sensor with 120° FOV windshield lens and downward macro lens.</p>
         </div>
 
-        <div class="p-6 rounded-3xl bg-white border border-[#E5E7EB] space-y-2 shadow-sm">
+        <div class="p-6 rounded-3xl bg-[#F3F4F6] border border-[#E5E7EB] space-y-2 shadow-sm">
           <span class="text-[#6B7280] text-[10px] uppercase font-bold block">CONNECTIVITY</span>
           <strong class="text-[#121316] text-sm block">Quectel 4G LTE CAT-4 + GNSS</strong>
           <p class="text-[#6B7280] font-sans text-xs">Sub-meter RTK GPS positioning with automatic offline flash caching when cellular signal dips.</p>
@@ -189,11 +227,11 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer class="bg-[#121316] text-white py-12 mt-auto">
-    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center text-xs font-mono text-slate-400 gap-4">
+  <!-- FOOTER (LIGHT THEME) -->
+  <footer class="bg-white border-t border-[#E5E7EB] py-12">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center text-xs font-mono text-[#6B7280] gap-4">
       <span>JUCC System Architecture • Smart Cities Mission India</span>
-      <a href="index.html" class="hover:text-emerald-400">Back to Overview Page &rarr;</a>
+      <a href="index.html" class="text-[#121316] font-bold hover:text-[#10B981]">Back to Overview Page &rarr;</a>
     </div>
   </footer>
 
@@ -212,7 +250,7 @@
 
       for (let i = 1; i <= 4; i++) {
         const btn = document.getElementById('btn-pipe-' + i);
-        if (btn) btn.className = 'px-3.5 py-1.5 rounded-full bg-[#F3F4F6] text-[#6B7280] font-bold hover:bg-[#E5E7EB] transition-all whitespace-nowrap';
+        if (btn) btn.className = 'px-3.5 py-1.5 rounded-full bg-white text-[#6B7280] border border-[#E5E7EB] font-bold hover:bg-[#E5E7EB] transition-all whitespace-nowrap';
       }
       document.getElementById('btn-pipe-' + stg).className = 'px-3.5 py-1.5 rounded-full bg-[#121316] text-white font-bold transition-all whitespace-nowrap';
 
