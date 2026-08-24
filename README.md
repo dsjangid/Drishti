@@ -1,4 +1,4 @@
-# 🏛️ JUCC — Jaipur Urban Command Center
+# 🏛️ दृष्टि (Drishti) — Jaipur Urban Command Center
 
 > **Real-Time Edge-AI Municipal Road Perception, Public Transit Safety & Fleet Telemetry Network**  
 > *Developed for Bharat Electronics Limited (BEL) & Nagar Nigam Jaipur (JMC) · Smart India Hackathon (SIH) Evaluation Prototype*
@@ -12,7 +12,7 @@
 
 ## 🌟 Executive Overview
 
-**JUCC (Jaipur Urban Command Center)** transforms everyday municipal transit buses into an intelligent, moving AI sensing network. By mounting low-cost 1080p optical cameras and edge NPUs onto public transit fleets, JUCC continuously inspects urban road corridors, detects potholes, asphalt raveling, waterlogging, and safety violations in real-time, and dispatches automated PWD repair dockets in under 60 seconds.
+**दृष्टि (Drishti · Jaipur Urban Command Center)** transforms everyday municipal transit buses into an intelligent, moving AI sensing network. By mounting low-cost 1080p optical cameras and edge NPUs onto public transit fleets, JUCC continuously inspects urban road corridors, detects potholes, asphalt raveling, waterlogging, and safety violations in real-time, and dispatches automated PWD repair dockets in under 60 seconds.
 
 ---
 
@@ -95,4 +95,4 @@ python3 -m http.server 8000
 
 Developed for the **Bharat Electronics Limited (BEL) & Nagar Nigam Jaipur (JMC)** Smart City Urban Mobility Evaluation Benchmark (*SIH Problem Statement PS-26124*).
 
-*© 2026 JUCC Jaipur Urban Command Center. All Rights Reserved.*
+*© 2026 दृष्टि (Drishti) Jaipur Urban Command Center. All Rights Reserved.*
