@@ -22,11 +22,11 @@ The repository contains both the public-facing **Multi-Page Marketing & Technica
 
 | Page / Module | File | Description |
 | :--- | :--- | :--- |
-| **1. Home Overview** | [`landing.html`](landing.html) | High-end product landing page with interactive Municipal ROI & Asphalt Savings Calculator, Ward telemetry filter, and live video demo player. |
+| **1. Home Overview** | [`index.html`](index.html) | High-end product website home page with interactive Municipal ROI & Asphalt Savings Calculator, Ward telemetry filter, and live video demo player. |
 | **2. How It Works** | [`how_it_works.html`](how_it_works.html) | 4-Stage Edge-to-Cloud neural pipeline inspector, NVIDIA Jetson Orin hardware specifications, and data security protocols. |
 | **3. AI Perception Lab** | [`ai_demo.html`](ai_demo.html) | Widescreen interactive perception video laboratory with live telemetry streams and neural model benchmark comparisons. |
 | **4. Features Suite** | [`features.html`](features.html) | Deep-dive capability showcase and PWD Contractor SLA accountability scorecard. |
-| **5. Command Center Dashboard** | [`index.html`](index.html) | Mission-critical GIS Command Center with real-time Leaflet mapping across 10 Jaipur buses, live camera HUD, driver DMS scoring, hit-and-run forensics, and GIS export engine. |
+| **5. Command Center Dashboard** | [`dashboard.html`](dashboard.html) | Mission-critical GIS Command Center with real-time Leaflet mapping across 10 Jaipur buses, live camera HUD, driver DMS scoring, hit-and-run forensics, and GIS export engine. |
 
 ---
 
@@ -64,8 +64,8 @@ cd dashboard
 python3 -m http.server 8000
 ```
 
-- Open **[http://localhost:8000/landing.html](http://localhost:8000/landing.html)** to explore the **Product Website**.
-- Open **[http://localhost:8000/index.html](http://localhost:8000/index.html)** to launch the **Live Command Center Dashboard**.
+- Open **[http://localhost:8000/index.html](http://localhost:8000/index.html)** (or just **`http://localhost:8000/`**) to explore the **Product Website**.
+- Open **[http://localhost:8000/dashboard.html](http://localhost:8000/dashboard.html)** to launch the **Live Command Center Dashboard**.
 
 ---
 
