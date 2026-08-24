@@ -2268,9 +2268,32 @@
     }
 
     // RENDER CAMERA VIEWPORT DYNAMICALLY BASED ON BUS & ANGLE
+    const busVideoMap = {
+      'BUS-001': 'sample_videos/02_ai_detected.mp4',
+      'BUS-002': 'sample_videos/04_ai_detected.mp4',
+      'BUS-003': 'sample_videos/19_ai_detected.mp4',
+      'BUS-004': 'sample_videos/105_ai_detected.mp4',
+      'BUS-005': 'sample_videos/02_ai_detected.mp4',
+      'BUS-006': 'sample_videos/04_ai_detected.mp4',
+      'BUS-007': 'sample_videos/19_ai_detected.mp4',
+      'BUS-008': 'sample_videos/105_ai_detected.mp4',
+      'BUS-009': 'sample_videos/02_ai_detected.mp4',
+      'BUS-010': 'sample_videos/04_ai_detected.mp4'
+    };
+
     function renderActiveCameraView() {
-      const bus = jaipurFleet.find(b => b.id === selectedBusId) || jaipurFleet[2];
+      const bus = jaipurFleet.find(b => b.id === selectedBusId) || jaipurFleet[0];
       const angleData = (bus.angles && bus.angles[currentCameraAngle]) ? bus.angles[currentCameraAngle] : bus.angles.front;
+
+      const videoEl = document.getElementById('real-dashcam-video');
+      if (videoEl) {
+        const targetSrc = busVideoMap[bus.id] || 'sample_videos/02_ai_detected.mp4';
+        if (!videoEl.src.endsWith(targetSrc)) {
+          videoEl.src = targetSrc;
+          videoEl.load();
+          videoEl.play().catch(() => {});
+        }
+      }
 
       const camTitle = document.getElementById('edge-cam-title');
       if (camTitle) camTitle.innerText = `${bus.id} · ${angleData.title}`;
