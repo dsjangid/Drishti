@@ -106,93 +106,118 @@ with col2:
 # ==========================================
 
 if uploaded_file is not None:
+    # ── Security Check: File Size Limit (150MB) ──
+    MAX_FILE_SIZE_MB = 150
+    if uploaded_file.size > MAX_FILE_SIZE_MB * 1024 * 1024:
+        st.error(f"⚠️ File size ({uploaded_file.size / (1024*1024):.1f} MB) exceeds maximum allowed limit ({MAX_FILE_SIZE_MB} MB).")
+        st.stop()
 
     st.video(uploaded_file)
 
     if st.button("🚀 Run Pothole Detection", type="primary"):
+        input_path = None
+        output_path = None
+        cap = None
+        writer = None
 
-        # Save uploaded video to temp file
-        input_file = tempfile.NamedTemporaryFile(
-            delete=False,
-            suffix=".mp4"
-        )
-        input_file.write(uploaded_file.read())
-        input_file.close()
-        input_path = input_file.name
+        try:
+            # Save uploaded video to secure temp file
+            input_file = tempfile.NamedTemporaryFile(
+                delete=False,
+                suffix=".mp4"
+            )
+            input_file.write(uploaded_file.read())
+            input_file.close()
+            input_path = input_file.name
 
-        # Output file
-        output_file = tempfile.NamedTemporaryFile(
-            delete=False,
-            suffix=".mp4"
-        )
-        output_file.close()
-        output_path = output_file.name
+            # Output file
+            output_file = tempfile.NamedTemporaryFile(
+                delete=False,
+                suffix=".mp4"
+            )
+            output_file.close()
+            output_path = output_file.name
 
-        # Video processing
-        cap = cv2.VideoCapture(input_path)
+            # Video processing
+            cap = cv2.VideoCapture(input_path)
 
-        if not cap.isOpened():
-            st.error("Could not open the uploaded video.")
-        else:
-            fps = cap.get(cv2.CAP_PROP_FPS)
-            width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-            height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            if not cap.isOpened():
+                st.error("Could not open the uploaded video. Please check format.")
+            else:
+                fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
+                width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-            fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-            writer = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+                fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+                writer = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
 
-            total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-            progress_bar = st.progress(0)
-            status = st.empty()
-            frame_number = 0
+                total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+                progress_bar = st.progress(0)
+                status = st.empty()
+                frame_number = 0
 
-            # Process frames with YOLOv8 + ByteTrack
-            while True:
-                ret, frame = cap.read()
-                if not ret:
-                    break
+                # Process frames with YOLOv8 + ByteTrack
+                while True:
+                    ret, frame = cap.read()
+                    if not ret:
+                        break
 
-                results = model.track(
-                    frame,
-                    conf=confidence,
-                    imgsz=image_size,
-                    tracker="bytetrack.yaml",
-                    persist=True,
-                    verbose=False
+                    results = model.track(
+                        frame,
+                        conf=confidence,
+                        imgsz=image_size,
+                        tracker="bytetrack.yaml",
+                        persist=True,
+                        verbose=False
+                    )
+
+                    annotated_frame = results[0].plot()
+                    writer.write(annotated_frame)
+
+                    frame_number += 1
+                    if total_frames > 0:
+                        progress = frame_number / total_frames
+                        progress_bar.progress(progress)
+                        status.write(f"Processing frame {frame_number}/{total_frames}")
+
+                cap.release()
+                writer.release()
+                progress_bar.progress(1.0)
+                status.success("✅ Pothole detection completed!")
+
+                # Display result
+                st.subheader("📊 Detected Output")
+
+                with open(output_path, "rb") as video_file:
+                    video_bytes = video_file.read()
+
+                st.video(video_bytes)
+
+                st.download_button(
+                    label="⬇️ Download Annotated Video",
+                    data=video_bytes,
+                    file_name="drishti_pothole_detection.mp4",
+                    mime="video/mp4"
                 )
 
-                annotated_frame = results[0].plot()
-                writer.write(annotated_frame)
-
-                frame_number += 1
-                if total_frames > 0:
-                    progress = frame_number / total_frames
-                    progress_bar.progress(progress)
-                    status.write(f"Processing frame {frame_number}/{total_frames}")
-
-            cap.release()
-            writer.release()
-            progress_bar.progress(1.0)
-            status.success("✅ Pothole detection completed!")
-
-            # Display result
-            st.subheader("📊 Detected Output")
-
-            with open(output_path, "rb") as video_file:
-                video_bytes = video_file.read()
-
-            st.video(video_bytes)
-
-            st.download_button(
-                label="⬇️ Download Annotated Video",
-                data=video_bytes,
-                file_name="drishti_pothole_detection.mp4",
-                mime="video/mp4"
-            )
-
-        # Cleanup temp input
-        if os.path.exists(input_path):
-            os.remove(input_path)
+        except Exception as e:
+            st.error(f"An error occurred during video inference: {str(e)}")
+        finally:
+            # ── Guaranteed Cleanup of Temp Files ──
+            if cap is not None and cap.isOpened():
+                cap.release()
+            if writer is not None:
+                writer.release()
+            if input_path and os.path.exists(input_path):
+                try:
+                    os.remove(input_path)
+                except OSError:
+                    pass
+            if output_path and os.path.exists(output_path):
+                try:
+                    os.remove(output_path)
+                except OSError:
+                    pass
 
 else:
     st.info("👆 Upload a road or dashcam video above to begin analysis.")

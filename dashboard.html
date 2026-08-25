@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <title>दृष्टि (Drishti) · Urban Road Intelligence Command Center</title>
 
   <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
@@ -1903,6 +1905,17 @@
       } catch (e) {}
     }
 
+    // XSS Sanitizer Utility
+    function escapeHTML(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
     // TOAST NOTIFICATION ENGINE
     function showToast(title, msg, type = 'info') {
       let container = document.getElementById('toast-container');
@@ -1924,8 +1937,8 @@
           <span class="material-symbols-outlined text-base">${icon}</span>
         </div>
         <div>
-          <strong class="font-bold text-[#1E2320] block">${title}</strong>
-          <span class="text-[#717D75] text-[11px]">${msg}</span>
+          <strong class="font-bold text-[#1E2320] block">${escapeHTML(title)}</strong>
+          <span class="text-[#717D75] text-[11px]">${escapeHTML(msg)}</span>
         </div>
       `;
 
