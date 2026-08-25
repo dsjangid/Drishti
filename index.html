@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>दृष्टि (Drishti) — Jaipur Urban Command Center | AI-Powered Road Intelligence</title>
+  <title>दृष्टि (Drishti) — Autonomous Urban Road Intelligence & Safety Mesh</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   
   <script src="https://cdn.tailwindcss.com"></script>
@@ -22,13 +22,19 @@
             },
             colors: {
               canvas: '#F3F4F6',
+              darkbg: '#0A0C0E',
+              darkcard: '#12151B',
               surface: '#FFFFFF',
               dark: '#121316',
               muted: '#6B7280',
               bordergray: '#E5E7EB',
-              emerald: { 500: '#10B981', 600: '#059669' },
+              accent: {
+                DEFAULT: '#4A62D6',
+                light: '#60A5FA',
+                hover: '#3B50B8'
+              },
               red: { 500: '#EF4444', 600: '#DC2626' },
-              amber: { 500: '#F59E0B', 600: '#D97706' }
+              amber: { 400: '#FBBF24', 500: '#F59E0B', 600: '#D97706' }
             }
           }
         }
@@ -39,413 +45,664 @@
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F3F4F6; color: #121316; overflow-x: hidden; }
     ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 9999px; }
+
+    /* Custom stepped split transition styling */
+    .stepped-dark-boundary {
+      position: relative;
+      background-color: #0A0C0E;
+    }
+    .stepped-dark-boundary::before {
+      content: "";
+      position: absolute;
+      top: -48px;
+      left: 0;
+      width: 100%;
+      height: 48px;
+      background-color: #0A0C0E;
+      clip-path: polygon(0 100%, 42% 100%, 54% 0%, 100% 0%, 100% 100%);
+      pointer-events: none;
+    }
+    @media (max-width: 1024px) {
+      .stepped-dark-boundary::before {
+        clip-path: polygon(0 100%, 20% 100%, 35% 0%, 100% 0%, 100% 100%);
+      }
+    }
+    @media (max-width: 640px) {
+      .stepped-dark-boundary::before {
+        display: none;
+      }
+    }
   </style>
 </head>
-<body class="min-h-screen flex flex-col bg-[#F3F4F6]">
+<body class="min-h-screen flex flex-col">
 
-  <!-- NAVBAR -->
-  <header class="sticky top-0 z-50 bg-[#F3F4F6]/90 backdrop-blur-xl border-b border-[#E5E7EB]">
-    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-      <a href="index.html" class="flex items-center gap-3 group">
-        <div class="w-10 h-10 rounded-2xl bg-[#121316] text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-all font-black text-lg font-sans">
-          <span>दृ</span>
-        </div>
-        <div class="flex flex-col">
-          <span class="font-black text-xl text-[#121316] tracking-tight leading-none font-sans">दृष्टि</span>
-          <span class="text-[10px] font-mono text-[#6B7280] leading-tight mt-0.5">Drishti · Road Intelligence</span>
-        </div>
-      </a>
+  <!-- ========================================================================= -->
+  <!-- TOP HALF: 50% OF PAGE — CRISP WHITE / LIGHT THEME (#F3F4F6)              -->
+  <!-- ========================================================================= -->
+  <div class="w-full bg-[#F3F4F6] text-[#121316] relative z-10">
 
-      <nav class="hidden lg:flex items-center gap-8 text-xs font-semibold text-[#6B7280]">
-        <a href="index.html" class="text-[#121316] font-bold border-b-2 border-[#121316] pb-1 transition-colors">Home</a>
-        <a href="how_it_works.html" class="hover:text-[#121316] transition-colors">How It Works</a>
-        <a href="ai_demo.html" class="hover:text-[#121316] transition-colors">AI Demo</a>
-        <a href="features.html" class="hover:text-[#121316] transition-colors">Features</a>
-      </nav>
-
-      <div class="flex items-center gap-4">
-        <div class="relative hidden sm:block">
-          <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
-          <input type="text" placeholder="Explore road intelligence..." class="pl-9 pr-4 py-2 bg-white rounded-full text-xs text-[#121316] placeholder:text-[#6B7280] border border-[#E5E7EB] focus:outline-none focus:ring-2 focus:ring-[#121316]/10 w-48 lg:w-60 shadow-sm transition-all" />
-        </div>
-
-        <a href="dashboard.html" class="px-5 py-2.5 rounded-full bg-white text-[#121316] hover:bg-[#F3F4F6] border border-[#E5E7EB] text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer">
-          <span>Open Command Center</span>
-          <span class="material-symbols-outlined text-sm">north_east</span>
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-50 bg-[#F3F4F6]/90 backdrop-blur-xl border-b border-[#E5E7EB]/80">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center gap-3.5 group">
+          <div class="w-10 h-10 rounded-2xl bg-[#121316] text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-all">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+              <line x1="12" y1="22.08" x2="12" y2="12" />
+            </svg>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="font-black text-xl text-[#121316] tracking-tight leading-none">दृष्टि UCC</span>
+            <span class="text-xs font-semibold text-[#6B7280]">Autonomous Road Intelligence</span>
+          </div>
         </a>
-      </div>
-    </div>
-  </header>
 
-  <!-- SECTION 01: HERO SECTION -->
-  <section id="hero" class="relative pt-12 pb-20 bg-[#F3F4F6]">
-    <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-      <div class="lg:col-span-6 space-y-6">
-        <div class="flex items-center gap-3 text-xs font-mono font-bold text-[#6B7280]">
-          <span class="text-[#121316]">01</span>
-          <span class="w-8 h-[1px] bg-[#6B7280]/40"></span>
-          <span class="tracking-widest uppercase">AI-POWERED ROAD SAFETY SYSTEM</span>
-        </div>
+        <!-- Nav Links -->
+        <nav class="hidden lg:flex items-center gap-8 text-xs font-semibold text-[#6B7280]">
+          <a href="index.html" class="text-[#121316] font-bold transition-colors">Home</a>
+          <a href="how_it_works.html" class="hover:text-[#121316] transition-colors">How It Works</a>
+          <a href="ai_demo.html" class="hover:text-[#121316] transition-colors">AI Demo</a>
+          <a href="features.html" class="hover:text-[#121316] transition-colors">Features</a>
+          <a href="#partners" class="hover:text-[#121316] transition-colors">About Us</a>
+        </nav>
 
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-[#121316] tracking-tight leading-[1.08]">
-          INTELLIGENT ROADS.<br />
-          <span class="text-[#121316]">SAFER JAIPUR.</span>
-        </h1>
+        <!-- Search & Command Center Link -->
+        <div class="flex items-center gap-4">
+          <div class="relative hidden sm:block">
+            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+            <input type="text" placeholder="Search corridors, defects, fleet..." class="pl-9 pr-4 py-2 bg-white rounded-full text-xs text-[#121316] placeholder:text-[#6B7280] border border-[#E5E7EB] focus:outline-none focus:ring-2 focus:ring-[#121316]/10 w-52 lg:w-64 shadow-xs transition-all" />
+          </div>
 
-        <p class="text-sm text-[#6B7280] leading-relaxed max-w-xl font-sans">
-          दृष्टि (Drishti) turns public buses into a moving AI sensing network to detect potholes, waterlogging, road hazards and unsafe driving in real-time and help the city take action faster.
-        </p>
-
-        <div class="pt-4 flex flex-wrap items-center gap-4">
-          <a href="ai_demo.html" class="px-6 py-3.5 rounded-full bg-[#121316] hover:bg-[#2B2F38] text-white text-xs font-bold transition-all shadow-lg flex items-center gap-2 cursor-pointer">
-            <span class="material-symbols-outlined text-base">play_arrow</span>
-            <span>Watch AI Demo</span>
-          </a>
-
-          <a href="dashboard.html" class="px-6 py-3.5 rounded-full bg-white hover:bg-[#F3F4F6] text-[#121316] border border-[#E5E7EB] text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer">
-            <span>Open Command Center</span>
-            <span class="material-symbols-outlined text-sm">north_east</span>
+          <a href="dashboard.html" class="hidden md:flex items-center gap-1 text-xs font-bold text-[#121316] hover:text-black transition-colors px-3 py-2">
+            <span>Command Center</span>
+            <span class="material-symbols-outlined text-xs">north_east</span>
           </a>
         </div>
       </div>
+    </header>
 
-      <!-- Right Dashboard UI Window Frame -->
-      <div class="lg:col-span-6 relative">
-        <div class="relative bg-[#121316] rounded-[32px] overflow-hidden p-4 shadow-2xl border border-black/20 text-white select-none">
-          <div class="flex justify-between items-center pb-3 px-2 border-b border-slate-800 text-xs font-mono">
-            <div class="flex items-center gap-2">
-              <div class="w-3 h-3 rounded-full bg-[#EF4444]"></div>
-              <div class="w-3 h-3 rounded-full bg-[#F59E0B]"></div>
-              <div class="w-3 h-3 rounded-full bg-[#10B981]"></div>
-              <span class="ml-2 font-bold text-slate-200">दृष्टि Command Center</span>
-            </div>
-            <div class="flex items-center gap-2 text-[10px] text-slate-400">
-              <span class="w-2 h-2 rounded-full bg-[#10B981] animate-ping"></span>
-              <span>10 Buses Online</span>
-            </div>
+    <!-- SECTION 01: HERO SECTION -->
+    <section id="hero" class="relative pt-10 pb-16">
+      <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        
+        <!-- Left Hero Content (6 Cols) -->
+        <div class="lg:col-span-6 space-y-6">
+          <div class="flex items-center gap-3 text-xs font-mono font-bold text-[#6B7280]">
+            <span class="text-[#121316] font-extrabold">01</span>
+            <span class="w-8 h-[1px] bg-[#6B7280]/40"></span>
+            <span class="tracking-widest uppercase text-[11px]">AUTONOMOUS ROAD SAFETY MESH</span>
           </div>
 
-          <div class="grid grid-cols-12 gap-3 pt-3">
-            <div class="col-span-3 space-y-2 text-[10px] font-mono text-slate-400">
-              <div class="p-2 rounded-xl bg-slate-800 text-[#10B981] font-bold flex items-center gap-1.5"><span class="material-symbols-outlined text-xs">map</span> Live Map</div>
-              <div class="p-2 rounded-xl hover:bg-slate-800/60 flex items-center gap-1.5"><span class="material-symbols-outlined text-xs">warning</span> Incidents</div>
-              <div class="p-2 rounded-xl hover:bg-slate-800/60 flex items-center gap-1.5"><span class="material-symbols-outlined text-xs">directions_bus</span> Fleet</div>
-              <div class="p-2 rounded-xl hover:bg-slate-800/60 flex items-center gap-1.5"><span class="material-symbols-outlined text-xs">monitoring</span> Analytics</div>
-            </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-[52px] font-black text-[#121316] tracking-tight leading-[1.08]">
+            TURNING TRANSIT FLEETS INTO <br />
+            <span>LIVING ROAD SENSORS.</span>
+          </h1>
 
-            <div class="col-span-5 relative bg-[#1A1F24] rounded-2xl h-56 overflow-hidden border border-slate-800 p-2">
-              <svg class="absolute inset-0 w-full h-full opacity-30 stroke-slate-600" fill="none">
-                <line x1="20" y1="0" x2="180" y2="200" stroke-width="2"/>
-                <line x1="0" y1="100" x2="200" y2="80" stroke-width="2"/>
-              </svg>
+          <p class="text-xs sm:text-sm text-[#6B7280] leading-relaxed max-w-lg font-sans">
+            Over <strong>177,000 lives</strong> and <strong>₹3.8 Lakh Crore (3–5% GDP)</strong> are lost to road crashes and infrastructure defects every year. दृष्टि transforms everyday public transit buses into an autonomous moving edge-AI sensing grid — scanning city roads 20x daily to catch craters and hazards before accidents happen.
+          </p>
 
-              <span class="absolute top-3 left-4 text-[9px] font-mono text-slate-400">Tonk Road</span>
-              <span class="absolute bottom-4 left-6 text-[9px] font-mono text-slate-400">Ajmer Road</span>
+          <div class="pt-2 flex flex-wrap items-center gap-5">
+            <a href="ai_demo.html" class="px-7 py-3.5 rounded-full bg-[#121316] hover:bg-[#2B2F38] text-white text-xs font-bold transition-all shadow-lg flex items-center gap-2 cursor-pointer">
+              <span class="material-symbols-outlined text-base">play_arrow</span>
+              <span>Watch AI Perception Demo</span>
+            </a>
 
-              <div class="absolute top-10 left-12 px-1.5 py-0.5 rounded-full bg-[#10B981] text-[8px] font-mono font-bold text-white">BUS-07</div>
-              <div class="absolute top-6 right-16 px-1.5 py-0.5 rounded-full bg-[#10B981] text-[8px] font-mono font-bold text-white">BUS-03</div>
-              <div class="absolute bottom-12 left-14 px-1.5 py-0.5 rounded-full bg-[#10B981] text-[8px] font-mono font-bold text-white">BUS-09</div>
-              <div class="absolute bottom-14 right-10 px-1.5 py-0.5 rounded-full bg-[#10B981] text-[8px] font-mono font-bold text-white">BUS-02</div>
-
-              <div class="absolute top-14 right-8 w-4 h-4 rounded-full bg-[#EF4444] text-[8px] flex items-center justify-center font-bold animate-pulse">!</div>
-              <div class="absolute bottom-8 left-20 w-4 h-4 rounded-full bg-[#F59E0B] text-[8px] flex items-center justify-center font-bold">!</div>
-            </div>
-
-            <div class="col-span-4 space-y-2.5 font-sans">
-              <div class="p-2.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-1.5 text-[9px]">
-                <div class="flex justify-between items-center text-slate-400 font-bold border-b border-slate-800 pb-1">
-                  <span>Active Incidents</span>
-                  <span class="text-[8px] text-slate-500">View All</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#EF4444]"></span>Pothole</span>
-                  <span class="font-mono font-bold text-white">18</span>
-                </div>
-                <div class="flex justify-between items-center">
-                  <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#F59E0B]"></span>Waterlogging</span>
-                  <span class="font-mono font-bold text-white">07</span>
-                </div>
-              </div>
-
-              <div class="p-2.5 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-between text-[9px]">
-                <div>
-                  <span class="text-slate-400 block font-bold">Driver Safety</span>
-                  <span class="text-[#10B981] font-bold text-xs">87/100 Good</span>
-                </div>
-                <div class="w-8 h-8 rounded-full border-2 border-[#10B981] flex items-center justify-center font-mono font-bold text-[9px] text-[#10B981]">
-                  87
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-4 gap-2 pt-3 border-t border-slate-800 mt-3 text-[9px] font-mono text-slate-400">
-            <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-800">
-              <span class="block text-slate-500 text-[8px]">Total Incidents</span>
-              <strong class="text-white text-xs block font-bold">184</strong>
-            </div>
-            <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-800">
-              <span class="block text-slate-500 text-[8px]">Potholes</span>
-              <strong class="text-[#F59E0B] text-xs block font-bold">96</strong>
-            </div>
-            <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-800">
-              <span class="block text-slate-500 text-[8px]">Rash Events</span>
-              <strong class="text-[#EF4444] text-xs block font-bold">23</strong>
-            </div>
-            <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-800">
-              <span class="block text-slate-500 text-[8px]">Near Misses</span>
-              <strong class="text-[#10B981] text-xs block font-bold">15</strong>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- KEY IMPACT STATS BAR -->
-  <section class="py-12 bg-white border-y border-[#E5E7EB]">
-    <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
-      <div class="flex items-center gap-4">
-        <div class="w-12 h-12 rounded-2xl bg-[#F3F4F6] text-[#121316] flex items-center justify-center">
-          <span class="material-symbols-outlined text-2xl">directions_bus</span>
-        </div>
-        <div>
-          <span class="text-2xl sm:text-3xl font-black text-[#121316] font-mono leading-none block">10+</span>
-          <span class="text-xs text-[#6B7280] font-medium">Buses Connected</span>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-4">
-        <div class="w-12 h-12 rounded-2xl bg-[#F3F4F6] text-[#121316] flex items-center justify-center">
-          <span class="material-symbols-outlined text-2xl">my_location</span>
-        </div>
-        <div>
-          <span class="text-2xl sm:text-3xl font-black text-[#121316] font-mono leading-none block">184+</span>
-          <span class="text-xs text-[#6B7280] font-medium">Incidents Detected Today</span>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-4">
-        <div class="w-12 h-12 rounded-2xl bg-[#F3F4F6] text-[#121316] flex items-center justify-center">
-          <span class="material-symbols-outlined text-2xl">map</span>
-        </div>
-        <div>
-          <span class="text-2xl sm:text-3xl font-black text-[#121316] font-mono leading-none block">150+ km</span>
-          <span class="text-xs text-[#6B7280] font-medium">Roads Monitored Daily</span>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-4">
-        <div class="w-12 h-12 rounded-2xl bg-[#F3F4F6] text-[#121316] flex items-center justify-center">
-          <span class="material-symbols-outlined text-2xl">security</span>
-        </div>
-        <div>
-          <span class="text-2xl sm:text-3xl font-black text-[#121316] font-mono leading-none block">87<span class="text-sm font-normal text-[#6B7280]">/100</span></span>
-          <span class="text-xs text-[#6B7280] font-medium">Average Driver Safety</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- INTERACTIVE MUNICIPAL ROI & COST SAVINGS CALCULATOR -->
-  <section class="py-20 bg-[#F3F4F6]">
-    <div class="max-w-7xl mx-auto px-6 space-y-10">
-      <div class="max-w-2xl space-y-3">
-        <span class="text-xs font-mono font-bold text-[#10B981] uppercase tracking-wider block">INTERACTIVE URBAN IMPACT CALCULATOR</span>
-        <h2 class="text-3xl sm:text-4xl font-black text-[#121316] tracking-tight">Calculate Jaipur Ward Savings with दृष्टि AI</h2>
-        <p class="text-xs text-[#6B7280] leading-relaxed">Adjust your city fleet scale below to compute automated PWD hot-mix asphalt savings, accident claim reductions, and inspection speedup.</p>
-      </div>
-
-      <div class="p-8 sm:p-10 rounded-[32px] bg-white border border-[#E5E7EB] shadow-lg grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-        <!-- Sliders Controls (7 Cols) -->
-        <div class="lg:col-span-7 space-y-6">
-          <div class="space-y-2">
-            <div class="flex justify-between items-center text-xs font-bold text-[#121316]">
-              <span>Connected Transit Buses</span>
-              <span class="font-mono text-sm text-[#10B981]" id="calc-buses-val">25 Buses</span>
-            </div>
-            <input type="range" id="calc-buses-range" min="5" max="100" value="25" oninput="updateMunicipalRoiCalc()" class="w-full h-2 bg-[#F3F4F6] rounded-lg appearance-none cursor-pointer accent-[#121316]" />
-            <div class="flex justify-between text-[10px] font-mono text-[#6B7280]"><span>5 Buses (Pilot)</span><span>50 Buses (Corridor)</span><span>100 Buses (Full Fleet)</span></div>
-          </div>
-
-          <div class="space-y-2">
-            <div class="flex justify-between items-center text-xs font-bold text-[#121316]">
-              <span>Average Daily Distance per Bus</span>
-              <span class="font-mono text-sm text-[#10B981]" id="calc-km-val">120 km/day</span>
-            </div>
-            <input type="range" id="calc-km-range" min="50" max="250" value="120" oninput="updateMunicipalRoiCalc()" class="w-full h-2 bg-[#F3F4F6] rounded-lg appearance-none cursor-pointer accent-[#121316]" />
-            <div class="flex justify-between text-[10px] font-mono text-[#6B7280]"><span>50 km</span><span>120 km (Urban Route)</span><span>250 km (Express Corridor)</span></div>
-          </div>
-
-          <div class="p-4 rounded-2xl bg-[#F3F4F6] border border-[#E5E7EB] text-xs text-[#6B7280] flex items-center gap-3">
-            <span class="material-symbols-outlined text-xl text-[#121316]">calculate</span>
-            <span>Calculated using 2026 PWD Jaipur Asphalt Rate Cards (₹3,750/MT) and JCTSL Transit Operational Averages.</span>
-          </div>
-        </div>
-
-        <!-- Calculated Live Results Card (5 Cols) -->
-        <div class="lg:col-span-5 p-7 rounded-3xl bg-[#121316] text-white space-y-5 shadow-xl font-mono text-xs">
-          <h4 class="text-sm font-extrabold text-white border-b border-slate-800 pb-3 flex items-center justify-between">
-            <span>Annual Municipal Impact</span>
-            <span class="text-[10px] text-[#10B981] font-normal">INSTANT FORECAST</span>
-          </h4>
-
-          <div class="space-y-4">
-            <div class="flex justify-between items-center">
-              <span class="text-slate-400">Est. Annual Asphalt Savings</span>
-              <strong class="text-emerald-400 text-sm font-bold" id="res-savings">₹ 1.62 Crore</strong>
-            </div>
-
-            <div class="flex justify-between items-center">
-              <span class="text-slate-400">Annual Potholes Logged</span>
-              <strong class="text-white text-sm font-bold" id="res-potholes">32,850 Craters</strong>
-            </div>
-
-            <div class="flex justify-between items-center">
-              <span class="text-slate-400">Accident Risk Reduction</span>
-              <strong class="text-emerald-400 text-sm font-bold" id="res-risk">- 78.4 %</strong>
-            </div>
-
-            <div class="flex justify-between items-center">
-              <span class="text-slate-400">PWD Repair SLA Turnaround</span>
-              <strong class="text-amber-400 text-sm font-bold" id="res-sla">36 Hours (Down from 21 days)</strong>
-            </div>
-          </div>
-
-          <div class="pt-2">
-            <a href="dashboard.html" class="w-full py-3 rounded-full bg-white text-[#121316] hover:bg-[#F3F4F6] text-xs font-bold text-center block transition-all shadow-md">
-              Launch Live Command Center &rarr;
+            <a href="dashboard.html" class="text-xs font-bold text-[#121316] hover:underline flex items-center gap-1 cursor-pointer">
+              <span>Open Live GIS Command Center</span>
+              <span class="material-symbols-outlined text-sm">north_east</span>
             </a>
           </div>
         </div>
+
+        <!-- Right Hero Mockup Window (6 Cols) -->
+        <div class="lg:col-span-6 relative">
+          <div class="relative bg-[#101317] rounded-[28px] overflow-hidden p-4 sm:p-5 shadow-2xl border border-black/20 text-white select-none">
+            
+            <!-- Window Header -->
+            <div class="flex justify-between items-center pb-3 px-1 border-b border-slate-800 text-xs font-mono">
+              <div class="flex items-center gap-2">
+                <div class="w-2.5 h-2.5 rounded-full bg-[#EF4444]"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-[#F59E0B]"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-[#3B82F6]"></div>
+                <div class="ml-2 flex items-center gap-1.5 font-bold text-slate-200 text-[11px]">
+                  <span>दृष्टि UCC</span>
+                  <span class="text-[9px] text-slate-400 font-normal">Command Center</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 text-[10px] text-slate-300 font-mono">
+                <span class="w-2 h-2 rounded-full bg-[#3B82F6] animate-pulse"></span>
+                <span>Active Bus Grid Online</span>
+              </div>
+            </div>
+
+            <!-- Body Grid -->
+            <div class="grid grid-cols-12 gap-3 pt-3">
+              
+              <!-- Left Mini Sidebar -->
+              <div class="col-span-3 space-y-1 text-[10px] font-mono text-slate-400">
+                <div class="p-1.5 px-2 rounded-lg bg-[#1E293B] text-[#60A5FA] font-bold flex items-center gap-1.5 border border-[#3B82F6]/20">
+                  <span class="material-symbols-outlined text-[13px]">map</span>
+                  <span>Live Map</span>
+                </div>
+                <div class="p-1.5 px-2 rounded-lg hover:bg-slate-800/60 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[13px]">warning</span>
+                  <span>Incidents</span>
+                </div>
+                <div class="p-1.5 px-2 rounded-lg hover:bg-slate-800/60 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[13px]">directions_bus</span>
+                  <span>Fleet</span>
+                </div>
+                <div class="p-1.5 px-2 rounded-lg hover:bg-slate-800/60 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[13px]">monitoring</span>
+                  <span>Analytics</span>
+                </div>
+                <div class="p-1.5 px-2 rounded-lg hover:bg-slate-800/60 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[13px]">description</span>
+                  <span>Reports</span>
+                </div>
+                <div class="p-1.5 px-2 rounded-lg hover:bg-slate-800/60 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[13px]">settings</span>
+                  <span>Settings</span>
+                </div>
+              </div>
+
+              <!-- Center Dark Vector Road Map -->
+              <div class="col-span-5 relative bg-[#151921] rounded-2xl h-52 overflow-hidden border border-slate-800 p-2">
+                <!-- Map Network Lines -->
+                <svg class="absolute inset-0 w-full h-full opacity-40" fill="none">
+                  <line x1="30" y1="10" x2="160" y2="190" stroke="#475569" stroke-width="2.5" />
+                  <line x1="10" y1="110" x2="190" y2="70" stroke="#475569" stroke-width="2.5" />
+                  <line x1="90" y1="20" x2="85" y2="180" stroke="#334155" stroke-width="1.5" stroke-dasharray="3,3" />
+                  <circle cx="100" cy="95" r="30" stroke="#3B82F6" stroke-opacity="0.35" stroke-width="1" />
+                </svg>
+
+                <span class="absolute top-2 left-10 text-[8px] font-mono text-slate-400">Arterial Corridor</span>
+                <span class="absolute bottom-2 left-6 text-[8px] font-mono text-slate-400">West Highway</span>
+                <span class="absolute top-12 right-4 text-[8px] font-mono text-slate-400">Central Hub</span>
+                <span class="absolute bottom-8 right-8 text-[8px] font-mono text-slate-400">Transit Terminal</span>
+
+                <!-- Live Buses & Incident Markers -->
+                <div class="absolute top-6 left-12 px-1.5 py-0.5 rounded-full bg-[#4A62D6] text-[7px] font-mono font-bold text-white shadow">BUS-07</div>
+                <div class="absolute top-4 right-14 px-1.5 py-0.5 rounded-full bg-[#4A62D6] text-[7px] font-mono font-bold text-white shadow">BUS-03</div>
+                <div class="absolute bottom-10 left-10 px-1.5 py-0.5 rounded-full bg-[#4A62D6] text-[7px] font-mono font-bold text-white shadow">BUS-09</div>
+                <div class="absolute bottom-12 right-6 px-1.5 py-0.5 rounded-full bg-[#4A62D6] text-[7px] font-mono font-bold text-white shadow">BUS-02</div>
+
+                <div class="absolute top-10 right-6 w-3.5 h-3.5 rounded-full bg-[#EF4444] text-[7px] flex items-center justify-center font-bold text-white animate-pulse">!</div>
+                <div class="absolute bottom-6 left-16 w-3.5 h-3.5 rounded-full bg-[#F59E0B] text-[7px] flex items-center justify-center font-bold text-white">!</div>
+              </div>
+
+              <!-- Right Incidents & Gauge Sidebar -->
+              <div class="col-span-4 space-y-2 font-sans">
+                <!-- Active Incidents List -->
+                <div class="p-2 rounded-xl bg-[#151921] border border-slate-800 space-y-1 text-[8px]">
+                  <div class="flex justify-between items-center text-slate-300 font-bold border-b border-slate-800/80 pb-0.5">
+                    <span>Live Anomaly Stream</span>
+                    <span class="text-[7px] text-slate-400">View All</span>
+                  </div>
+                  <div class="flex justify-between items-center pt-0.5">
+                    <span class="flex items-center gap-1 text-slate-300"><span class="w-1.5 h-1.5 rounded-full bg-[#EF4444]"></span>Pothole (Critical)</span>
+                    <span class="font-mono font-bold text-white">18</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="flex items-center gap-1 text-slate-300"><span class="w-1.5 h-1.5 rounded-full bg-[#3B82F6]"></span>Waterlogging</span>
+                    <span class="font-mono font-bold text-white">07</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="flex items-center gap-1 text-slate-300"><span class="w-1.5 h-1.5 rounded-full bg-[#F59E0B]"></span>Rash Driving</span>
+                    <span class="font-mono font-bold text-white">05</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="flex items-center gap-1 text-slate-300"><span class="w-1.5 h-1.5 rounded-full bg-amber-300"></span>Missing Signage</span>
+                    <span class="font-mono font-bold text-white">04</span>
+                  </div>
+                </div>
+
+                <!-- Driver Safety Index Circle Gauge -->
+                <div class="p-2 rounded-xl bg-[#151921] border border-slate-800 flex items-center justify-between text-[8px]">
+                  <div>
+                    <span class="text-slate-400 block font-bold">Driver Safety Index</span>
+                    <span class="text-[#60A5FA] font-bold text-[10px] mt-0.5 block">Good</span>
+                    <span class="text-[7px] text-slate-500">Fleet Score</span>
+                  </div>
+                  <div class="relative w-8 h-8 rounded-full border-2 border-[#3B82F6] flex items-center justify-center font-mono font-extrabold text-[9px] text-[#60A5FA]">
+                    87
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Bottom KPI Strip -->
+            <div class="grid grid-cols-4 gap-2 pt-2.5 border-t border-slate-800 mt-2.5 text-[8px] font-mono text-slate-400">
+              <div class="bg-black/30 p-1.5 rounded-lg border border-slate-800/80">
+                <span class="block text-slate-400 text-[7px]">Total Anomalies</span>
+                <strong class="text-white text-xs block font-bold mt-0.5">184</strong>
+                <span class="text-[6px] text-slate-400">Real-time</span>
+              </div>
+              <div class="bg-black/30 p-1.5 rounded-lg border border-slate-800/80">
+                <span class="block text-slate-400 text-[7px]">Potholes Detected</span>
+                <strong class="text-[#F59E0B] text-xs block font-bold mt-0.5">96</strong>
+                <span class="text-[6px] text-slate-400">Real-time</span>
+              </div>
+              <div class="bg-black/30 p-1.5 rounded-lg border border-slate-800/80">
+                <span class="block text-slate-400 text-[7px]">Rash Events</span>
+                <strong class="text-[#EF4444] text-xs block font-bold mt-0.5">23</strong>
+                <span class="text-[6px] text-slate-400">Real-time</span>
+              </div>
+              <div class="bg-black/30 p-1.5 rounded-lg border border-slate-800/80">
+                <span class="block text-slate-400 text-[7px]">Near Misses</span>
+                <strong class="text-[#60A5FA] text-xs block font-bold mt-0.5">15</strong>
+                <span class="text-[6px] text-slate-400">Real-time</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- LIVE JAIPUR WARD TELEMETRY GRID -->
-  <section class="py-16 bg-white border-y border-[#E5E7EB]">
-    <div class="max-w-7xl mx-auto px-6 space-y-8">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <span class="text-xs font-mono font-bold text-[#10B981] uppercase tracking-wider block">WARD-LEVEL SPATIAL BREAKDOWN</span>
-          <h2 class="text-2xl sm:text-3xl font-black text-[#121316] tracking-tight">Jaipur Municipal Corridor Telemetry</h2>
+    <!-- IMPACT STATS ROW (VERIFIED REAL DATA HOOK) -->
+    <section class="py-8 border-t border-[#E5E7EB]/80">
+      <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6">
+        
+        <div class="flex items-center gap-3.5">
+          <div class="w-10 h-10 rounded-2xl bg-white border border-[#E5E7EB] text-[#121316] flex items-center justify-center shadow-xs">
+            <span class="material-symbols-outlined text-xl text-[#EF4444]">heart_broken</span>
+          </div>
+          <div>
+            <span class="text-xl sm:text-2xl font-black text-[#121316] font-mono leading-none block">177K+</span>
+            <span class="text-[11px] text-[#6B7280] font-medium mt-0.5 block">Annual Road Fatalities (MoRTH)</span>
+          </div>
         </div>
 
-        <div class="flex items-center gap-2 font-mono text-xs">
-          <button onclick="filterWardData('TONK')" id="btn-ward-tonk" class="px-3.5 py-1.5 rounded-full bg-[#121316] text-white font-bold transition-all">Ward 14 (Tonk Rd)</button>
-          <button onclick="filterWardData('JLN')" id="btn-ward-jln" class="px-3.5 py-1.5 rounded-full bg-[#F3F4F6] text-[#6B7280] font-bold hover:bg-[#E5E7EB] transition-all">Ward 22 (JLN Marg)</button>
-          <button onclick="filterWardData('AJMER')" id="btn-ward-ajmer" class="px-3.5 py-1.5 rounded-full bg-[#F3F4F6] text-[#6B7280] font-bold hover:bg-[#E5E7EB] transition-all">Ward 31 (Ajmer Rd)</button>
+        <div class="flex items-center gap-3.5">
+          <div class="w-10 h-10 rounded-2xl bg-white border border-[#E5E7EB] text-[#121316] flex items-center justify-center shadow-xs">
+            <span class="material-symbols-outlined text-xl text-[#F59E0B]">currency_rupee</span>
+          </div>
+          <div>
+            <span class="text-xl sm:text-2xl font-black text-[#121316] font-mono leading-none block">3–5%</span>
+            <span class="text-[11px] text-[#6B7280] font-medium mt-0.5 block">National GDP Lost to Crashes</span>
+          </div>
         </div>
+
+        <div class="flex items-center gap-3.5">
+          <div class="w-10 h-10 rounded-2xl bg-white border border-[#E5E7EB] text-[#121316] flex items-center justify-center shadow-xs">
+            <span class="material-symbols-outlined text-xl text-[#4A62D6]">savings</span>
+          </div>
+          <div>
+            <span class="text-xl sm:text-2xl font-black text-[#121316] font-mono leading-none block">100x</span>
+            <span class="text-[11px] text-[#6B7280] font-medium mt-0.5 block">Cheaper than Survey Vans</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3.5">
+          <div class="w-10 h-10 rounded-2xl bg-white border border-[#E5E7EB] text-[#121316] flex items-center justify-center shadow-xs">
+            <span class="material-symbols-outlined text-xl text-[#10B981]">speed</span>
+          </div>
+          <div>
+            <span class="text-xl sm:text-2xl font-black text-[#121316] font-mono leading-none block">&lt; 60s</span>
+            <span class="text-[11px] text-[#6B7280] font-medium mt-0.5 block">Instant PWD Docket Dispatch</span>
+          </div>
+        </div>
+
       </div>
+    </section>
 
-      <div class="p-8 rounded-[32px] bg-[#F3F4F6] border border-[#E5E7EB] grid grid-cols-1 md:grid-cols-4 gap-6 font-mono text-xs">
-        <div class="p-5 rounded-2xl bg-white space-y-1.5 border border-[#E5E7EB]">
-          <span class="text-[10px] text-[#6B7280] block font-bold uppercase">WARD CORRIDOR</span>
-          <strong class="text-sm text-[#121316] block font-bold" id="ward-card-name">Ward 14: Tonk Road Highway</strong>
-          <span class="text-[11px] text-[#6B7280] font-sans" id="ward-card-desc">Sanganer Flyover to Rambagh Circle</span>
+    <!-- THE CRISIS VS DRISHTI PARADIGM COMPARISON (THE CORE PITCH HOOK) -->
+    <section class="py-8 border-t border-[#E5E7EB]/80">
+      <div class="max-w-7xl mx-auto px-6 space-y-6">
+        <div class="max-w-2xl space-y-1">
+          <span class="text-[10px] font-mono font-bold text-[#4A62D6] uppercase tracking-wider block">THE INFRASTRUCTURE PROBLEM &amp; THE DRISHTI PARADIGM</span>
+          <h2 class="text-xl sm:text-2xl font-black text-[#121316] tracking-tight">Why Traditional Road Audits Fail — And How Bus-Borne AI Solves It</h2>
         </div>
 
-        <div class="p-5 rounded-2xl bg-white space-y-1.5 border border-[#E5E7EB]">
-          <span class="text-[10px] text-[#6B7280] block font-bold uppercase">ROAD HEALTH INDEX</span>
-          <strong class="text-sm text-[#10B981] block font-bold" id="ward-card-health">84.2 / 100 (Fair)</strong>
-          <span class="text-[11px] text-[#6B7280] font-sans" id="ward-card-defects">18 Logged Defects Today</span>
-        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Old Way Card -->
+          <div class="p-6 rounded-3xl bg-white border border-rose-200 shadow-xs space-y-3">
+            <div class="flex items-center justify-between border-b border-rose-100 pb-2.5">
+              <span class="font-bold text-xs text-rose-700 font-mono uppercase flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-base">cancel</span>
+                <span>The Traditional Approach (Broken &amp; Reactive)</span>
+              </span>
+              <span class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 text-[10px] font-mono font-bold">Inefficient</span>
+            </div>
 
-        <div class="p-5 rounded-2xl bg-white space-y-1.5 border border-[#E5E7EB]">
-          <span class="text-[10px] text-[#6B7280] block font-bold uppercase">ASSIGNED PWD CREW</span>
-          <strong class="text-sm text-[#121316] block font-bold" id="ward-card-crew">Rajeshwar Infra Unit #4</strong>
-          <span class="text-[11px] text-[#10B981] font-sans" id="ward-card-status">Active Spray Injector Onsite</span>
-        </div>
-
-        <div class="p-5 rounded-2xl bg-white space-y-1.5 border border-[#E5E7EB]">
-          <span class="text-[10px] text-[#6B7280] block font-bold uppercase">ASPHALT ALLOCATION</span>
-          <strong class="text-sm text-[#F59E0B] block font-bold" id="ward-card-asphalt">28.5 MT Hot-Mix Batch</strong>
-          <span class="text-[11px] text-[#6B7280] font-sans">Contractor SLA: 48 Hours</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 02: DEMO VIDEO PLAYER (CLEAN LIGHT THEME) -->
-  <section id="ai-demo" class="relative py-20 bg-[#F3F4F6]">
-    <div class="max-w-7xl mx-auto px-6 space-y-10">
-      <div class="max-w-2xl space-y-3">
-        <div class="flex items-center gap-3 text-xs font-mono font-bold text-[#6B7280]">
-          <span class="text-[#121316]">02</span>
-          <span class="w-8 h-[1px] bg-[#6B7280]/40"></span>
-          <span class="tracking-widest uppercase">SEE AI IN ACTION</span>
-        </div>
-        <h2 class="text-3xl sm:text-4xl font-black text-[#121316] tracking-tight">Real-Time AI Detection</h2>
-        <p class="text-xs sm:text-sm text-[#6B7280] leading-relaxed font-sans">
-          Our on-board AI models analyze road conditions in real-time to detect hazards and send instant alerts.
-        </p>
-      </div>
-
-      <div class="relative bg-white rounded-[32px] overflow-hidden p-6 sm:p-8 border border-[#E5E7EB] shadow-lg">
-        <div class="flex justify-between items-center pb-4 mb-6 border-b border-[#E5E7EB]">
-          <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-[#10B981] text-xl">videocam</span>
-            <h3 class="font-extrabold text-[#121316] text-base font-sans">AI Detection Demo Feed</h3>
+            <ul class="text-xs text-[#6B7280] space-y-2 font-sans">
+              <li class="flex items-start gap-2">
+                <span class="text-rose-500 font-bold">•</span>
+                <span><strong>High CapEx:</strong> Dedicated inspection vehicles cost ₹80L–₹1.5Cr each and sit idle most of the year.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-rose-500 font-bold">•</span>
+                <span><strong>Infrequent Surveys:</strong> Roads are surveyed only once every 6–12 months. By then, micro-cracks become fatal craters.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-rose-500 font-bold">•</span>
+                <span><strong>Reactive Citizen Complaints:</strong> Municipalities learn of road hazards only after fatal accidents or public outrage.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-rose-500 font-bold">•</span>
+                <span><strong>Slow Paper Bureaucracy:</strong> 3–4 weeks delay between defect discovery, PWD inspection, and contractor tender issuance.</span>
+              </li>
+            </ul>
           </div>
 
-          <span class="px-3 py-1 rounded-full bg-[#10B981]/10 text-[#10B981] font-mono text-[10px] font-bold flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-[#10B981] animate-ping"></span>
-            <span>LIVE FEED</span>
-          </span>
+          <!-- The Drishti Way Card -->
+          <div class="p-6 rounded-3xl bg-white border border-[#4A62D6]/30 shadow-xs space-y-3 ring-1 ring-[#4A62D6]/10">
+            <div class="flex items-center justify-between border-b border-blue-100 pb-2.5">
+              <span class="font-bold text-xs text-[#4A62D6] font-mono uppercase flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-base text-[#4A62D6]">check_circle</span>
+                <span>The दृष्टि Autonomous AI Approach (Living Sensing Mesh)</span>
+              </span>
+              <span class="px-2 py-0.5 rounded-full bg-blue-50 text-[#4A62D6] text-[10px] font-mono font-bold">100x Scalable</span>
+            </div>
+
+            <ul class="text-xs text-[#1E2320] space-y-2 font-sans">
+              <li class="flex items-start gap-2">
+                <span class="text-[#4A62D6] font-bold">•</span>
+                <span><strong>Zero New Fleet Costs:</strong> Piggybacks on public transit buses already traversing every city street 18h a day.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-[#4A62D6] font-bold">•</span>
+                <span><strong>Continuous 20x Daily Scans:</strong> Every major corridor is scanned multiple times daily, catching 2cm fissures before craters form.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-[#4A62D6] font-bold">•</span>
+                <span><strong>Multi-Modal AI Fusion:</strong> YOLOv8 vision + STAN IMU vibration sensors eliminate shadow false-positives with 97%+ accuracy.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-[#4A62D6] font-bold">•</span>
+                <span><strong>Sub-60s Automated PWD Dockets:</strong> Dispatches hot-mix asphalt tonnage, GPS coordinates, and 48-hour contractor SLA automatically.</span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUSTED BY CITY PARTNERS & VISION BANNER -->
+    <section id="partners" class="pt-4 pb-12">
+      <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <!-- Left: Partner Logos (6 Cols) -->
+        <div class="lg:col-span-6 space-y-3">
+          <span class="text-[10px] font-mono font-bold text-[#6B7280] uppercase tracking-wider block">GOVERNMENT STAKEHOLDERS &amp; ENTERPRISE ECOSYSTEM</span>
+          
+          <div class="flex flex-wrap items-center gap-6 pt-1">
+            <div class="flex items-center gap-2 text-xs font-bold text-[#121316]">
+              <span class="material-symbols-outlined text-lg text-slate-700">account_balance</span>
+              <span>Municipal City Corporations</span>
+            </div>
+
+            <div class="flex items-center gap-2 text-xs font-bold text-[#121316]">
+              <span class="material-symbols-outlined text-lg text-slate-700">bolt</span>
+              <span>Bharat Electronics Limited</span>
+            </div>
+
+            <div class="flex items-center gap-2 text-xs font-bold text-[#121316]">
+              <span class="material-symbols-outlined text-lg text-slate-700">apartment</span>
+              <span>Smart Cities Mission</span>
+            </div>
+          </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <div class="lg:col-span-8 space-y-4">
-            <div class="relative bg-black rounded-2xl overflow-hidden aspect-video border border-[#E5E7EB] shadow-md">
-              <video id="landing-demo-video" src="sample_videos/02_ai_detected.mp4" autoplay loop muted playsinline class="w-full h-full object-cover block"></video>
-            </div>
+        <!-- Right: Smart City Mission Statement (6 Cols) -->
+        <div class="lg:col-span-6 flex items-center gap-3.5 bg-white/70 backdrop-blur-sm p-4 rounded-2xl border border-[#E5E7EB]">
+          <div class="w-9 h-9 rounded-xl bg-[#F3F4F6] text-[#121316] flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-lg">extension</span>
+          </div>
+          <p class="text-[11px] text-[#6B7280] leading-relaxed">
+            दृष्टि is an initiative aligned with the vision of the Smart Cities Mission, leveraging Edge-AI and IoT to build safer, smarter and scalable urban road networks for municipalities worldwide.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+
+  <!-- ========================================================================= -->
+  <!-- BOTTOM HALF: 50% OF PAGE — DEEP PITCH BLACK / DARK THEME (#0A0C0E)        -->
+  <!-- ========================================================================= -->
+  <div class="w-full stepped-dark-boundary text-white relative z-0 flex-1">
+    
+    <!-- SECTION 02: REAL-TIME AI DETECTION (MATCHING REFERENCE UI) -->
+    <section id="ai-demo" class="relative pt-12 pb-16">
+      <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        
+        <!-- Left Label & Description (5 Cols) -->
+        <div class="lg:col-span-5 space-y-5">
+          <div class="flex items-center gap-3 text-xs font-mono font-bold text-slate-400">
+            <span class="text-white font-extrabold">02</span>
+            <span class="w-8 h-[1px] bg-slate-700"></span>
+            <span class="tracking-widest uppercase text-[11px]">SEE AI IN ACTION</span>
+          </div>
+
+          <h2 class="text-3xl sm:text-4xl font-black text-white tracking-tight">Real-Time AI Detection</h2>
+
+          <p class="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-md font-sans">
+            Our on-board AI models analyze road conditions in real-time — detecting pavement fissures, craters, and traffic safety anomalies at 14.8ms edge inference speeds.
+          </p>
+        </div>
+
+        <!-- Right AI Detection Demo Viewport Card (7 Cols) -->
+        <div class="lg:col-span-7">
+          <div class="bg-[#12151B] rounded-[28px] overflow-hidden p-5 sm:p-6 border border-white/10 shadow-2xl space-y-4">
             
-            <div class="flex flex-wrap items-center justify-between pt-1">
-              <a href="ai_demo.html" class="text-xs font-mono text-[#10B981] hover:underline flex items-center gap-1 font-bold">
-                <span>Explore Full Perception Lab Benchmark Page</span>
-                <span class="material-symbols-outlined text-sm">east</span>
+            <!-- Card Header -->
+            <div class="flex justify-between items-center border-b border-white/10 pb-3">
+              <div class="flex items-center gap-2.5">
+                <div class="w-6 h-6 rounded-lg bg-white/10 text-white flex items-center justify-center">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                  </svg>
+                </div>
+                <h3 class="font-bold text-white text-xs">AI Detection Demo</h3>
+              </div>
+
+              <span class="px-2.5 py-0.5 rounded-full bg-[#3B82F6]/15 text-[#60A5FA] font-mono text-[9px] font-bold flex items-center gap-1.5 border border-[#3B82F6]/30">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#60A5FA] animate-pulse"></span>
+                <span>LIVE FEED</span>
+              </span>
+            </div>
+
+            <!-- Content Grid: Video Feed + Telemetry Table -->
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+              
+              <!-- Video Viewport (7 Cols) -->
+              <div class="sm:col-span-7 relative bg-black rounded-xl overflow-hidden aspect-video border border-white/10 shadow-inner group">
+                <video id="landing-demo-video" src="sample_videos/02_ai_detected.mp4" autoplay loop muted playsinline class="w-full h-full object-cover block"></video>
+                
+                <!-- Bounding Box Overlay -->
+                <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
+                  <div class="border-2 border-dashed border-white/70 bg-white/10 px-3 py-1.5 rounded-lg backdrop-blur-xs flex flex-col items-center justify-center animate-pulse">
+                    <span class="text-[8px] font-mono font-extrabold text-white tracking-wider">POTHOLE · 16.2cm DEPTH</span>
+                    <span class="text-[9px] font-mono font-bold text-[#60A5FA]">94.8% CONFIDENCE</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Detection Details Sidebar (5 Cols) -->
+              <div class="sm:col-span-5 space-y-2.5 font-mono text-[10px]">
+                <h4 class="font-bold text-white text-[11px] pb-1 border-b border-white/10">Detection Details</h4>
+
+                <div class="space-y-2">
+                  <div class="flex justify-between items-center"><span class="text-slate-400">Type</span><strong class="text-white font-bold">Severe Crater</strong></div>
+                  <div class="flex justify-between items-center"><span class="text-slate-400">Confidence</span><strong class="text-[#60A5FA] font-bold">94.8%</strong></div>
+                  <div class="flex justify-between items-center"><span class="text-slate-400">Severity</span><strong class="text-[#EF4444] font-bold">Critical (Tier 1)</strong></div>
+                  <div class="flex justify-between items-center"><span class="text-slate-400">Est. Patch Cost</span><strong class="text-[#60A5FA] font-bold">₹48,000 (12 MT)</strong></div>
+                  <div class="flex justify-between items-center"><span class="text-slate-400">Sensing Fleet ID</span><span class="text-[#60A5FA] font-bold">BUS-07</span></div>
+                  <div class="flex justify-between items-center"><span class="text-slate-400">Edge Latency</span><span class="text-slate-300">14.8 ms (Orin)</span></div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Card Bottom Bar -->
+            <div class="flex flex-wrap justify-between items-center pt-2 border-t border-white/10 text-[9px] font-mono">
+              <div class="flex items-center gap-2 text-slate-300">
+                <span class="text-slate-400">Active Pipeline Filters</span>
+                <span class="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-white font-bold">Road Crack <span class="text-amber-400">2</span></span>
+                <span class="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-white font-bold">Waterlogging <span class="text-blue-400">1</span></span>
+              </div>
+
+              <div class="flex items-center gap-1 text-slate-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#3B82F6]"></span>
+                <span>Model: YOLOv8x-PotholeGuard + STAN IMU</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- MUNICIPAL ROI & COST SAVINGS CALCULATOR (DARK THEME) -->
+    <section class="py-16 border-t border-white/10 bg-[#0A0C0E]">
+      <div class="max-w-7xl mx-auto px-6 space-y-10">
+        <div class="max-w-2xl space-y-3">
+          <span class="text-xs font-mono font-bold text-[#60A5FA] uppercase tracking-wider block">INTERACTIVE URBAN IMPACT CALCULATOR</span>
+          <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">Calculate Municipal ROI &amp; Road Savings with दृष्टि AI</h2>
+          <p class="text-xs text-slate-400 leading-relaxed">Adjust your city fleet scale below to compute automated municipal hot-mix asphalt savings, accident claim reductions, and inspection speedup based on MoRTH &amp; IRC standard rate cards.</p>
+        </div>
+
+        <div class="p-6 sm:p-8 rounded-[28px] bg-[#12151B] border border-white/10 shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- Sliders Controls (7 Cols) -->
+          <div class="lg:col-span-7 space-y-6">
+            <div class="space-y-2">
+              <div class="flex justify-between items-center text-xs font-bold text-white">
+                <span>Connected Transit Buses</span>
+                <span class="font-mono text-sm text-[#60A5FA]" id="calc-buses-val">25 Buses</span>
+              </div>
+              <input type="range" id="calc-buses-range" min="5" max="100" value="25" oninput="updateMunicipalRoiCalc()" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#4A62D6]" />
+              <div class="flex justify-between text-[10px] font-mono text-slate-500"><span>5 Buses (Pilot)</span><span>50 Buses (Corridor)</span><span>100 Buses (Full Fleet)</span></div>
+            </div>
+
+            <div class="space-y-2">
+              <div class="flex justify-between items-center text-xs font-bold text-white">
+                <span>Average Daily Distance per Bus</span>
+                <span class="font-mono text-sm text-[#60A5FA]" id="calc-km-val">120 km/day</span>
+              </div>
+              <input type="range" id="calc-km-range" min="50" max="250" value="120" oninput="updateMunicipalRoiCalc()" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#4A62D6]" />
+              <div class="flex justify-between text-[10px] font-mono text-slate-500"><span>50 km</span><span>120 km (Urban Route)</span><span>250 km (Express Corridor)</span></div>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 text-xs text-slate-400 flex items-center gap-3">
+              <span class="material-symbols-outlined text-lg text-slate-300">calculate</span>
+              <span class="text-[11px]">Calculated using Indian Roads Congress (IRC) hot-mix asphalt benchmarks (₹3,750/MT) and urban public transit fleet operational telemetry.</span>
+            </div>
+          </div>
+
+          <!-- Calculated Live Results Card (5 Cols) -->
+          <div class="lg:col-span-5 p-6 rounded-2xl bg-black/50 border border-white/10 text-white space-y-4 font-mono text-xs shadow-xl">
+            <h4 class="text-xs font-extrabold text-white border-b border-white/10 pb-2.5 flex items-center justify-between">
+              <span>Annual Municipal Impact</span>
+              <span class="text-[9px] text-[#60A5FA] font-normal">INSTANT FORECAST</span>
+            </h4>
+
+            <div class="space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="text-slate-400 text-[11px]">Est. Preventative Asphalt Savings</span>
+                <strong class="text-[#60A5FA] text-sm font-bold" id="res-savings">₹ 1.62 Crore</strong>
+              </div>
+
+              <div class="flex justify-between items-center">
+                <span class="text-slate-400 text-[11px]">Early Stage Defects Logged</span>
+                <strong class="text-white text-sm font-bold" id="res-potholes">32,850 Craters</strong>
+              </div>
+
+              <div class="flex justify-between items-center">
+                <span class="text-slate-400 text-[11px]">Accident Risk Reduction</span>
+                <strong class="text-[#60A5FA] text-sm font-bold" id="res-risk">- 78.4 %</strong>
+              </div>
+
+              <div class="flex justify-between items-center">
+                <span class="text-slate-400 text-[11px]">PWD Repair SLA Turnaround</span>
+                <strong class="text-[#FBBF24] text-xs font-bold" id="res-sla">36 Hours (Down from 21 days)</strong>
+              </div>
+            </div>
+
+            <div class="pt-2">
+              <a href="dashboard.html" class="w-full py-2.5 rounded-full bg-white text-[#121316] hover:bg-slate-200 text-xs font-bold text-center block transition-all shadow-md">
+                Launch Live Command Center &rarr;
               </a>
             </div>
           </div>
 
-          <div class="lg:col-span-4 p-6 rounded-2xl bg-[#F3F4F6] border border-[#E5E7EB] space-y-4 font-mono text-xs">
-            <h4 class="font-bold text-[#121316] text-sm border-b border-[#E5E7EB] pb-2">Detection Details</h4>
+        </div>
+      </div>
+    </section>
 
-            <div class="space-y-3.5">
-              <div class="flex justify-between items-center"><span class="text-[#6B7280]">Type</span><strong class="text-[#121316] font-bold">Pothole</strong></div>
-              <div class="flex justify-between items-center"><span class="text-[#6B7280]">Confidence</span><strong class="text-[#10B981] font-bold">96.4%</strong></div>
-              <div class="flex justify-between items-center"><span class="text-[#6B7280]">Severity</span><strong class="text-[#EF4444] font-bold">High</strong></div>
-              <div class="flex justify-between items-center"><span class="text-[#6B7280]">Location</span><span class="text-[#121316] text-[11px] font-bold">Tonk Road, Jaipur</span></div>
-              <div class="flex justify-between items-center"><span class="text-[#6B7280]">Bus ID</span><span class="text-[#10B981] font-bold">BUS-003</span></div>
-              <div class="flex justify-between items-center"><span class="text-[#6B7280]">Time</span><span class="text-[#6B7280] text-[11px]">10:24:18 AM</span></div>
-            </div>
+    <!-- LIVE URBAN CORRIDOR & WARD TELEMETRY GRID (DARK THEME) -->
+    <section class="py-16 border-t border-white/10 bg-[#0A0C0E]">
+      <div class="max-w-7xl mx-auto px-6 space-y-8">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <span class="text-xs font-mono font-bold text-[#60A5FA] uppercase tracking-wider block">CORRIDOR-LEVEL SPATIAL BREAKDOWN</span>
+            <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">Urban Municipal Corridor Telemetry</h2>
+          </div>
 
-            <div class="pt-3 border-t border-[#E5E7EB] text-[10px] space-y-2">
-              <span class="text-[#6B7280] block font-bold">Other Detections</span>
-              <div class="flex items-center gap-2">
-                <span class="px-2.5 py-1 rounded-full bg-white border border-[#E5E7EB] text-[#121316] font-bold">Road Crack: 2</span>
-                <span class="px-2.5 py-1 rounded-full bg-white border border-[#E5E7EB] text-[#121316] font-bold">Waterlogging: 1</span>
-              </div>
-            </div>
+          <div class="flex items-center gap-2 font-mono text-xs">
+            <button onclick="filterWardData('TONK')" id="btn-ward-tonk" class="px-3.5 py-1.5 rounded-full bg-white text-[#121316] font-bold transition-all">Corridor 1 (Arterial)</button>
+            <button onclick="filterWardData('JLN')" id="btn-ward-jln" class="px-3.5 py-1.5 rounded-full bg-white/10 text-slate-400 font-bold hover:bg-white/20 transition-all">Corridor 2 (Institutional)</button>
+            <button onclick="filterWardData('AJMER')" id="btn-ward-ajmer" class="px-3.5 py-1.5 rounded-full bg-white/10 text-slate-400 font-bold hover:bg-white/20 transition-all">Corridor 3 (Bypass)</button>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-[28px] bg-[#12151B] border border-white/10 grid grid-cols-1 md:grid-cols-4 gap-5 font-mono text-xs">
+          <div class="p-4 rounded-xl bg-white/5 space-y-1 border border-white/10">
+            <span class="text-[9px] text-slate-400 block font-bold uppercase">MONITORED CORRIDOR</span>
+            <strong class="text-xs text-white block font-bold" id="ward-card-name">Corridor 14: Metro Arterial Highway</strong>
+            <span class="text-[10px] text-slate-400 font-sans" id="ward-card-desc">Transit Station to Central Circle</span>
+          </div>
+
+          <div class="p-4 rounded-xl bg-white/5 space-y-1 border border-white/10">
+            <span class="text-[9px] text-slate-400 block font-bold uppercase">ROAD HEALTH INDEX</span>
+            <strong class="text-xs text-[#60A5FA] block font-bold" id="ward-card-health">84.2 / 100 (Fair)</strong>
+            <span class="text-[10px] text-slate-400 font-sans" id="ward-card-defects">18 Logged Defects Today</span>
+          </div>
+
+          <div class="p-4 rounded-xl bg-white/5 space-y-1 border border-white/10">
+            <span class="text-[9px] text-slate-400 block font-bold uppercase">ASSIGNED PWD CREW</span>
+            <strong class="text-xs text-white block font-bold" id="ward-card-crew">Rajeshwar Infra Unit #4</strong>
+            <span class="text-[10px] text-[#60A5FA] font-sans" id="ward-card-status">Active Spray Injector Onsite</span>
+          </div>
+
+          <div class="p-4 rounded-xl bg-white/5 space-y-1 border border-white/10">
+            <span class="text-[9px] text-slate-400 block font-bold uppercase">ASPHALT ALLOCATION</span>
+            <strong class="text-xs text-[#FBBF24] block font-bold" id="ward-card-asphalt">28.5 MT Hot-Mix Batch</strong>
+            <span class="text-[10px] text-slate-400 font-sans">Contractor SLA: 48 Hours</span>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- FOOTER (LIGHT THEME) -->
-  <footer class="bg-white border-t border-[#E5E7EB] py-12">
-    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center text-xs font-mono text-[#6B7280] gap-4">
-      <span>&copy; 2026 दृष्टि (Drishti) Jaipur Urban Command Center. All Rights Reserved.</span>
-      <a href="dashboard.html" class="text-[#121316] font-bold hover:text-[#10B981] flex items-center gap-1">
-        <span>Launch Live Command Center</span>
-        <span class="material-symbols-outlined text-xs">north_east</span>
-      </a>
-    </div>
-  </footer>
+    <!-- FOOTER (DARK THEME) -->
+    <footer class="bg-black border-t border-white/10 py-12">
+      <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center text-xs font-mono text-slate-400 gap-4">
+        <span>&copy; 2026 दृष्टि (Drishti) · Autonomous Road Intelligence &amp; Urban Command Center. All Rights Reserved.</span>
+        <a href="dashboard.html" class="text-white font-bold hover:text-[#60A5FA] flex items-center gap-1 transition-colors">
+          <span>Launch Live Command Center</span>
+          <span class="material-symbols-outlined text-xs">north_east</span>
+        </a>
+      </div>
+    </footer>
 
-  <!-- SCRIPT FOR CALCULATOR & WARD TABS -->
+  </div>
+
+  <!-- JAVASCRIPT FOR CALCULATOR & WARD TABS -->
   <script>
     function updateMunicipalRoiCalc() {
       const buses = parseInt(document.getElementById('calc-buses-range').value);
@@ -477,29 +734,29 @@
       const bAjmer = document.getElementById('btn-ward-ajmer');
 
       [bTonk, bJln, bAjmer].forEach(b => {
-        b.className = 'px-3.5 py-1.5 rounded-full bg-[#F3F4F6] text-[#6B7280] font-bold hover:bg-[#E5E7EB] transition-all';
+        b.className = 'px-3.5 py-1.5 rounded-full bg-white/10 text-slate-400 font-bold hover:bg-white/20 transition-all';
       });
 
       if (type === 'TONK') {
-        bTonk.className = 'px-3.5 py-1.5 rounded-full bg-[#121316] text-white font-bold transition-all';
-        name.innerText = 'Ward 14: Tonk Road Highway';
-        desc.innerText = 'Sanganer Flyover to Rambagh Circle';
+        bTonk.className = 'px-3.5 py-1.5 rounded-full bg-white text-[#121316] font-bold transition-all';
+        name.innerText = 'Corridor 14: Metro Arterial Highway';
+        desc.innerText = 'Transit Station to Central Circle';
         health.innerText = '84.2 / 100 (Fair)';
         defects.innerText = '18 Logged Defects Today';
         crew.innerText = 'Rajeshwar Infra Unit #4';
         asphalt.innerText = '28.5 MT Hot-Mix Batch';
       } else if (type === 'JLN') {
-        bJln.className = 'px-3.5 py-1.5 rounded-full bg-[#121316] text-white font-bold transition-all';
-        name.innerText = 'Ward 22: JLN Marg Institutional Corridor';
-        desc.innerText = 'OTS Circle to World Trade Park';
+        bJln.className = 'px-3.5 py-1.5 rounded-full bg-white text-[#121316] font-bold transition-all';
+        name.innerText = 'Corridor 22: Institutional Tech Boulevard';
+        desc.innerText = 'University Circle to Business Park';
         health.innerText = '92.6 / 100 (Good)';
         defects.innerText = '4 Minor Asphalt Craters';
-        crew.innerText = 'Jaipur Smart PWD Unit #1';
+        crew.innerText = 'Municipal Rapid PWD Unit #1';
         asphalt.innerText = '6.2 MT Cold-Patch Batch';
       } else if (type === 'AJMER') {
-        bAjmer.className = 'px-3.5 py-1.5 rounded-full bg-[#121316] text-white font-bold transition-all';
-        name.innerText = 'Ward 31: Ajmer Road 200ft Bypass';
-        desc.innerText = 'DCM Signal to Heerapura Power Grid';
+        bAjmer.className = 'px-3.5 py-1.5 rounded-full bg-white text-[#121316] font-bold transition-all';
+        name.innerText = 'Corridor 31: 200ft Urban Ring Bypass';
+        desc.innerText = 'Outer Junction to Express Grid';
         health.innerText = '68.4 / 100 (Needs Repair)';
         defects.innerText = '32 Severe Waterlogged Dips';
         crew.innerText = 'Apex Civil Mesh Emergency SOS';

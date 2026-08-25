@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>दृष्टि (Drishti) · Jaipur Urban Command Center</title>
+  <title>दृष्टि (Drishti) · Urban Road Intelligence Command Center</title>
 
   <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -296,7 +296,7 @@
     
     <!-- Top Context Bar -->
     <div class="flex justify-between items-center text-xs font-mono text-[#717D75] font-bold uppercase tracking-wider">
-      <span>/DRISHTI: JAIPUR URBAN COMMAND CENTER · JMC &amp; BEL</span>
+      <span>/DRISHTI: URBAN COMMAND CENTER · AI ROAD MOBILITY MESH</span>
       <span>06 · SIH-26124</span>
     </div>
 
@@ -304,7 +304,7 @@
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
         <h1 class="text-3xl sm:text-4xl font-extrabold text-[#1E2320] tracking-tight" id="main-view-title">Incident Dockets &amp; Fleet Map</h1>
-        <p class="text-xs text-[#717D75] mt-1" id="main-view-subtitle">Real-time edge-AI transit sensing across 10 municipal buses · Nagar Nigam Jaipur</p>
+        <p class="text-xs text-[#717D75] mt-1" id="main-view-subtitle">Real-time edge-AI transit sensing across municipal bus fleets &amp; urban corridors</p>
       </div>
 
       <!-- Top Right Search & User Profile Pill -->
@@ -334,9 +334,9 @@
         <!-- User Profile Pill -->
         <div class="flex items-center gap-2.5 bg-white/90 backdrop-blur-md rounded-full px-4 py-2 shadow-sm">
           <div class="w-6 h-6 rounded-full bg-[#1E2320] text-white flex items-center justify-center text-[10px] font-bold">
-            JM
+            UM
           </div>
-          <span class="text-xs font-semibold text-[#1E2320]">Jaipur Municipal</span>
+          <span class="text-xs font-semibold text-[#1E2320]">Urban Municipal GIS</span>
           <span class="material-symbols-outlined text-xs text-slate-400">expand_more</span>
         </div>
 
@@ -492,7 +492,7 @@
           <div>
             <h3 class="font-bold text-[#1E2320] text-base flex items-center gap-2">
               <span class="material-symbols-outlined text-base text-[#4A62D6]">map</span>
-              <span>Jaipur Dynamic Fleet &amp; Defect Cartography</span>
+              <span>Urban Fleet &amp; Defect Cartography</span>
             </h3>
             <p class="text-xs text-[#717D75]">Live GPS coordinates, route playback animation, and multi-bus spatial telemetry</p>
           </div>
@@ -717,7 +717,7 @@
         <div class="flex flex-wrap justify-between items-center gap-3 border-b border-black/[0.05] pb-4">
           <div>
             <h3 class="font-bold text-[#1E2320] text-lg">Municipal Defect Registry &amp; PWD Work Orders</h3>
-            <p class="text-xs text-[#717D75]">1,284 total defects logged across 32 Jaipur wards · 50.6% resolution rate</p>
+            <p class="text-xs text-[#717D75]">1,284 total defects logged across 32 municipal wards · 50.6% resolution rate</p>
           </div>
           <button onclick="downloadReport('CSV')" class="btn-pill-solid">Export CSV ↓</button>
         </div>
@@ -783,7 +783,7 @@
         <div class="lg:col-span-8 glass-card p-6 flex flex-col justify-between">
           <div class="mb-3">
             <h3 class="font-bold text-[#1E2320] text-base">Traffic Volume vs Average Speed (24h)</h3>
-            <p class="text-xs text-[#717D75]">Hourly vehicle count scanned across Jaipur arterial roads</p>
+            <p class="text-xs text-[#717D75]">Hourly vehicle count scanned across urban arterial corridors</p>
           </div>
           <div class="h-64 w-full">
             <canvas id="chart-traffic-light"></canvas>
@@ -870,94 +870,25 @@
     <!-- ======================================================================= -->
     <div id="tab-view-video-lab" class="hidden space-y-6">
       
-      <!-- Video Ingestion & Sample Selector Card -->
-      <div class="glass-card p-6 space-y-5">
-        <div class="flex flex-wrap justify-between items-center gap-4 border-b border-black/[0.05] pb-4">
+      <!-- Video Lab Header Card -->
+      <div class="glass-card p-6">
+        <div class="flex flex-wrap justify-between items-center gap-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-2xl bg-[#1E2320] text-white flex items-center justify-center shadow-md">
               <span class="material-symbols-outlined text-xl">biotech</span>
             </div>
             <div>
               <h2 class="text-lg font-extrabold text-[#1E2320]">Neural Video Perception &amp; Custom Testing Lab</h2>
-              <p class="text-xs text-[#717D75]">Upload your road video or select an anomaly benchmark clip to test YOLOv8 defect detection, ANPR, and PCU flow.</p>
+              <p class="text-xs text-[#717D75]">Automated road video perception pipeline evaluating YOLOv8 defect detection, ANPR, and PCU flow.</p>
             </div>
           </div>
 
           <div class="flex items-center gap-2.5">
-            <label class="btn-pill-solid bg-[#4A62D6] hover:bg-[#3B50B8] cursor-pointer flex items-center gap-2 py-2 px-4 shadow-sm text-xs font-bold text-white rounded-full">
-              <span class="material-symbols-outlined text-base">upload_file</span>
-              <span>Upload Custom Video</span>
-              <input type="file" id="lab-video-file-input" accept="video/mp4,video/webm,video/ogg,video/quicktime" onchange="handleCustomVideoUpload(event)" class="hidden" />
-            </label>
             <button onclick="exportLabInspectionReport()" class="btn-pill-ghost py-2 px-3 text-xs flex items-center gap-1.5">
               <span class="material-symbols-outlined text-base">download</span>
               <span>Export Dossier</span>
             </button>
           </div>
-        </div>
-
-        <!-- Interactive Drag-and-Drop Zone & One-Click Benchmark Clips -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-          
-          <!-- Dropzone -->
-          <div 
-            id="lab-dropzone" 
-            ondragover="handleVideoDragOver(event)" 
-            ondragleave="handleVideoDragLeave(event)" 
-            ondrop="handleVideoDrop(event)"
-            onclick="document.getElementById('lab-video-file-input').click()"
-            class="lg:col-span-5 border-2 border-dashed border-slate-300 hover:border-[#4A62D6] bg-[#F4F7F0]/60 hover:bg-[#EEF2FC]/70 rounded-3xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all space-y-2 group"
-          >
-            <div class="w-12 h-12 rounded-full bg-white text-[#4A62D6] shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-2xl">video_file</span>
-            </div>
-            <span class="font-bold text-xs text-[#1E2320]">Drop dashcam video here (.mp4, .webm, .mov)</span>
-            <p class="text-[11px] text-[#717D75]">Max 500MB · Processed locally on client NPU &amp; WebGL</p>
-            <span class="text-[10px] font-mono text-[#4A62D6] font-bold mt-1 inline-block bg-white px-2.5 py-0.5 rounded-full shadow-xs">Click to Browse Files</span>
-          </div>
-
-          <!-- 4 One-Click Benchmark Clips -->
-          <div class="lg:col-span-7 flex flex-col justify-between space-y-2.5">
-            <span class="text-[11px] font-bold text-[#717D75] uppercase font-mono tracking-wider flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-sm text-[#1E8A44]">verified</span>
-              <span>One-Click Test Clips (RAD Dataset &amp; Urban Scenarios):</span>
-            </span>
-
-            <div class="grid grid-cols-2 gap-2.5">
-              <button onclick="loadSampleVideoClip('rad-pothole')" id="btn-clip-rad-pothole" class="p-3 rounded-2xl bg-[#1E2320] text-white shadow-md text-left transition-all border border-black/[0.04] flex flex-col justify-between cursor-pointer space-y-1">
-                <div class="flex justify-between items-center">
-                  <span class="font-bold text-xs">1. RAD Pothole (Clip 02)</span>
-                  <span class="px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[9px] font-mono font-bold">16cm Crater</span>
-                </div>
-                <p class="text-[10px] text-slate-300 line-clamp-1">Kaggle RAD dataset · Severe crater &amp; JDA hot-mix</p>
-              </button>
-
-              <button onclick="loadSampleVideoClip('distress-04')" id="btn-clip-distress-04" class="p-3 rounded-2xl bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] text-left transition-all border border-black/[0.04] flex flex-col justify-between cursor-pointer space-y-1">
-                <div class="flex justify-between items-center">
-                  <span class="font-bold text-xs text-[#1E2320]">2. Distress Sector (Clip 04)</span>
-                  <span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[9px] font-mono font-bold">12cm Depth</span>
-                </div>
-                <p class="text-[10px] text-[#717D75] line-clamp-1">Indian asphalt fissures &amp; aggregate unraveling</p>
-              </button>
-
-              <button onclick="loadSampleVideoClip('monsoon-19')" id="btn-clip-monsoon-19" class="p-3 rounded-2xl bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] text-left transition-all border border-black/[0.04] flex flex-col justify-between cursor-pointer space-y-1">
-                <div class="flex justify-between items-center">
-                  <span class="font-bold text-xs text-[#1E2320]">3. Monsoon Basin (Clip 19)</span>
-                  <span class="px-2 py-0.5 rounded-full bg-sky-100 text-sky-800 text-[9px] font-mono font-bold">Waterlogged</span>
-                </div>
-                <p class="text-[10px] text-[#717D75] line-clamp-1">Roadside shoulder waterlogging &amp; sub-base dip</p>
-              </button>
-
-              <button onclick="loadSampleVideoClip('urban-105')" id="btn-clip-urban-105" class="p-3 rounded-2xl bg-[#F4F7F0] hover:bg-[#E2E8DC] text-[#1E2320] text-left transition-all border border-black/[0.04] flex flex-col justify-between cursor-pointer space-y-1">
-                <div class="flex justify-between items-center">
-                  <span class="font-bold text-xs text-[#1E2320]">4. Urban Arterial (Clip 105)</span>
-                  <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-mono font-bold">Multi-Lane</span>
-                </div>
-                <p class="text-[10px] text-[#717D75] line-clamp-1">High-density arterial road profiling &amp; VRU scan</p>
-              </button>
-            </div>
-          </div>
-
         </div>
       </div>
 
@@ -1031,40 +962,6 @@
               </div>
             </div>
 
-          </div>
-
-          <!-- Overlay Layer Toggle Filters -->
-          <div class="flex flex-wrap items-center justify-between gap-3 glass-card p-3.5 text-xs">
-            <span class="text-[11px] font-bold text-[#717D75] uppercase font-mono flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-sm text-[#4A62D6]">layers</span>
-              <span>Active Inference Layers:</span>
-            </span>
-
-            <div class="flex flex-wrap items-center gap-2">
-              <label class="flex items-center gap-1.5 bg-[#F4F7F0] px-3 py-1.5 rounded-full text-xs font-semibold text-[#1E2320] cursor-pointer hover:bg-[#E2E8DC] transition-all">
-                <input type="checkbox" id="layer-toggle-defects" checked onchange="toggleLabLayer('defects')" class="accent-[#4A62D6]" />
-                <span>Road Defects &amp; Depth</span>
-              </label>
-              <label class="flex items-center gap-1.5 bg-[#F4F7F0] px-3 py-1.5 rounded-full text-xs font-semibold text-[#1E2320] cursor-pointer hover:bg-[#E2E8DC] transition-all">
-                <input type="checkbox" id="layer-toggle-vehicles" checked onchange="toggleLabLayer('vehicles')" class="accent-[#4A62D6]" />
-                <span>6-Class Vehicles &amp; Speed</span>
-              </label>
-              <label class="flex items-center gap-1.5 bg-[#F4F7F0] px-3 py-1.5 rounded-full text-xs font-semibold text-[#1E2320] cursor-pointer hover:bg-[#E2E8DC] transition-all">
-                <input type="checkbox" id="layer-toggle-anpr" checked onchange="toggleLabLayer('anpr')" class="accent-[#4A62D6]" />
-                <span>Hit &amp; Run ANPR</span>
-              </label>
-              <label class="flex items-center gap-1.5 bg-[#F4F7F0] px-3 py-1.5 rounded-full text-xs font-semibold text-[#1E2320] cursor-pointer hover:bg-[#E2E8DC] transition-all">
-                <input type="checkbox" id="layer-toggle-contractor" checked onchange="toggleLabLayer('contractor')" class="accent-[#4A62D6]" />
-                <span>iWatchRoad SLAs</span>
-              </label>
-              <label class="flex items-center gap-1.5 bg-[#EEF2FF] px-3 py-1.5 rounded-full text-xs font-bold text-[#4A62D6] cursor-pointer hover:bg-[#E0E7FF] transition-all border border-[#4A62D6]/30">
-                <input type="checkbox" id="layer-toggle-stan" checked onchange="toggleLabLayer('stan')" class="accent-[#4A62D6]" />
-                <span class="flex items-center gap-1">
-                  <span class="material-symbols-outlined text-[13px]">sensors</span>
-                  <span>STAN Multi-Modal IMU</span>
-                </span>
-              </label>
-            </div>
           </div>
         </div>
 
@@ -1239,7 +1136,7 @@
       <div class="flex justify-between items-center border-b border-black/[0.05] pb-3.5">
         <div class="flex items-center gap-2.5">
           <span class="material-symbols-outlined text-emerald-600 text-xl">person</span>
-          <h3 class="font-bold text-[#1E2320] text-base">JCTSL Driver Safety Index &amp; Telemetry</h3>
+          <h3 class="font-bold text-[#1E2320] text-base">Municipal Driver Safety Index &amp; Telemetry</h3>
         </div>
         <button onclick="closeDriverModal()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold cursor-pointer">&times;</button>
       </div>
@@ -1385,7 +1282,7 @@
               <h3 class="font-extrabold text-[#1E2320] text-lg tracking-tight" id="inspector-bus-id">BUS-003 TELEMETRY &amp; OPERATIONS</h3>
               <span class="px-2.5 py-0.5 rounded-full bg-[#E8F8EE] text-[#1E8A44] font-mono text-[10px] font-bold" id="inspector-bus-status">ONLINE · 1080p ACTIVE</span>
             </div>
-            <p class="text-xs text-[#717D75] font-mono mt-0.5" id="inspector-bus-route">Route 3: Tonk Road Corridor · JCTSL Fleet</p>
+            <p class="text-xs text-[#717D75] font-mono mt-0.5" id="inspector-bus-route">Route 3: Tonk Road Corridor · Municipal Fleet</p>
           </div>
         </div>
         <button onclick="closeBusInspector()" class="w-8 h-8 rounded-full bg-[#F4F7F0] hover:bg-[#E2E8DC] text-slate-600 flex items-center justify-center font-bold cursor-pointer transition-all">&times;</button>
@@ -1396,7 +1293,7 @@
         <div class="p-4 bg-[#F4F7F0] rounded-2xl space-y-1">
           <span class="text-[10px] text-[#717D75] uppercase block font-bold">Assigned Driver</span>
           <strong class="text-[#1E2320] text-sm block font-bold" id="inspector-driver-name">Manoj Meena</strong>
-          <span class="text-[11px] text-[#717D75] block">ID: JCTSL-8924 · Shift 1</span>
+          <span class="text-[11px] text-[#717D75] block">ID: URMB-8924 · Shift 1</span>
         </div>
 
         <div class="p-4 bg-[#F4F7F0] rounded-2xl space-y-1">
@@ -1497,7 +1394,7 @@
     };
 
     // 10 Jaipur Fleet Dataset
-    const jaipurFleet = [
+    const urbanFleet = [
       { 
         id: 'BUS-001', 
         route: 'Route 1: JLN Marg', 
@@ -2205,11 +2102,11 @@
     // DIRECT BUS SELECTION & TELEMETRY BINDING
     function selectBusDirectly(busId, triggerMapFly = true, openInspector = true) {
       selectedBusId = busId;
-      const bus = jaipurFleet.find(b => b.id === busId);
+      const bus = urbanFleet.find(b => b.id === busId);
       if (!bus) return;
 
       // 1. Update Top Selector Buttons Style (Tab 1)
-      jaipurFleet.forEach(b => {
+      urbanFleet.forEach(b => {
         const p = document.getElementById(`bus-pill-${b.id}`);
         const isSel = (b.id === busId);
         if (p) {
@@ -2224,7 +2121,7 @@
       });
 
       // 2. Update Camera Tab Selector Buttons Style (Tab 2)
-      jaipurFleet.forEach(b => {
+      urbanFleet.forEach(b => {
         const cp = document.getElementById(`cam-pill-${b.id}`);
         const isSel = (b.id === busId);
         if (cp) {
@@ -2282,7 +2179,7 @@
     };
 
     function renderActiveCameraView() {
-      const bus = jaipurFleet.find(b => b.id === selectedBusId) || jaipurFleet[0];
+      const bus = urbanFleet.find(b => b.id === selectedBusId) || urbanFleet[0];
       const angleData = (bus.angles && bus.angles[currentCameraAngle]) ? bus.angles[currentCameraAngle] : bus.angles.front;
 
       const videoEl = document.getElementById('real-dashcam-video');
@@ -2502,7 +2399,7 @@
       if (!grid) return;
       grid.innerHTML = '';
 
-      let filtered = jaipurFleet;
+      let filtered = urbanFleet;
       if (query && query.trim() !== '') {
         const q = query.toLowerCase().trim();
         filtered = filtered.filter(b => b.id.toLowerCase().includes(q) || b.driver.toLowerCase().includes(q) || b.route.toLowerCase().includes(q));
@@ -2653,7 +2550,7 @@
 
         if (val && val.trim() !== '') {
           const q = val.toUpperCase().trim();
-          const busMatch = jaipurFleet.find(b => 
+          const busMatch = urbanFleet.find(b => 
             b.id.toUpperCase() === q ||
             b.id.toUpperCase().replace('-', '') === q ||
             b.id.toUpperCase().replace('BUS-', '') === q ||
@@ -2714,7 +2611,7 @@
 
     // LIVE HARDWARE MATRIX REAL-TIME UPDATE
     function updateHardwareMatrixLive() {
-      jaipurFleet.forEach(b => {
+      urbanFleet.forEach(b => {
         b.temp = Math.min(65, Math.max(40, b.temp + Math.floor(Math.random() * 3) - 1));
         b.fps = (16.0 + Math.random() * 3.0).toFixed(1);
         b.lat_ms = Math.min(60, Math.max(35, b.lat_ms + Math.floor(Math.random() * 5) - 2));
@@ -2727,7 +2624,7 @@
       if (!tbody) return;
       tbody.innerHTML = '';
 
-      jaipurFleet.forEach(b => {
+      urbanFleet.forEach(b => {
         const tr = document.createElement('tr');
         tr.className = 'hover:bg-[#F4F7F0] transition-colors';
         const tempColor = b.temp > 55 ? 'text-rose-600 font-bold bg-rose-50 px-2 py-0.5 rounded-full' : 'text-[#1E8A44] font-bold';
@@ -2771,7 +2668,7 @@
       const mainSubtitle = document.getElementById('main-view-subtitle');
       if (tabName === 'command-center') {
         if (mainTitle) mainTitle.innerText = 'Incident Dockets & Fleet Map';
-        if (mainSubtitle) mainSubtitle.innerText = 'Real-time edge-AI transit sensing across 10 municipal buses · Nagar Nigam Jaipur';
+        if (mainSubtitle) mainSubtitle.innerText = 'Real-time edge-AI transit sensing across 10 municipal buses · Urban Road Intelligence Mesh';
         if (map) setTimeout(() => map.invalidateSize(), 100);
       } else if (tabName === 'edge-vision') {
         if (mainTitle) mainTitle.innerText = 'Onboard Edge AI Cameras';
@@ -2784,7 +2681,7 @@
         setTimeout(() => initVideoLab(), 60);
       } else if (tabName === 'work-orders') {
         if (mainTitle) mainTitle.innerText = 'Municipal Defect Registry';
-        if (mainSubtitle) mainSubtitle.innerText = '1,284 total defects logged across 32 Jaipur wards · PWD Work Orders & Repair ROI';
+        if (mainSubtitle) mainSubtitle.innerText = '1,284 total defects logged across 32 municipal wards · PWD Work Orders & Repair ROI';
       } else if (tabName === 'analytics') {
         if (mainTitle) mainTitle.innerText = 'City Traffic Intelligence';
         if (mainSubtitle) mainSubtitle.innerText = '24h volume curves, vehicle classification, school zones & edge NPU telemetry';
@@ -2804,7 +2701,7 @@
       map = L.map('main-gis-map', { zoomControl: true }).setView([26.8850, 75.8000], 12);
 
       L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap · Jaipur Public Transport Mesh',
+        attribution: '&copy; OpenStreetMap · Urban Transit Intelligence Mesh',
         maxZoom: 19
       }).addTo(map);
 
@@ -2819,7 +2716,7 @@
 
       const q = (currentSearchQuery || '').toLowerCase().trim();
 
-      jaipurFleet.forEach(b => {
+      urbanFleet.forEach(b => {
         if (q && !b.id.toLowerCase().includes(q) && !b.driver.toLowerCase().includes(q) && !b.route.toLowerCase().includes(q)) {
           return;
         }
@@ -2881,7 +2778,7 @@
 
       const normTime = currentScrubMinutes / 1440;
 
-      jaipurFleet.forEach((b) => {
+      urbanFleet.forEach((b) => {
         const waypoints = busRoutesGPS[b.id];
         if (waypoints && waypoints.length > 1) {
           const totalSegs = waypoints.length - 1;
@@ -3088,7 +2985,7 @@
 
     // BUS INSPECTOR MODAL & OPERATOR FUNCTIONS
     function openBusInspector(busId) {
-      const bus = jaipurFleet.find(b => b.id === busId) || jaipurFleet[0];
+      const bus = urbanFleet.find(b => b.id === busId) || urbanFleet[0];
       selectedBusId = bus.id;
 
       const icon = document.getElementById('inspector-bus-icon');
@@ -3107,7 +3004,7 @@
       }
 
       const routeElem = document.getElementById('inspector-bus-route');
-      if (routeElem) routeElem.innerText = `${bus.route} · JCTSL Municipal Fleet`;
+      if (routeElem) routeElem.innerText = `${bus.route} · Urban Municipal Fleet`;
 
       const driverElem = document.getElementById('inspector-driver-name');
       if (driverElem) driverElem.innerText = bus.driver;
@@ -3153,7 +3050,7 @@
     function focusMapFromInspector() {
       closeBusInspector();
       setViewTab('command-center');
-      const bus = jaipurFleet.find(b => b.id === selectedBusId);
+      const bus = urbanFleet.find(b => b.id === selectedBusId);
       if (bus && map) {
         map.flyTo([bus.lat, bus.lng], 15, { duration: 0.8 });
       }
@@ -3225,7 +3122,7 @@
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = `Jaipur_Defect_Layer_${new Date().toISOString().slice(0,10)}.geojson`;
+          a.download = `Urban_Defect_Layer_${new Date().toISOString().slice(0,10)}.geojson`;
           a.click();
           showToast('Export Completed', 'GeoJSON GIS layer downloaded.', 'success');
         } else if (format === 'SHAPEFILE') {
@@ -3238,7 +3135,7 @@
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = `Jaipur_Defects_Shapefile_${new Date().toISOString().slice(0,10)}.json`;
+          a.download = `Urban_Defects_Shapefile_${new Date().toISOString().slice(0,10)}.json`;
           a.click();
           showToast('Export Completed', 'Shapefile GeoPackage archive generated.', 'success');
         }
@@ -3408,15 +3305,15 @@
         fps: 60.0,
         pcu: '6.2',
         congestion: 'Moderate Flow',
-        contractor: 'Jaipur Smart City Ltd',
+        contractor: 'Municipal Smart City Ltd',
         contractId: 'JSCL-DRAIN-2026-M19',
         eng: 'Er. Sunita Verma',
         cost: '₹58,000 (Shoulder Leveling)',
         sla: '24h',
         anomalies: 3,
         events: [
-          { time: '00:03', type: 'WATERLOGGED_SHOULDER', conf: '98.2%', metrics: 'Shoulder Drainage Depression', sev: 'High', contractor: 'Jaipur Smart City Ltd' },
-          { time: '00:07', type: 'POTHOLE', conf: '95.2%', metrics: 'Depth: 14.5cm · Curbside Ponding', sev: 'Moderate', contractor: 'Jaipur Smart City Ltd' }
+          { time: '00:03', type: 'WATERLOGGED_SHOULDER', conf: '98.2%', metrics: 'Shoulder Drainage Depression', sev: 'High', contractor: 'Municipal Smart City Ltd' },
+          { time: '00:07', type: 'POTHOLE', conf: '95.2%', metrics: 'Depth: 14.5cm · Curbside Ponding', sev: 'Moderate', contractor: 'Municipal Smart City Ltd' }
         ]
       },
       'urban-105': {
@@ -3606,7 +3503,7 @@
         events: [
           { time: '00:03', type: 'POTHOLE', conf: '95.4%', metrics: 'Depth: 14.8cm · Area: 0.72m²', sev: 'High', contractor: 'Rajeshwar Infra Ltd' },
           { time: '00:08', type: 'ROAD_DAMAGE', conf: '92.1%', metrics: 'Asphalt Raveling & Fissures', sev: 'Medium', contractor: 'Rajeshwar Infra Ltd' },
-          { time: '00:16', type: 'VEHICLE_FLOW', conf: '96.0%', metrics: '18 Vehicles Scanned (PCU 9.2)', sev: 'Low', contractor: 'JCTSL Planning' }
+          { time: '00:16', type: 'VEHICLE_FLOW', conf: '96.0%', metrics: '18 Vehicles Scanned (PCU 9.2)', sev: 'Low', contractor: 'Urban Roads Planning' }
         ]
       };
       activeLabClip = 'custom-upload';
@@ -4617,7 +4514,7 @@
         map.flyTo([newDocket.lat, newDocket.lng], 14, { duration: 0.8 });
       }
 
-      showToast('Logged to Municipal GIS', `Successfully added "${newDocket.title}" to Live Jaipur Command Map & Defect Table.`, 'success');
+      showToast('Logged to Municipal GIS', `Successfully added "${newDocket.title}" to Live Urban Command Map & Defect Table.`, 'success');
     }
 
     function exportLabInspectionReport() {

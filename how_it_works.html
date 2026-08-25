@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How It Works — JUCC Jaipur Urban Command Center</title>
+  <title>How It Works — दृष्टि Urban Command Center</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,7 +26,11 @@
               dark: '#121316',
               muted: '#6B7280',
               bordergray: '#E5E7EB',
-              emerald: { 500: '#10B981', 600: '#059669' },
+              accent: {
+                DEFAULT: '#4A62D6',
+                light: '#60A5FA',
+                hover: '#3B50B8'
+              },
               red: { 500: '#EF4444', 600: '#DC2626' },
               amber: { 500: '#F59E0B', 600: '#D97706' }
             }
@@ -39,7 +43,7 @@
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F3F4F6; color: #121316; overflow-x: hidden; }
     ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 9999px; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-[#F3F4F6]">
@@ -53,7 +57,7 @@
         </div>
         <div class="flex flex-col">
           <span class="font-extrabold text-lg text-[#121316] tracking-tight leading-none">दृष्टि</span>
-          <span class="text-[10px] font-mono text-[#6B7280] leading-tight mt-0.5">Jaipur Urban Command Center</span>
+          <span class="text-[10px] font-mono text-[#6B7280] leading-tight mt-0.5">Urban Command Center</span>
         </div>
       </a>
 
@@ -83,11 +87,11 @@
       </div>
 
       <h1 class="text-4xl sm:text-5xl font-black text-[#121316] tracking-tight max-w-3xl leading-tight">
-        How दृष्टि Senses &amp; Repairs Jaipur Roads
+        How दृष्टि Senses &amp; Repairs Urban Roads
       </h1>
 
       <p class="text-sm text-[#6B7280] leading-relaxed max-w-2xl font-sans">
-        From onboard optical NPU inference on public buses to automated PWD work order dispatching in under 60 seconds.
+        From onboard optical NPU inference on transit fleets to automated municipal work order dispatching in under 60 seconds across any city.
       </p>
     </div>
   </section>
@@ -99,9 +103,9 @@
         
         <div class="p-6 rounded-3xl bg-[#F3F4F6] border border-[#E5E7EB] space-y-4 relative shadow-sm">
           <span class="w-8 h-8 rounded-full bg-[#121316] text-white font-mono text-xs font-bold flex items-center justify-center">01</span>
-          <h3 class="font-bold text-[#121316] text-base">Public Bus Sensing</h3>
+          <h3 class="font-bold text-[#121316] text-base">Public Transit Sensing</h3>
           <p class="text-xs text-[#6B7280] leading-relaxed">
-            1080p optical windshield cameras &amp; downward macro asphalt sensors mounted on JCTSL buses capture continuous road surface video.
+            1080p optical windshield cameras &amp; downward macro asphalt sensors mounted on municipal transit fleets capture continuous road surface video.
           </p>
         </div>
 
@@ -121,11 +125,11 @@
           </p>
         </div>
 
-        <div class="p-6 rounded-3xl bg-[#F3F4F6] border border-[#10B981] space-y-4 relative shadow-sm">
-          <span class="w-8 h-8 rounded-full bg-[#10B981] text-white font-mono text-xs font-bold flex items-center justify-center">04</span>
-          <h3 class="font-bold text-[#121316] text-base">PWD Work Order Dispatch</h3>
+        <div class="p-6 rounded-3xl bg-[#F3F4F6] border border-[#E5E7EB] space-y-4 relative shadow-sm">
+          <span class="w-8 h-8 rounded-full bg-[#121316] text-white font-mono text-xs font-bold flex items-center justify-center">04</span>
+          <h3 class="font-bold text-[#121316] text-base">Municipal Action</h3>
           <p class="text-xs text-[#6B7280] leading-relaxed">
-            Command Center dashboard routes dockets directly to Zone Engineers with exact hot-mix asphalt tonnage calculations.
+            Cloud dashboard auto-assigns PWD contractors, schedules asphalt hot-mix spray injection, and tracks SLA resolution timelines.
           </p>
         </div>
 
@@ -133,170 +137,122 @@
     </div>
   </section>
 
-  <!-- INTERACTIVE EDGE NEURAL PIPELINE INSPECTOR (CLEAN LIGHT THEME) -->
+  <!-- HARDWARE & EDGE STACK (CLEAN LIGHT THEME) -->
   <section class="py-16 bg-[#F3F4F6]">
-    <div class="max-w-7xl mx-auto px-6 space-y-8">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <span class="text-xs font-mono font-bold text-[#10B981] uppercase tracking-wider block">NEURAL PIPELINE INSPECTOR</span>
-          <h2 class="text-2xl sm:text-3xl font-black text-[#121316] tracking-tight">4-Stage Deep Learning Pipeline</h2>
-        </div>
-
-        <div class="flex items-center gap-2 font-mono text-xs overflow-x-auto pb-2">
-          <button onclick="setPipeStage(1)" id="btn-pipe-1" class="px-3.5 py-1.5 rounded-full bg-[#121316] text-white font-bold transition-all whitespace-nowrap">Stage 1: Optical</button>
-          <button onclick="setPipeStage(2)" id="btn-pipe-2" class="px-3.5 py-1.5 rounded-full bg-white text-[#6B7280] border border-[#E5E7EB] font-bold hover:bg-[#E5E7EB] transition-all whitespace-nowrap">Stage 2: YOLOv8</button>
-          <button onclick="setPipeStage(3)" id="btn-pipe-3" class="px-3.5 py-1.5 rounded-full bg-white text-[#6B7280] border border-[#E5E7EB] font-bold hover:bg-[#E5E7EB] transition-all whitespace-nowrap">Stage 3: Depth Mesh</button>
-          <button onclick="setPipeStage(4)" id="btn-pipe-4" class="px-3.5 py-1.5 rounded-full bg-white text-[#6B7280] border border-[#E5E7EB] font-bold hover:bg-[#E5E7EB] transition-all whitespace-nowrap">Stage 4: PWD Dispatch</button>
-        </div>
+    <div class="max-w-7xl mx-auto px-6 space-y-12">
+      <div class="max-w-2xl space-y-3">
+        <span class="text-xs font-mono font-bold text-[#4A62D6] uppercase tracking-wider block">HARDWARE &amp; SENSOR BLUEPRINT</span>
+        <h2 class="text-3xl font-black text-[#121316] tracking-tight">Industrial Grade Bus Architecture</h2>
+        <p class="text-xs text-[#6B7280] leading-relaxed">Designed for harsh weather, monsoon vibration, and continuous 18-hour municipal operations.</p>
       </div>
 
-      <div class="p-8 rounded-[32px] bg-white border border-[#E5E7EB] shadow-lg grid grid-cols-1 lg:grid-cols-12 gap-8 items-center font-mono">
-        <div class="lg:col-span-7 space-y-4">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#10B981]/10 text-[#10B981] text-[10px] font-bold">
-            <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
-            <span id="pipe-tag">STAGE 01 · REAL-TIME CAPTURE</span>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <div class="p-8 rounded-[32px] bg-white border border-[#E5E7EB] space-y-4 shadow-sm">
+          <div class="w-12 h-12 rounded-2xl bg-[#F3F4F6] text-[#121316] flex items-center justify-center">
+            <span class="material-symbols-outlined text-2xl">memory</span>
           </div>
+          <h3 class="font-bold text-[#121316] text-lg">NVIDIA Jetson Orin Nano</h3>
+          <ul class="text-xs text-[#6B7280] space-y-2 font-mono">
+            <li>• 40 TOPS AI compute throughput</li>
+            <li>• 10W ultra-low bus battery draw</li>
+            <li>• Shock-mounted IP67 alloy enclosure</li>
+            <li>• Local ONNX TensorRT acceleration</li>
+          </ul>
+        </div>
 
-          <h3 class="text-2xl font-bold text-[#121316] font-sans" id="pipe-title">Dual Optical 1080p Stream Processing</h3>
+        <div class="p-8 rounded-[32px] bg-white border border-[#E5E7EB] space-y-4 shadow-sm">
+          <div class="w-12 h-12 rounded-2xl bg-[#F3F4F6] text-[#121316] flex items-center justify-center">
+            <span class="material-symbols-outlined text-2xl">videocam</span>
+          </div>
+          <h3 class="font-bold text-[#121316] text-lg">Sony STARVIS 2 CMOS</h3>
+          <ul class="text-xs text-[#6B7280] space-y-2 font-mono">
+            <li>• 1080p @ 60 FPS global shutter</li>
+            <li>• HDR night-vision street scanning</li>
+            <li>• Anti-glare optical polarization</li>
+            <li>• Integrated lens heating for fog</li>
+          </ul>
+        </div>
 
-          <p class="text-xs text-[#6B7280] font-sans leading-relaxed" id="pipe-desc">
-            Dual Sony IMX327 CMOS sensors capture 60 FPS HDR optical video streams through wide-angle windshield optical lenses and downward macro pavement profilometers.
+        <div class="p-8 rounded-[32px] bg-white border border-[#E5E7EB] space-y-4 shadow-sm">
+          <div class="w-12 h-12 rounded-2xl bg-[#F3F4F6] text-[#121316] flex items-center justify-center">
+            <span class="material-symbols-outlined text-2xl">sensors</span>
+          </div>
+          <h3 class="font-bold text-[#121316] text-lg">STAN Multi-Modal IMU</h3>
+          <ul class="text-xs text-[#6B7280] space-y-2 font-mono">
+            <li>• 6-Axis high-G accelerometer</li>
+            <li>• Wheel-hop pavement resonance cross-check</li>
+            <li>• Eliminates shadow false-positives</li>
+            <li>• Millimeter pothole depth fusion</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- DATA PRIVACY & EDGE COMPUTING ADVANTAGES -->
+  <section class="py-16 bg-white border-t border-[#E5E7EB]">
+    <div class="max-w-7xl mx-auto px-6 space-y-12">
+      <div class="max-w-2xl space-y-3">
+        <span class="text-xs font-mono font-bold text-[#4A62D6] uppercase tracking-wider block">ENTERPRISE PRIVACY &amp; SECURITY</span>
+        <h2 class="text-3xl font-black text-[#121316] tracking-tight">Privacy-Preserving Edge Architecture</h2>
+        <p class="text-xs text-[#6B7280] leading-relaxed">No raw personal video streams leave the transit bus unless an active hit-and-run crime vector is flagged.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <div class="p-8 rounded-[32px] bg-[#F3F4F6] border border-[#E5E7EB] space-y-4 shadow-sm">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-2xl text-[#121316]">shield</span>
+            <h3 class="font-bold text-[#121316] text-lg">Onboard Face &amp; Plate Anonymization</h3>
+          </div>
+          <p class="text-xs text-[#6B7280] leading-relaxed">
+            All pedestrian faces and unrelated vehicle plates are blurred directly inside the NVIDIA hardware ISP buffer prior to any storage or spatial clustering.
           </p>
-
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 text-xs">
-            <div class="p-3.5 rounded-2xl bg-[#F3F4F6] border border-[#E5E7EB]">
-              <span class="text-[9px] text-[#6B7280] block uppercase font-bold">INPUT TENSOR</span>
-              <strong class="text-[#121316] block font-bold" id="pipe-metric-1">1080p @ 60 FPS</strong>
-            </div>
-
-            <div class="p-3.5 rounded-2xl bg-[#F3F4F6] border border-[#E5E7EB]">
-              <span class="text-[9px] text-[#6B7280] block uppercase font-bold">HARDWARE POWER</span>
-              <strong class="text-[#10B981] block font-bold" id="pipe-metric-2">15.2W Envelope</strong>
-            </div>
-
-            <div class="p-3.5 rounded-2xl bg-[#F3F4F6] border border-[#E5E7EB]">
-              <span class="text-[9px] text-[#6B7280] block uppercase font-bold">STAGE LATENCY</span>
-              <strong class="text-[#121316] block font-bold" id="pipe-metric-3">2.1 ms Ingest</strong>
-            </div>
-          </div>
         </div>
 
-        <div class="lg:col-span-5 p-6 rounded-2xl bg-[#F3F4F6] border border-[#E5E7EB] space-y-3 text-xs">
-          <span class="text-[#6B7280] text-[10px] uppercase font-bold block border-b border-[#E5E7EB] pb-2">Active Execution Log</span>
-          
-          <div class="space-y-2 text-[11px] font-mono">
-            <div class="flex items-center gap-2 text-[#10B981] font-bold">
-              <span>&gt;</span> <span id="pipe-log-1">Camera Stream Mounted on Bus BUS-003 OK</span>
-            </div>
-            <div class="flex items-center gap-2 text-[#121316]">
-              <span>&gt;</span> <span id="pipe-log-2">60 FPS Frame Grabber Buffer Active</span>
-            </div>
-            <div class="flex items-center gap-2 text-[#6B7280]">
-              <span>&gt;</span> <span id="pipe-log-3">Passing RGB Normalized Tensors to NPU</span>
-            </div>
+        <div class="p-8 rounded-[32px] bg-[#F3F4F6] border border-[#E5E7EB] space-y-4 shadow-sm">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-2xl text-[#121316]">lock</span>
+            <h3 class="font-bold text-[#121316] text-lg">End-to-End AES-256 Cloud Dockets</h3>
           </div>
+          <p class="text-xs text-[#6B7280] leading-relaxed">
+            JSON anomaly dockets are signed with SHA-256 device certificates and transmitted over encrypted VPN tunnels directly to municipal city servers.
+          </p>
         </div>
+
       </div>
     </div>
   </section>
 
-  <!-- HARDWARE SPECS BOARD -->
-  <section class="py-20 bg-white border-t border-[#E5E7EB]">
-    <div class="max-w-7xl mx-auto px-6 space-y-8">
-      <h2 class="text-2xl sm:text-3xl font-extrabold text-[#121316]">Edge NPU Hardware Specifications</h2>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-xs">
-        <div class="p-6 rounded-3xl bg-[#F3F4F6] border border-[#E5E7EB] space-y-2 shadow-sm">
-          <span class="text-[#6B7280] text-[10px] uppercase font-bold block">EDGE PROCESSOR</span>
-          <strong class="text-[#121316] text-sm block">NVIDIA Jetson Orin Nano</strong>
-          <p class="text-[#6B7280] font-sans text-xs">40 TOPS AI performance, 15W power envelope powered directly by bus alternator system.</p>
-        </div>
-
-        <div class="p-6 rounded-3xl bg-[#F3F4F6] border border-[#E5E7EB] space-y-2 shadow-sm">
-          <span class="text-[#6B7280] text-[10px] uppercase font-bold block">OPTICAL SENSORS</span>
-          <strong class="text-[#121316] text-sm block">Dual Sony IMX327 CMOS</strong>
-          <p class="text-[#6B7280] font-sans text-xs">1080p 60 FPS HDR optical sensor with 120° FOV windshield lens and downward macro lens.</p>
-        </div>
-
-        <div class="p-6 rounded-3xl bg-[#F3F4F6] border border-[#E5E7EB] space-y-2 shadow-sm">
-          <span class="text-[#6B7280] text-[10px] uppercase font-bold block">CONNECTIVITY</span>
-          <strong class="text-[#121316] text-sm block">Quectel 4G LTE CAT-4 + GNSS</strong>
-          <p class="text-[#6B7280] font-sans text-xs">Sub-meter RTK GPS positioning with automatic offline flash caching when cellular signal dips.</p>
-        </div>
+  <!-- CTA BANNER -->
+  <section class="py-20 bg-[#F3F4F6]">
+    <div class="max-w-7xl mx-auto px-6 text-center space-y-6">
+      <h2 class="text-3xl sm:text-4xl font-black text-[#121316] tracking-tight">See the AI Model in Action</h2>
+      <p class="text-xs sm:text-sm text-[#6B7280] max-w-xl mx-auto font-sans">
+        Test custom road video feeds or examine real-time ONNX defect detection telemetry on our benchmark testing lab.
+      </p>
+      <div class="flex flex-wrap justify-center items-center gap-4 pt-2">
+        <a href="ai_demo.html" class="px-8 py-4 rounded-full bg-[#121316] hover:bg-[#2B2F38] text-white font-bold text-xs transition-all flex items-center gap-2 shadow-lg">
+          <span class="material-symbols-outlined text-base">play_arrow</span>
+          <span>Open AI Perception Lab</span>
+        </a>
+        <a href="dashboard.html" class="px-8 py-4 rounded-full bg-white hover:bg-slate-100 text-[#121316] border border-[#E5E7EB] font-bold text-xs transition-all flex items-center gap-1.5 shadow-sm">
+          <span>Launch Command Center</span>
+          <span class="material-symbols-outlined text-sm">north_east</span>
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- FOOTER (LIGHT THEME) -->
-  <footer class="bg-white border-t border-[#E5E7EB] py-12">
-    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center text-xs font-mono text-[#6B7280] gap-4">
-      <span>दृष्टि System Architecture • Smart Cities Mission India</span>
-      <a href="index.html" class="text-[#121316] font-bold hover:text-[#10B981]">Back to Overview Page &rarr;</a>
+  <!-- FOOTER -->
+  <footer class="bg-white text-[#6B7280] py-10 mt-auto border-t border-[#E5E7EB]">
+    <div class="max-w-7xl mx-auto px-6 flex justify-between items-center text-xs font-mono text-[#6B7280]">
+      <span>दृष्टि Architecture Suite · Urban Command Center</span>
+      <a href="index.html" class="text-[#121316] font-bold hover:text-[#4A62D6]">Back to Overview &rarr;</a>
     </div>
   </footer>
-
-  <script>
-    function setPipeStage(stg) {
-      const tag = document.getElementById('pipe-tag');
-      const title = document.getElementById('pipe-title');
-      const desc = document.getElementById('pipe-desc');
-      const m1 = document.getElementById('pipe-metric-1');
-      const m2 = document.getElementById('pipe-metric-2');
-      const m3 = document.getElementById('pipe-metric-3');
-
-      const l1 = document.getElementById('pipe-log-1');
-      const l2 = document.getElementById('pipe-log-2');
-      const l3 = document.getElementById('pipe-log-3');
-
-      for (let i = 1; i <= 4; i++) {
-        const btn = document.getElementById('btn-pipe-' + i);
-        if (btn) btn.className = 'px-3.5 py-1.5 rounded-full bg-white text-[#6B7280] border border-[#E5E7EB] font-bold hover:bg-[#E5E7EB] transition-all whitespace-nowrap';
-      }
-      document.getElementById('btn-pipe-' + stg).className = 'px-3.5 py-1.5 rounded-full bg-[#121316] text-white font-bold transition-all whitespace-nowrap';
-
-      if (stg === 1) {
-        tag.innerText = 'STAGE 01 · REAL-TIME CAPTURE';
-        title.innerText = 'Dual Optical 1080p Stream Processing';
-        desc.innerText = 'Dual Sony IMX327 CMOS sensors capture 60 FPS HDR optical video streams through wide-angle windshield optical lenses and downward macro pavement profilometers.';
-        m1.innerText = '1080p @ 60 FPS';
-        m2.innerText = '15.2W Envelope';
-        m3.innerText = '2.1 ms Ingest';
-        l1.innerText = 'Camera Stream Mounted on Bus BUS-003 OK';
-        l2.innerText = '60 FPS Frame Grabber Buffer Active';
-        l3.innerText = 'Passing RGB Normalized Tensors to NPU';
-      } else if (stg === 2) {
-        tag.innerText = 'STAGE 02 · MODEL INFERENCE';
-        title.innerText = 'YOLOv8x-PotholeGuard Neural Inference';
-        desc.innerText = 'Runs on local NVIDIA Jetson Orin NPU hardware executing custom trained YOLOv8 weights with INT8 quantization, detecting road defects, crater bounding boxes, and license plates.';
-        m1.innerText = '640x640x3 Tensor';
-        m2.innerText = '14.8 ms Latency';
-        m3.innerText = '96.8% Precision';
-        l1.innerText = 'YOLOv8 ConvBackbone Tensor Forward Pass';
-        l2.innerText = 'Bounding Box NMS (IoU Threshold 0.45)';
-        l3.innerText = 'Pothole Confidence Score Computed: 96.4%';
-      } else if (stg === 3) {
-        tag.innerText = 'STAGE 03 · DEPTH PROFILOMETRY';
-        title.innerText = 'Pavement Depth & Tonnage Mesh Estimator';
-        desc.innerText = 'Synthesizes optical bounding boxes with STAN IMU 6-axis Z-axis accelerometer vibration spikes, calculating crater depth in centimeters and asphalt hot-mix repair tonnage.';
-        m1.innerText = 'Depth: 16.4 cm';
-        m2.innerText = '12 MT Hot-Mix';
-        m3.innerText = 'Z-Impact: 3.2g';
-        l1.innerText = 'Fusing STAN IMU Accelerometer Z-Shock Spike';
-        l2.innerText = 'Asphalt Tonnage Math: Area x Depth x 2.4 MT/m³';
-        l3.innerText = 'Geotagging Fix: Lat 26.8842, Lng 75.8014';
-      } else if (stg === 4) {
-        tag.innerText = 'STAGE 04 · AUTOMATED DISPATCH';
-        title.innerText = 'Encrypted 4G Docket Ingest & PWD Dispatch';
-        desc.innerText = 'Compresses video telemetry by 98.4%, transmitting lightweight AES-256 JSON dockets over 4G LTE to the Command Center and generating contractor work orders.';
-        m1.innerText = '98.4% Bandwidth Saved';
-        m2.innerText = 'AES-256 Encrypted';
-        m3.innerText = '48h Contractor SLA';
-        l1.innerText = 'Transmitting Lightweight JSON Docket (2.4 KB)';
-        l2.innerText = 'Command Center WebSocket Received OK';
-        l3.innerText = 'PWD Zone Engineer Work Order #PWD-892 Dispatched';
-      }
-    }
-  </script>
 
 </body>
 </html>
