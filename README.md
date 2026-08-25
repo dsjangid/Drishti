@@ -6,7 +6,7 @@
 [![AI Model: YOLOv8x](https://img.shields.io/badge/AI%20Model-YOLOv8x%20PotholeGuard-121316?style=for-the-badge&logo=nvidia)](docs/ai-pipeline.md)
 [![Inference: 14.8ms](https://img.shields.io/badge/Edge%20Inference-14.8ms%20%40%2060FPS-4A62D6?style=for-the-badge)](docs/ai-pipeline.md)
 [![mAP: 96.8%](https://img.shields.io/badge/Detection%20mAP-96.8%25-121316?style=for-the-badge)](docs/ai-pipeline.md)
-[![SIH 2024](https://img.shields.io/badge/Smart%20India%20Hackathon-2024-4A62D6?style=for-the-badge)](docs/demo-flow.md)
+[![SIH 2024](https://img.shields.io/badge/Smart%20India%20Hackathon-2026-4A62D6?style=for-the-badge)](docs/demo-flow.md)
 
 ---
 
