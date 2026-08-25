@@ -12,8 +12,8 @@
 
 ## The Problem
 
-India loses **₹6 lakh crore every year** to bad roads (3–5% of GDP). In 2024:
-- **177,175 people died** in road accidents (MoRTH 2024)
+India loses **₹6 lakh crore every year** to bad roads (3–5% of GDP). In 2026:
+- **177,175 people died** in road accidents (MoRTH 2026)
 - **2,385 deaths** were directly caused by potholes — a 53% increase since 2020
 - Cities detect and patch the same potholes repeatedly because they lack continuous, city-wide monitoring
 
