@@ -27,6 +27,11 @@ ENV/
 *.egg-info/
 dist/
 build/
+*.db
+*.sqlite
+*.sqlite3
+.pytest_cache/
+backend/.pytest_cache/
 
 # ── AI Model Weights (large binary files — store separately) ─
 *.pt

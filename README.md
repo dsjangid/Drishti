@@ -40,15 +40,16 @@ Current solutions — dedicated road survey vans — cost ₹1.2 lakh per kilome
 
 | Component | Status |
 |:---|:---|
-| YOLOv8x pothole detection model | ✅ **Real** — runs via `ui.py` |
+| FastAPI REST API & WebSockets | ✅ **Real** — runs via `backend/run_server.py` |
+| YOLOv8x pothole detection model | ✅ **Real** — runs via `ui.py` & `/api/v1/inference` |
 | Streamlit AI inference app | ✅ **Real** — full video pipeline |
 | ByteTrack multi-object tracker | ✅ **Real** |
 | Pre-rendered demo videos | ✅ **Real model outputs** |
-| GIS map & fleet tracking | 🟡 Simulated (deterministic waypoints) |
-| Live telemetry numbers | 🟡 Simulated (representative projections) |
-| Work order dispatch | 🟡 UI mockup |
+| GIS Map GeoJSON Export | ✅ **Real** — RFC 7946 via `/api/v1/analytics/geojson` |
+| Municipal Work Order Engine | ✅ **Real** — IRC tonnage calculation & SQLite DB |
+| GIS map & fleet tracking | 🟡 Simulated (deterministic waypoints & WebSocket feed) |
 
-See [`docs/architecture.md`](docs/architecture.md) for full disclosure.
+See [`docs/architecture.md`](docs/architecture.md) & [`docs/api.md`](docs/api.md) for full disclosure.
 
 ---
 
@@ -66,16 +67,23 @@ python3 -m http.server 8000
 # Open: http://localhost:8000
 ```
 
-### 2. Run the Real AI Pothole Detection Model
+### 2. Launch the FastAPI Backend Service
 
 ```bash
-# Install Python dependencies
-pip install -r requirements.txt
+# Install backend dependencies
+pip install -r backend/requirements.txt
 
-# Place model weights in the project root (gitignored — not in repo)
-# File: "best (16).pt"  OR  models/drishti_potholedetect_v1.pt
+# Start backend server (FastAPI + SQLite + WebSockets)
+python3 backend/run_server.py
+```
+- **Interactive Swagger UI**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- **ReDoc API Documentation**: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+- **Live WebSocket Stream**: `ws://localhost:8000/ws/telemetry`
 
-# Launch the AI Lab
+### 3. Run the Streamlit AI Lab
+
+```bash
+# Launch the Streamlit AI Lab
 bash scripts/run_ai_lab.sh
 # Opens at: http://localhost:8501
 ```
@@ -139,6 +147,7 @@ See [`docs/ai-pipeline.md`](docs/ai-pipeline.md) for full training configuration
 | Document | Description |
 |:---|:---|
 | [`docs/architecture.md`](docs/architecture.md) | System architecture, layer diagram, real vs. simulated |
+| [`docs/api.md`](docs/api.md) | REST & WebSocket API endpoints specification |
 | [`docs/ai-pipeline.md`](docs/ai-pipeline.md) | Training data, model config, evaluation metrics |
 | [`docs/demo-flow.md`](docs/demo-flow.md) | 3-minute SIH demo script with talking points |
 | [`docs/deployment.md`](docs/deployment.md) | Local setup, GitHub Pages, production architecture |
