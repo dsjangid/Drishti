@@ -65,6 +65,9 @@
     ::-webkit-scrollbar-thumb { background: #CBD5C8; border-radius: 9999px; }
     ::-webkit-scrollbar-thumb:hover { background: #A4B2A0; }
 
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
     /* Glassmorphic Surfaces */
     .glass-card {
       background: rgba(255, 255, 255, 0.94);
@@ -236,15 +239,15 @@
   <div id="toast-container" class="fixed top-6 right-6 z-[9999] flex flex-col gap-2.5 pointer-events-none"></div>
 
   <!-- ========================================================================= -->
-  <!-- SLIM ICON SIDEBAR -->
+  <!-- SLIM ICON SIDEBAR (Desktop & Tablet: md+) -->
   <!-- ========================================================================= -->
-  <aside class="w-16 sm:w-20 glass-sidebar flex flex-col items-center justify-between py-6 px-2 shrink-0 select-none border-r border-black/[0.04]">
+  <aside class="hidden md:flex w-16 sm:w-20 glass-sidebar flex-col items-center justify-between py-6 px-2 shrink-0 select-none border-r border-black/[0.04] sticky top-0 h-screen">
     
     <!-- Top Drishti Logo & Nav -->
     <div class="space-y-7 flex flex-col items-center">
-      <button onclick="setViewTab('command-center')" title="दृष्टि (Drishti) Command" class="w-11 h-11 rounded-2xl bg-[#121316] text-white flex items-center justify-center font-bold text-base shadow-lg hover:scale-105 transition-all cursor-pointer">
+      <a href="index.html" title="Back to Drishti Home" class="w-11 h-11 rounded-2xl bg-[#121316] text-white flex items-center justify-center font-bold text-base shadow-lg hover:scale-105 transition-all cursor-pointer">
         <span class="tracking-tight leading-none font-sans">दृष्टि</span>
-      </button>
+      </a>
 
       <!-- Main Navigation Rail -->
       <nav class="flex flex-col gap-3.5">
@@ -294,47 +297,98 @@
   <!-- ========================================================================= -->
   <!-- MAIN WORKSPACE -->
   <!-- ========================================================================= -->
-  <main class="flex-1 flex flex-col p-6 sm:p-9 overflow-y-auto gap-6">
+  <main class="flex-1 flex flex-col p-3.5 sm:p-6 lg:p-9 pb-28 md:pb-9 overflow-y-auto gap-5 sm:gap-6 min-w-0">
     
+    <!-- Mobile Top Navigation Header (< md) -->
+    <header class="flex md:hidden items-center justify-between py-1 border-b border-black/[0.06] select-none">
+      <div class="flex items-center gap-2.5">
+        <a href="index.html" class="w-9 h-9 rounded-2xl bg-[#121316] text-white flex items-center justify-center font-bold text-sm shadow-md">
+          <span>दृष्टि</span>
+        </a>
+        <div>
+          <span class="font-extrabold text-sm text-[#1E2320] leading-none block">दृष्टि Command</span>
+          <span class="text-[9px] font-mono text-[#717D75] leading-none">Road Intelligence Mesh</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="triggerHitAndRunSimulation()" title="Simulate Hit-and-Run Intercept" class="w-8 h-8 rounded-full text-rose-600 bg-rose-50 flex items-center justify-center transition-all cursor-pointer animate-pulse">
+          <span class="material-symbols-outlined text-base">shield</span>
+        </button>
+
+        <button onclick="toggleAudioAlerts()" id="mobile-top-btn-audio" title="Audio Alerts" class="w-8 h-8 rounded-full bg-white text-[#717D75] flex items-center justify-center shadow-xs cursor-pointer">
+          <span class="material-symbols-outlined text-base">volume_up</span>
+        </button>
+
+        <button onclick="toggleDashboardDrawer()" aria-label="Open Navigation Drawer" class="w-8 h-8 rounded-full bg-[#1E2320] text-white flex items-center justify-center shadow-xs cursor-pointer">
+          <span class="material-symbols-outlined text-base">menu</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile Top Horizontal Tab Bar (Always visible & tap-switchable on phone) -->
+    <nav id="mobile-top-tab-bar" class="flex md:hidden items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth p-1 bg-white/70 backdrop-blur-md rounded-2xl border border-black/[0.04] text-xs font-semibold select-none shadow-xs">
+      <button onclick="setViewTab('command-center')" id="mobile-top-pill-command-center" class="whitespace-nowrap px-3 py-2 rounded-xl bg-[#1E2320] text-white flex items-center gap-1.5 transition-all shadow-xs font-bold cursor-pointer">
+        <span class="material-symbols-outlined text-sm">map</span>
+        <span>GIS Map</span>
+      </button>
+      <button onclick="setViewTab('edge-vision')" id="mobile-top-pill-edge-vision" class="whitespace-nowrap px-3 py-2 rounded-xl text-[#717D75] hover:text-[#1E2320] flex items-center gap-1.5 transition-all cursor-pointer">
+        <span class="material-symbols-outlined text-sm">videocam</span>
+        <span>Edge AI</span>
+      </button>
+      <button onclick="setViewTab('video-lab')" id="mobile-top-pill-video-lab" class="whitespace-nowrap px-3 py-2 rounded-xl text-[#717D75] hover:text-[#1E2320] flex items-center gap-1.5 transition-all cursor-pointer">
+        <span class="material-symbols-outlined text-sm">biotech</span>
+        <span>Video Lab</span>
+      </button>
+      <button onclick="setViewTab('work-orders')" id="mobile-top-pill-work-orders" class="whitespace-nowrap px-3 py-2 rounded-xl text-[#717D75] hover:text-[#1E2320] flex items-center gap-1.5 transition-all cursor-pointer">
+        <span class="material-symbols-outlined text-sm">assignment</span>
+        <span>Work Orders</span>
+      </button>
+      <button onclick="setViewTab('analytics')" id="mobile-top-pill-analytics" class="whitespace-nowrap px-3 py-2 rounded-xl text-[#717D75] hover:text-[#1E2320] flex items-center gap-1.5 transition-all cursor-pointer">
+        <span class="material-symbols-outlined text-sm">monitoring</span>
+        <span>Analytics</span>
+      </button>
+    </nav>
+
     <!-- Top Context Bar -->
     <div class="flex justify-between items-center text-xs font-mono text-[#717D75] font-bold uppercase tracking-wider">
-      <span>/DRISHTI: URBAN COMMAND CENTER · AI ROAD MOBILITY MESH</span>
-      <span>06 · SIH-26124</span>
+      <span class="truncate">/DRISHTI: URBAN COMMAND CENTER · AI ROAD MOBILITY MESH</span>
+      <span class="shrink-0 ml-2">06 · SIH-26124</span>
     </div>
 
     <!-- Top Title & Profile Header -->
     <div class="flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-[#1E2320] tracking-tight" id="main-view-title">Incident Dockets &amp; Fleet Map</h1>
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#1E2320] tracking-tight" id="main-view-title">Incident Dockets &amp; Fleet Map</h1>
         <p class="text-xs text-[#717D75] mt-1" id="main-view-subtitle">Real-time edge-AI transit sensing across municipal bus fleets &amp; urban corridors</p>
       </div>
 
       <!-- Top Right Search & User Profile Pill -->
-      <div class="flex items-center gap-3">
+      <div class="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
         
         <!-- Omni Search Input -->
-        <div class="relative">
+        <div class="relative flex-1 sm:flex-none">
           <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
           <input 
             type="text" 
             id="global-search-input" 
             oninput="handleGlobalSearch(this.value)" 
-            placeholder="Search bus (e.g. 5, BUS-002), road, driver..." 
-            class="w-60 sm:w-80 pl-10 pr-4 py-2.5 bg-white/90 backdrop-blur-md rounded-full text-xs text-[#1E2320] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E2320]/20 font-mono shadow-sm"
+            placeholder="Search bus, road, driver..." 
+            class="w-full sm:w-60 lg:w-80 pl-10 pr-4 py-2.5 bg-white/90 backdrop-blur-md rounded-full text-xs text-[#1E2320] placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E2320]/20 font-mono shadow-sm"
           />
         </div>
 
-        <button onclick="openExportModal()" title="Help & Export" class="w-10 h-10 rounded-full bg-white/90 backdrop-blur-md text-[#1E2320] hover:bg-white flex items-center justify-center shadow-sm transition-all cursor-pointer">
+        <button onclick="openExportModal()" title="Help & Export" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/90 backdrop-blur-md text-[#1E2320] hover:bg-white flex items-center justify-center shadow-sm transition-all cursor-pointer shrink-0">
           <span class="material-symbols-outlined text-base">help</span>
         </button>
 
-        <button onclick="showToast('Active Alerts', '18 road defects monitored across 32 wards.', 'info')" title="Notifications" class="w-10 h-10 rounded-full bg-white/90 backdrop-blur-md text-[#1E2320] hover:bg-white flex items-center justify-center shadow-sm relative transition-all cursor-pointer">
+        <button onclick="showToast('Active Alerts', '18 road defects monitored across 32 wards.', 'info')" title="Notifications" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/90 backdrop-blur-md text-[#1E2320] hover:bg-white flex items-center justify-center shadow-sm relative transition-all cursor-pointer shrink-0">
           <span class="material-symbols-outlined text-base">notifications</span>
           <span class="w-2 h-2 rounded-full bg-rose-500 absolute top-2.5 right-2.5"></span>
         </button>
 
         <!-- User Profile Pill -->
-        <div class="flex items-center gap-2.5 bg-white/90 backdrop-blur-md rounded-full px-4 py-2 shadow-sm">
+        <div class="hidden sm:flex items-center gap-2.5 bg-white/90 backdrop-blur-md rounded-full px-4 py-2 shadow-sm shrink-0">
           <div class="w-6 h-6 rounded-full bg-[#1E2320] text-white flex items-center justify-center text-[10px] font-bold">
             UM
           </div>
@@ -2664,17 +2718,35 @@
       tabs.forEach(t => {
         const view = document.getElementById('tab-view-' + t);
         const railBtn = document.getElementById('rail-btn-' + t);
+        const topPill = document.getElementById('mobile-top-pill-' + t);
+        const bottomBtn = document.getElementById('mobile-bottom-btn-' + t);
+
         if (view) view.classList.add('hidden');
         if (railBtn) {
           railBtn.className = 'w-10 h-10 rounded-full text-[#717D75] hover:bg-black/5 hover:text-[#1E2320] flex items-center justify-center transition-all cursor-pointer';
+        }
+        if (topPill) {
+          topPill.className = 'whitespace-nowrap px-3 py-2 rounded-xl text-[#717D75] hover:text-[#1E2320] flex items-center gap-1.5 transition-all cursor-pointer font-medium';
+        }
+        if (bottomBtn) {
+          bottomBtn.className = 'flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all text-[#717D75] hover:text-[#1E2320] cursor-pointer';
         }
       });
 
       const targetView = document.getElementById('tab-view-' + tabName);
       const targetRail = document.getElementById('rail-btn-' + tabName);
+      const targetTopPill = document.getElementById('mobile-top-pill-' + tabName);
+      const targetBottomBtn = document.getElementById('mobile-bottom-btn-' + tabName);
+
       if (targetView) targetView.classList.remove('hidden');
       if (targetRail) {
         targetRail.className = 'w-10 h-10 rounded-full bg-[#1E2320] text-white flex items-center justify-center shadow-sm transition-all cursor-pointer';
+      }
+      if (targetTopPill) {
+        targetTopPill.className = 'whitespace-nowrap px-3 py-2 rounded-xl bg-[#1E2320] text-white flex items-center gap-1.5 transition-all shadow-xs font-bold cursor-pointer';
+      }
+      if (targetBottomBtn) {
+        targetBottomBtn.className = 'flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all text-[#1E2320] font-bold bg-black/[0.04] cursor-pointer';
       }
 
       const mainTitle = document.getElementById('main-view-title');
@@ -2682,7 +2754,7 @@
       if (tabName === 'command-center') {
         if (mainTitle) mainTitle.innerText = 'Incident Dockets & Fleet Map';
         if (mainSubtitle) mainSubtitle.innerText = 'Real-time edge-AI transit sensing across 10 municipal buses · Urban Road Intelligence Mesh';
-        if (map) setTimeout(() => map.invalidateSize(), 100);
+        if (map) setTimeout(() => map.invalidateSize(), 150);
       } else if (tabName === 'edge-vision') {
         if (mainTitle) mainTitle.innerText = 'Onboard Edge AI Cameras';
         if (mainSubtitle) mainSubtitle.innerText = '1080p live windshield vision, license plate OCR, and spatial object detection';
@@ -4617,6 +4689,14 @@
     window.captureCameraSnapshot = captureCameraSnapshot;
     window.bootDashboard = bootDashboard;
 
+    // Mobile Drawer Toggle
+    function toggleDashboardDrawer() {
+      const drawer = document.getElementById('dashboard-mobile-drawer');
+      if (!drawer) return;
+      drawer.classList.toggle('hidden');
+    }
+    window.toggleDashboardDrawer = toggleDashboardDrawer;
+
     // ROBUST INITIALIZATION
     function bootDashboard() {
       try { initMap(); } catch (e) { console.warn('GIS Map init:', e); }
@@ -4634,5 +4714,151 @@
       bootDashboard();
     }
   </script>
+
+  <!-- ========================================================================= -->
+  <!-- MOBILE BOTTOM NAVIGATION TAB BAR (< md) -->
+  <!-- ========================================================================= -->
+  <nav id="mobile-bottom-nav" class="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white/95 backdrop-blur-2xl border-t border-black/[0.08] shadow-[0_-4px_24px_rgba(0,0,0,0.08)] px-2 py-1.5 flex items-center justify-around select-none">
+    <button onclick="setViewTab('command-center')" id="mobile-bottom-btn-command-center" class="flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all text-[#1E2320] font-bold bg-black/[0.04] cursor-pointer">
+      <span class="material-symbols-outlined text-xl">map</span>
+      <span class="text-[10px] tracking-tight leading-tight mt-0.5">Map</span>
+    </button>
+    <button onclick="setViewTab('edge-vision')" id="mobile-bottom-btn-edge-vision" class="flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all text-[#717D75] hover:text-[#1E2320] cursor-pointer">
+      <span class="material-symbols-outlined text-xl">videocam</span>
+      <span class="text-[10px] tracking-tight leading-tight mt-0.5">Edge AI</span>
+    </button>
+    <button onclick="setViewTab('video-lab')" id="mobile-bottom-btn-video-lab" class="flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all text-[#717D75] hover:text-[#1E2320] cursor-pointer">
+      <span class="material-symbols-outlined text-xl">biotech</span>
+      <span class="text-[10px] tracking-tight leading-tight mt-0.5">Video Lab</span>
+    </button>
+    <button onclick="setViewTab('work-orders')" id="mobile-bottom-btn-work-orders" class="flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all text-[#717D75] hover:text-[#1E2320] cursor-pointer">
+      <span class="material-symbols-outlined text-xl">assignment</span>
+      <span class="text-[10px] tracking-tight leading-tight mt-0.5">Orders</span>
+    </button>
+    <button onclick="setViewTab('analytics')" id="mobile-bottom-btn-analytics" class="flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all text-[#717D75] hover:text-[#1E2320] cursor-pointer">
+      <span class="material-symbols-outlined text-xl">monitoring</span>
+      <span class="text-[10px] tracking-tight leading-tight mt-0.5">Analytics</span>
+    </button>
+  </nav>
+
+  <!-- ========================================================================= -->
+  <!-- MOBILE DASHBOARD DRAWER (< md) -->
+  <!-- ========================================================================= -->
+  <div id="dashboard-mobile-drawer" class="hidden fixed inset-0 z-[9990] bg-black/50 backdrop-blur-sm md:hidden transition-opacity">
+    <div class="fixed inset-y-0 left-0 w-4/5 max-w-sm bg-[#EFF3EA] shadow-2xl p-6 flex flex-col justify-between overflow-y-auto">
+      <div class="space-y-6">
+        <div class="flex items-center justify-between border-b border-black/[0.06] pb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-[#121316] text-white flex items-center justify-center font-bold text-base shadow-md">
+              <span>दृष्टि</span>
+            </div>
+            <div>
+              <span class="font-extrabold text-base text-[#1E2320] block">दृष्टि Command</span>
+              <span class="text-[10px] text-[#717D75] font-mono">Urban Safety Mesh</span>
+            </div>
+          </div>
+          <button onclick="toggleDashboardDrawer()" class="w-9 h-9 rounded-full bg-white text-[#1E2320] flex items-center justify-center shadow-xs cursor-pointer">
+            <span class="material-symbols-outlined text-lg">close</span>
+          </button>
+        </div>
+
+        <!-- Dashboard Views Direct Switcher -->
+        <div class="space-y-2">
+          <div class="text-[11px] font-mono uppercase tracking-widest text-[#717D75] font-bold">Command Center Views</div>
+          <div class="grid grid-cols-1 gap-1.5 text-xs font-semibold">
+            <button onclick="setViewTab('command-center'); toggleDashboardDrawer();" class="flex items-center gap-3 p-3 rounded-2xl bg-white text-[#1E2320] shadow-xs text-left w-full hover:bg-slate-100 cursor-pointer">
+              <span class="material-symbols-outlined text-lg text-emerald-600">map</span>
+              <div>
+                <span class="block font-bold">GIS Map &amp; Fleet Console</span>
+                <span class="text-[10px] text-[#717D75]">Bento incident dockets &amp; live GPS</span>
+              </div>
+            </button>
+
+            <button onclick="setViewTab('edge-vision'); toggleDashboardDrawer();" class="flex items-center gap-3 p-3 rounded-2xl bg-white text-[#1E2320] shadow-xs text-left w-full hover:bg-slate-100 cursor-pointer">
+              <span class="material-symbols-outlined text-lg text-[#4A62D6]">videocam</span>
+              <div>
+                <span class="block font-bold">Onboard Edge AI Cameras</span>
+                <span class="text-[10px] text-[#717D75]">Live windshield stream &amp; YOLOv8</span>
+              </div>
+            </button>
+
+            <button onclick="setViewTab('video-lab'); toggleDashboardDrawer();" class="flex items-center gap-3 p-3 rounded-2xl bg-white text-[#1E2320] shadow-xs text-left w-full hover:bg-slate-100 cursor-pointer">
+              <span class="material-symbols-outlined text-lg text-purple-600">biotech</span>
+              <div>
+                <span class="block font-bold">AI Video Lab &amp; Custom Tester</span>
+                <span class="text-[10px] text-[#717D75]">Upload dashcam or benchmark clips</span>
+              </div>
+            </button>
+
+            <button onclick="setViewTab('work-orders'); toggleDashboardDrawer();" class="flex items-center gap-3 p-3 rounded-2xl bg-white text-[#1E2320] shadow-xs text-left w-full hover:bg-slate-100 cursor-pointer">
+              <span class="material-symbols-outlined text-lg text-amber-600">assignment</span>
+              <div>
+                <span class="block font-bold">Municipal Defect Registry</span>
+                <span class="text-[10px] text-[#717D75]">PWD work orders &amp; contractor SLA</span>
+              </div>
+            </button>
+
+            <button onclick="setViewTab('analytics'); toggleDashboardDrawer();" class="flex items-center gap-3 p-3 rounded-2xl bg-white text-[#1E2320] shadow-xs text-left w-full hover:bg-slate-100 cursor-pointer">
+              <span class="material-symbols-outlined text-lg text-blue-600">monitoring</span>
+              <div>
+                <span class="block font-bold">City Traffic Intelligence</span>
+                <span class="text-[10px] text-[#717D75]">Volume curves &amp; vehicle telemetry</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="space-y-2">
+          <div class="text-[11px] font-mono uppercase tracking-widest text-[#717D75] font-bold">Quick Actions</div>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <button onclick="triggerHitAndRunSimulation(); toggleDashboardDrawer();" class="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 font-bold flex flex-col items-center gap-1 cursor-pointer">
+              <span class="material-symbols-outlined text-lg">shield</span>
+              <span class="text-[10px]">Simulate Pursuit</span>
+            </button>
+            <button onclick="openDriverLeaderboard(); toggleDashboardDrawer();" class="p-3 rounded-2xl bg-white border border-black/[0.06] text-[#1E2320] font-bold flex flex-col items-center gap-1 cursor-pointer">
+              <span class="material-symbols-outlined text-lg">person</span>
+              <span class="text-[10px]">Driver Index</span>
+            </button>
+            <button onclick="openExportModal(); toggleDashboardDrawer();" class="p-3 rounded-2xl bg-white border border-black/[0.06] text-[#1E2320] font-bold flex flex-col items-center gap-1 cursor-pointer">
+              <span class="material-symbols-outlined text-lg">download</span>
+              <span class="text-[10px]">Export Report</span>
+            </button>
+            <button onclick="toggleAudioAlerts(); toggleDashboardDrawer();" class="p-3 rounded-2xl bg-white border border-black/[0.06] text-[#1E2320] font-bold flex flex-col items-center gap-1 cursor-pointer">
+              <span class="material-symbols-outlined text-lg">volume_up</span>
+              <span class="text-[10px]">Toggle Audio</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Website Navigation Links -->
+        <div class="space-y-2 pt-2 border-t border-black/[0.06]">
+          <div class="text-[11px] font-mono uppercase tracking-widest text-[#717D75] font-bold">Website Pages</div>
+          <div class="flex flex-col gap-1 text-xs font-semibold">
+            <a href="index.html" class="flex items-center gap-2 p-2.5 rounded-xl hover:bg-black/5 text-[#1E2320]">
+              <span class="material-symbols-outlined text-base">home</span>
+              <span>Home / Overview</span>
+            </a>
+            <a href="how_it_works.html" class="flex items-center gap-2 p-2.5 rounded-xl hover:bg-black/5 text-[#1E2320]">
+              <span class="material-symbols-outlined text-base">schema</span>
+              <span>How It Works</span>
+            </a>
+            <a href="ai_demo.html" class="flex items-center gap-2 p-2.5 rounded-xl hover:bg-black/5 text-[#1E2320]">
+              <span class="material-symbols-outlined text-base">play_circle</span>
+              <span>AI Perception Lab</span>
+            </a>
+            <a href="features.html" class="flex items-center gap-2 p-2.5 rounded-xl hover:bg-black/5 text-[#1E2320]">
+              <span class="material-symbols-outlined text-base">grid_view</span>
+              <span>Features Suite</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-6 border-t border-black/[0.06] text-center text-[10px] font-mono text-[#717D75]">
+        दृष्टि UCC · SIH-26124 Mesh v2.4
+      </div>
+    </div>
+  </div>
 </body>
 </html>

@@ -36,3 +36,4 @@ class RoadDocket(Base):
     
     detected_at = Column(DateTime, default=datetime.utcnow)
     resolved_at = Column(DateTime, nullable=True)
+

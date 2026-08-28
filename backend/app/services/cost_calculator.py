@@ -51,3 +51,4 @@ class IRCCostCalculator:
             "tonnage_mt": tonnage_mt,
             "estimated_cost_inr": total_estimated_cost
         }
+

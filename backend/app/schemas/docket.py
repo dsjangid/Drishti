@@ -48,3 +48,4 @@ class DocketSummaryStats(BaseModel):
     critical_count: int
     estimated_total_repair_inr: float
     total_asphalt_tonnage_mt: float
+

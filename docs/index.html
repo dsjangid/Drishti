@@ -75,6 +75,8 @@
         display: none;
       }
     }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -85,25 +87,25 @@
   <div class="w-full bg-[#F3F4F6] text-[#121316] relative z-10">
 
     <!-- NAVBAR -->
-    <header class="sticky top-0 z-50 bg-[#F3F4F6]/90 backdrop-blur-xl border-b border-[#E5E7EB]/80">
-      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+    <header class="sticky top-0 z-50 bg-[#F3F4F6]/95 backdrop-blur-xl border-b border-[#E5E7EB]/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
         
         <!-- Logo -->
-        <a href="index.html" class="flex items-center gap-3.5 group">
-          <div class="w-10 h-10 rounded-2xl bg-[#121316] text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-all">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <a href="index.html" class="flex items-center gap-2.5 sm:gap-3.5 group">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-[#121316] text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-all">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
               <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
               <line x1="12" y1="22.08" x2="12" y2="12" />
             </svg>
           </div>
-          <div class="flex items-baseline gap-2">
-            <span class="font-black text-xl text-[#121316] tracking-tight leading-none">दृष्टि UCC</span>
-            <span class="text-xs font-semibold text-[#6B7280]">Autonomous Road Intelligence</span>
+          <div class="flex items-baseline gap-1.5 sm:gap-2">
+            <span class="font-black text-lg sm:text-xl text-[#121316] tracking-tight leading-none">दृष्टि UCC</span>
+            <span class="text-[10px] sm:text-xs font-semibold text-[#6B7280] hidden xs:inline">Autonomous Road Intelligence</span>
           </div>
         </a>
 
-        <!-- Nav Links -->
+        <!-- Nav Links (Desktop) -->
         <nav class="hidden lg:flex items-center gap-8 text-xs font-semibold text-[#6B7280]">
           <a href="index.html" class="text-[#121316] font-bold transition-colors">Home</a>
           <a href="how_it_works.html" class="hover:text-[#121316] transition-colors">How It Works</a>
@@ -113,14 +115,112 @@
         </nav>
 
         <!-- Search & Command Center Link -->
-        <div class="flex items-center gap-4">
-          <div class="relative hidden sm:block">
+        <div class="flex items-center gap-2 sm:gap-4">
+          <div class="relative hidden md:block">
             <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
-            <input type="text" placeholder="Search corridors, defects, fleet..." class="pl-9 pr-4 py-2 bg-white rounded-full text-xs text-[#121316] placeholder:text-[#6B7280] border border-[#E5E7EB] focus:outline-none focus:ring-2 focus:ring-[#121316]/10 w-52 lg:w-64 shadow-xs transition-all" />
+            <input type="text" placeholder="Search corridors, defects, fleet..." class="pl-9 pr-4 py-2 bg-white rounded-full text-xs text-[#121316] placeholder:text-[#6B7280] border border-[#E5E7EB] focus:outline-none focus:ring-2 focus:ring-[#121316]/10 w-44 lg:w-64 shadow-xs transition-all" />
           </div>
 
-          <a href="dashboard.html" class="hidden md:flex items-center gap-1 text-xs font-bold text-[#121316] hover:text-black transition-colors px-3 py-2">
+          <a href="dashboard.html" class="hidden sm:flex items-center gap-1 text-xs font-bold bg-[#121316] text-white hover:bg-[#2B2F38] transition-colors px-4 py-2 rounded-full shadow-sm">
             <span>Command Center</span>
+            <span class="material-symbols-outlined text-xs">north_east</span>
+          </a>
+
+          <!-- Mobile Menu Toggle Button -->
+          <button id="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle Navigation Menu" class="lg:hidden w-10 h-10 rounded-xl bg-white border border-[#E5E7EB] text-[#121316] flex items-center justify-center shadow-xs hover:bg-slate-50 transition-all cursor-pointer">
+            <span id="mobile-menu-icon" class="material-symbols-outlined text-xl">menu</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Quick Scrollable Tab Bar (Always visible on phone) -->
+      <nav class="flex lg:hidden items-center gap-1.5 px-3 py-2 bg-white/80 border-t border-[#E5E7EB] overflow-x-auto no-scrollbar scroll-smooth text-xs font-semibold">
+        <a href="index.html" class="whitespace-nowrap px-3.5 py-1.5 rounded-full bg-[#121316] text-white shadow-xs flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">home</span>
+          <span>Home</span>
+        </a>
+        <a href="how_it_works.html" class="whitespace-nowrap px-3.5 py-1.5 rounded-full bg-[#F3F4F6] text-[#6B7280] hover:text-[#121316] hover:bg-slate-200/70 transition-all flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">schema</span>
+          <span>How It Works</span>
+        </a>
+        <a href="ai_demo.html" class="whitespace-nowrap px-3.5 py-1.5 rounded-full bg-[#F3F4F6] text-[#6B7280] hover:text-[#121316] hover:bg-slate-200/70 transition-all flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">play_circle</span>
+          <span>AI Demo</span>
+        </a>
+        <a href="features.html" class="whitespace-nowrap px-3.5 py-1.5 rounded-full bg-[#F3F4F6] text-[#6B7280] hover:text-[#121316] hover:bg-slate-200/70 transition-all flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">grid_view</span>
+          <span>Features</span>
+        </a>
+        <a href="dashboard.html" class="whitespace-nowrap px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 transition-all flex items-center gap-1 font-bold">
+          <span class="material-symbols-outlined text-sm text-emerald-600">monitoring</span>
+          <span>Command Center</span>
+        </a>
+      </nav>
+
+      <!-- Mobile Full Menu Drawer -->
+      <div id="mobile-menu-drawer" class="hidden lg:hidden bg-white/95 backdrop-blur-2xl border-b border-[#E5E7EB] shadow-2xl px-5 py-5 space-y-4">
+        <div class="text-[11px] font-mono uppercase tracking-widest text-[#6B7280] font-bold">Menu Navigation</div>
+        <div class="grid grid-cols-1 gap-2 text-xs font-semibold">
+          <a href="index.html" class="flex items-center justify-between p-3 rounded-2xl bg-[#121316] text-white shadow-sm">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-base">home</span>
+              <div class="text-left">
+                <span class="block font-bold">Home</span>
+                <span class="text-[10px] text-slate-300">Overview &amp; National Metrics</span>
+              </div>
+            </div>
+            <span class="text-[10px] font-mono bg-white/20 px-2 py-0.5 rounded-full">Current</span>
+          </a>
+
+          <a href="how_it_works.html" class="flex items-center justify-between p-3 rounded-2xl bg-[#F4F7F0] text-[#121316] hover:bg-[#E2E8DC] transition-all">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-base text-[#4A62D6]">schema</span>
+              <div class="text-left">
+                <span class="block font-bold">How It Works</span>
+                <span class="text-[10px] text-[#6B7280]">Pipeline, Edge AI &amp; NPU Specs</span>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-sm text-slate-400">chevron_right</span>
+          </a>
+
+          <a href="ai_demo.html" class="flex items-center justify-between p-3 rounded-2xl bg-[#F4F7F0] text-[#121316] hover:bg-[#E2E8DC] transition-all">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-base text-emerald-600">play_circle</span>
+              <div class="text-left">
+                <span class="block font-bold">AI Perception Demo</span>
+                <span class="text-[10px] text-[#6B7280]">Interactive YOLOv8 &amp; OCR Demo</span>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-sm text-slate-400">chevron_right</span>
+          </a>
+
+          <a href="features.html" class="flex items-center justify-between p-3 rounded-2xl bg-[#F4F7F0] text-[#121316] hover:bg-[#E2E8DC] transition-all">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-base text-amber-600">grid_view</span>
+              <div class="text-left">
+                <span class="block font-bold">Features &amp; Capabilities</span>
+                <span class="text-[10px] text-[#6B7280]">Contractor SLA, Potholes &amp; Pursuits</span>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-sm text-slate-400">chevron_right</span>
+          </a>
+
+          <a href="#partners" onclick="toggleMobileMenu()" class="flex items-center justify-between p-3 rounded-2xl bg-[#F4F7F0] text-[#121316] hover:bg-[#E2E8DC] transition-all">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-base text-slate-600">info</span>
+              <div class="text-left">
+                <span class="block font-bold">About Us</span>
+                <span class="text-[10px] text-[#6B7280]">SIH-26124 &amp; Ministry of MoRTH</span>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-sm text-slate-400">chevron_right</span>
+          </a>
+        </div>
+
+        <div class="pt-3 border-t border-[#E5E7EB]">
+          <a href="dashboard.html" class="w-full py-3 rounded-2xl bg-[#4A62D6] hover:bg-[#3B50B8] text-white text-center text-xs font-bold shadow-md flex items-center justify-center gap-2 transition-all">
+            <span class="material-symbols-outlined text-base">dashboard</span>
+            <span>Launch Live GIS Command Center</span>
             <span class="material-symbols-outlined text-xs">north_east</span>
           </a>
         </div>
@@ -763,6 +863,20 @@
         defects.innerText = '32 Severe Waterlogged Dips';
         crew.innerText = 'Apex Civil Mesh Emergency SOS';
         asphalt.innerText = '42.0 MT Reinforced Asphalt';
+      }
+    }
+
+    function toggleMobileMenu() {
+      const drawer = document.getElementById('mobile-menu-drawer');
+      const icon = document.getElementById('mobile-menu-icon');
+      if (!drawer) return;
+      const isHidden = drawer.classList.contains('hidden');
+      if (isHidden) {
+        drawer.classList.remove('hidden');
+        if (icon) icon.innerText = 'close';
+      } else {
+        drawer.classList.add('hidden');
+        if (icon) icon.innerText = 'menu';
       }
     }
   </script>

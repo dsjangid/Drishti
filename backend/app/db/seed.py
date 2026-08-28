@@ -60,3 +60,4 @@ def seed_database(db: Session):
             db.add(docket_obj)
             
     db.commit()
+

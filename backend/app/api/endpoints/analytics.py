@@ -74,3 +74,4 @@ def get_ward_breakdown(db: Session = Depends(get_db)):
 
     result = [WardDefectAggregate(**data) for data in sorted(wards_map.values(), key=lambda x: x["ward_number"])]
     return result
+

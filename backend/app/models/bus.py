@@ -26,3 +26,4 @@ class Bus(Base):
     cellular_signal = Column(String(32), default="98% (4G LTE)")
     
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+

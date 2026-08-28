@@ -73,3 +73,4 @@ def update_bus(bus_id: str, payload: BusUpdate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(bus)
     return bus
+

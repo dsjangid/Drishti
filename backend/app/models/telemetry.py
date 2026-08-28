@@ -21,3 +21,4 @@ class TelemetryLog(Base):
     # Traffic flow PCU
     pcu_flow_count = Column(Integer, default=0)
     detected_objects_count = Column(Integer, default=0)
+

@@ -9,3 +9,4 @@ api_router.include_router(telemetry.router, prefix="/telemetry", tags=["IoT Inge
 api_router.include_router(analytics.router, prefix="/analytics", tags=["GIS Cartography & Traffic Analytics"])
 api_router.include_router(contractors.router, prefix="/contractors", tags=["PWD Contractor SLA Management"])
 api_router.include_router(inference.router, prefix="/inference", tags=["Edge-AI Perception & Defect Detection"])
+

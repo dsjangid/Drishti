@@ -13,3 +13,4 @@ class Contractor(Base):
     sla_compliance_rate = Column(Float, default=94.5) # Percentage
     quality_grade = Column(String(8), default="A+")
     avg_turnaround_hours = Column(Float, default=18.2)
+

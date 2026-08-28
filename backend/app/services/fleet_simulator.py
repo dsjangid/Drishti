@@ -36,3 +36,4 @@ class FleetSimulator:
         speed = round(22.0 + 12.0 * math.cos(step_fraction * 4 * math.pi), 1)
         
         return {"lat": lat, "lng": lng, "speed": max(12.0, speed)}
+

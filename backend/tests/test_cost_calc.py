@@ -22,3 +22,4 @@ def test_minimum_tonnage_floor():
     # Very shallow defect (1 cm) should still satisfy minimum 0.5 MT dispatch
     metrics = IRCCostCalculator.calculate_repair_metrics(depth_cm=1.0)
     assert metrics["tonnage_mt"] >= 0.5
+

@@ -27,3 +27,4 @@ class WardDefectAggregate(BaseModel):
     resolved_defects: int
     critical_potholes: int
     hotmix_required_mt: float
+

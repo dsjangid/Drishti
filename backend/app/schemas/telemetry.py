@@ -38,3 +38,4 @@ class LiveMapBusPacket(BaseModel):
     speed: float
     safety_score: int
     is_active: bool
+

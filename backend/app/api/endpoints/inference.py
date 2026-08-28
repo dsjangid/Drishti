@@ -34,3 +34,4 @@ async def detect_frame_defects(
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Inference execution failed: {str(e)}")
+

@@ -38,3 +38,4 @@ class GeoJSONService:
             type="FeatureCollection",
             features=features
         )
+

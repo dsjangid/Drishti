@@ -76,3 +76,4 @@ async def websocket_telemetry_stream(websocket: WebSocket):
         manager.disconnect(websocket)
     except Exception:
         manager.disconnect(websocket)
+

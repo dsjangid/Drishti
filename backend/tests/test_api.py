@@ -153,3 +153,4 @@ def test_contractors_list():
     contractors = res.json()
     assert len(contractors) == 4
     assert contractors[0]["sla_compliance_rate"] >= 80.0
+

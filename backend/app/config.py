@@ -41,3 +41,4 @@ class Settings(BaseSettings):
     BASE_MOBILIZATION_FEE: float = 3000.0   # ₹3,000 baseline crew dispatch
 
 settings = Settings()
+

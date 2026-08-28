@@ -45,3 +45,4 @@ class DriverLeaderboardItem(BaseModel):
     grade: str
     risk_level: str
     recent_events: int
+
