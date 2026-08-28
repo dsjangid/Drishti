@@ -13,10 +13,10 @@
 ## Data Sources & Credibility
 
 ### Incident Statistics
-- `177,175 road fatalities` — MoRTH 2024 Annual Report on Road Accidents
-- `487,707 total accidents` — MoRTH 2024
-- `2,385 pothole deaths` — MoRTH 2024 (Road Accidents in India report)
-- `3–5% GDP loss` — World Bank India Transport Sector assessment; confirmed by Union Minister Nitin Gadkari (press statement, 2024)
+- `177,175 road fatalities` — MoRTH Official Report on Road Accidents in India
+- `487,707 total recorded crashes` — MoRTH Road Accidents in India Report
+- `2,385 pothole deaths` — MoRTH Road Accidents in India Report
+- `3–5% GDP loss (₹3.8 to ₹6.0 Lakh Crore)` — World Bank India Transport Sector Assessment & MoRTH benchmarks
 
 ### ROI & Cost Figures
 - `₹3,750/MT hot-mix asphalt` — IRC (Indian Roads Congress) standard rate card

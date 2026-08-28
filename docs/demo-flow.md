@@ -24,12 +24,12 @@
 
 **What to say:**
 
-> "India loses ₹6 lakh crore every year to bad roads — that's 3 to 5 percent of GDP. 177,000 people die on our roads annually. 2,385 of those deaths in 2024 alone were caused by potholes. We didn't build a better road survey app. We built a system that turns every municipal bus into a living road sensor."
+> "India loses ₹3.8 to ₹6.0 lakh crore every year to road crashes and infrastructure defects — that's 3 to 5 percent of GDP. Over 177,175 people die on our roads annually, with 2,385 fatalities directly attributed to potholes alone in official MoRTH reports. We didn't build a better road survey app. We built a system that turns every municipal bus into a living road sensor."
 
 **Action:** Scroll slowly through the hero → impact stats → Problem vs. Drishti comparison card.
 
 **Key numbers to emphasize:**
-- `177,175 fatalities` (MoRTH 2024)
+- `177,175 fatalities` (MoRTH Road Accidents in India Report)
 - `100× cheaper` than dedicated survey vans
 - `14.8ms` edge inference on ₹15,000 Jetson Orin hardware
 
