@@ -343,23 +343,23 @@
                 <!-- Active Incidents List -->
                 <div class="p-2 rounded-xl bg-[#151921] border border-slate-800 space-y-1 text-[8px]">
                   <div class="flex justify-between items-center text-slate-300 font-bold border-b border-slate-800/80 pb-0.5">
-                    <span>Live Anomaly Stream</span>
-                    <span class="text-[7px] text-slate-400">View All</span>
+                    <span>Live Defect Stream</span>
+                    <span class="text-[7px] text-slate-400">Real-time</span>
                   </div>
                   <div class="flex justify-between items-center pt-0.5">
-                    <span class="flex items-center gap-1 text-slate-300"><span class="w-1.5 h-1.5 rounded-full bg-[#EF4444]"></span>Pothole (Critical)</span>
+                    <span class="flex items-center gap-1 text-slate-300"><span class="w-1.5 h-1.5 rounded-full bg-[#EF4444]"></span>Pothole (Severe)</span>
                     <span class="font-mono font-bold text-white">18</span>
                   </div>
                   <div class="flex justify-between items-center">
-                    <span class="flex items-center gap-1 text-slate-300"><span class="w-1.5 h-1.5 rounded-full bg-[#3B82F6]"></span>Waterlogging</span>
+                    <span class="flex items-center gap-1 text-slate-300"><span class="w-1.5 h-1.5 rounded-full bg-[#3B82F6]"></span>Waterlogging Dip</span>
                     <span class="font-mono font-bold text-white">07</span>
                   </div>
                   <div class="flex justify-between items-center">
-                    <span class="flex items-center gap-1 text-slate-300"><span class="w-1.5 h-1.5 rounded-full bg-[#F59E0B]"></span>Rash Driving</span>
+                    <span class="flex items-center gap-1 text-slate-300"><span class="w-1.5 h-1.5 rounded-full bg-[#F59E0B]"></span>Asphalt Raveling</span>
                     <span class="font-mono font-bold text-white">05</span>
                   </div>
                   <div class="flex justify-between items-center">
-                    <span class="flex items-center gap-1 text-slate-300"><span class="w-1.5 h-1.5 rounded-full bg-amber-300"></span>Missing Signage</span>
+                    <span class="flex items-center gap-1 text-slate-300"><span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>Shoulder Damage</span>
                     <span class="font-mono font-bold text-white">04</span>
                   </div>
                 </div>
@@ -368,8 +368,8 @@
                 <div class="p-2 rounded-xl bg-[#151921] border border-slate-800 flex items-center justify-between text-[8px]">
                   <div>
                     <span class="text-slate-400 block font-bold">Driver Safety Index</span>
-                    <span class="text-[#60A5FA] font-bold text-[10px] mt-0.5 block">Good</span>
-                    <span class="text-[7px] text-slate-500">Fleet Score</span>
+                    <span class="text-[#60A5FA] font-bold text-[10px] mt-0.5 block">Good (87/100)</span>
+                    <span class="text-[7px] text-slate-500">STAN IMU Telemetry</span>
                   </div>
                   <div class="relative w-8 h-8 rounded-full border-2 border-[#3B82F6] flex items-center justify-center font-mono font-extrabold text-[9px] text-[#60A5FA]">
                     87
@@ -520,7 +520,7 @@
               </li>
               <li class="flex items-start gap-2">
                 <span class="text-[#4A62D6] font-bold">•</span>
-                <span><strong>Multi-Modal AI Fusion:</strong> YOLOv8 vision + STAN IMU vibration sensors eliminate shadow false-positives with 97%+ accuracy.</span>
+                <span><strong>Multi-Modal AI Fusion:</strong> YOLOv8 vision + STAN IMU vibration sensors eliminate shadow false-positives with 96.8% mAP@0.5 precision.</span>
               </li>
               <li class="flex items-start gap-2">
                 <span class="text-[#4A62D6] font-bold">•</span>
@@ -796,12 +796,37 @@
 
     <!-- FOOTER (DARK THEME) -->
     <footer class="bg-black border-t border-white/10 py-12">
-      <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center text-xs font-mono text-slate-400 gap-4">
-        <span>&copy; 2026 दृष्टि (Drishti) · Autonomous Road Intelligence &amp; Urban Command Center. All Rights Reserved.</span>
-        <a href="dashboard.html" class="text-white font-bold hover:text-[#60A5FA] flex items-center gap-1 transition-colors">
-          <span>Launch Live Command Center</span>
-          <span class="material-symbols-outlined text-xs">north_east</span>
-        </a>
+      <div class="max-w-7xl mx-auto px-6 space-y-6">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-white/10 pb-8">
+          <div>
+            <div class="flex items-center gap-2 text-white font-extrabold text-base">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#4A62D6]"></span>
+              <span>दृष्टि UCC · Autonomous Road Intelligence Mesh</span>
+            </div>
+            <p class="text-xs text-slate-400 font-sans mt-1">Developed for Smart India Hackathon (SIH) 2026 · Problem Statement ID: <strong>SIH-26124</strong></p>
+            <p class="text-xs text-slate-400 font-sans">Team दृष्टि · <strong>JECRC Foundation, Jaipur</strong></p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-4 text-xs font-mono text-slate-300">
+            <a href="https://morth.nic.in" target="_blank" rel="noopener noreferrer" class="hover:text-[#60A5FA] underline decoration-slate-700 underline-offset-4 flex items-center gap-1">
+              <span>MoRTH Report Citation</span>
+              <span class="material-symbols-outlined text-xs">open_in_new</span>
+            </a>
+            <a href="https://irc.nic.in" target="_blank" rel="noopener noreferrer" class="hover:text-[#60A5FA] underline decoration-slate-700 underline-offset-4 flex items-center gap-1">
+              <span>IRC:SP:100 Rate Standard</span>
+              <span class="material-symbols-outlined text-xs">open_in_new</span>
+            </a>
+            <a href="dashboard.html" class="px-4 py-2 rounded-full bg-white text-[#121316] font-bold hover:bg-slate-200 transition-all flex items-center gap-1">
+              <span>Live Command Center</span>
+              <span class="material-symbols-outlined text-xs">north_east</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row justify-between items-center text-xs font-mono text-slate-400 gap-4">
+          <span>&copy; 2026 दृष्टि (Drishti) · Built for urban municipal safety across India.</span>
+          <span class="text-[11px] text-slate-400">Model: YOLOv8x-PotholeGuard v1 · 96.8% mAP@0.5 · 14.8ms @ Orin Nano</span>
+        </div>
       </div>
     </footer>
 
