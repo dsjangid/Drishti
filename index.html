@@ -1,26 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>दृष्टि (Drishti) — Autonomous Urban Road Intelligence & Safety Mesh</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
   
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script>
     if (typeof tailwind !== 'undefined') {
       tailwind.config = {
+        darkMode: 'class',
         theme: {
           extend: {
             fontFamily: {
-              sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+              sans: ['"Plus Jakarta Sans"', '"Inter"', 'system-ui', 'sans-serif'],
               mono: ['"JetBrains Mono"', 'monospace'],
+              display: ['"Manrope"', 'sans-serif']
             },
             colors: {
               canvas: '#F3F4F6',
@@ -34,9 +33,7 @@
                 DEFAULT: '#4A62D6',
                 light: '#60A5FA',
                 hover: '#3B50B8'
-              },
-              red: { 500: '#EF4444', 600: '#DC2626' },
-              amber: { 400: '#FBBF24', 500: '#F59E0B', 600: '#D97706' }
+              }
             }
           }
         }
@@ -45,11 +42,224 @@
   </script>
 
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F3F4F6; color: #121316; overflow-x: hidden; }
+    /* =========================================================================
+       1. MINIMAL 2-SECOND PRELOADER
+       ========================================================================= */
+    #drishtiPreloader {
+      position: fixed;
+      inset: 0;
+      background-color: #000000;
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s;
+    }
+
+    #drishtiPreloader.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .preloader-cluster {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 26px;
+    }
+
+    .preloader-brand-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .preloader-logo-box {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid rgba(255, 255, 255, 0.85);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      box-shadow: 0 0 16px rgba(255, 255, 255, 0.12);
+    }
+
+    .preloader-logo-box .material-symbols-outlined {
+      font-size: 22px;
+      color: #ffffff;
+      font-variation-settings: 'FILL' 0, 'wght' 500;
+    }
+
+    .preloader-title {
+      font-family: "Manrope", sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 0.22em;
+      color: #ffffff;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-right: -0.22em;
+    }
+
+    .preloader-track {
+      width: 280px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .preloader-bar {
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
+      width: 0%;
+      background: #ffffff;
+      box-shadow: 0 0 10px #ffffff, 0 0 20px rgba(255, 255, 255, 0.4);
+      animation: fillPreloaderBar 2.0s cubic-bezier(0.25, 1, 0.35, 1) forwards;
+    }
+
+    .preloader-telemetry {
+      width: 280px;
+      display: flex;
+      justify-content: space-between;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: rgba(255, 255, 255, 0.45);
+      text-transform: uppercase;
+    }
+
+    @keyframes fillPreloaderBar {
+      0% { width: 0%; }
+      40% { width: 45%; }
+      75% { width: 80%; }
+      100% { width: 100%; }
+    }
+
+    /* =========================================================================
+       2. URBAN INTELLIGENCE LOGIN OVERLAY VIEW
+       ========================================================================= */
+    #drishtiLoginScreen {
+      position: fixed;
+      inset: 0;
+      background-color: #000000;
+      z-index: 90000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s;
+    }
+
+    #drishtiLoginScreen.is-unlocked {
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(1.02);
+      pointer-events: none;
+    }
+
+    .login-bg-video-wrapper {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .login-video-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 1;
+    }
+
+    .login-outer-frame {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      right: 15px;
+      bottom: 15px;
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      border-radius: 24px;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .login-content-wrapper {
+      position: relative;
+      z-index: 20;
+      min-height: 100vh;
+      width: 100%;
+      max-width: 1600px;
+      display: flex;
+      padding: 40px;
+      gap: 24px;
+      pointer-events: auto;
+      align-items: center;
+      margin: 0 auto;
+    }
+
+    .login-glass-panel {
+      background: rgba(247, 247, 245, 0.96);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 2px solid #E5E5E5;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .login-glass-panel:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .login-dark-glass {
+      background: rgba(23, 23, 23, 0.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .login-input-minimal {
+      background: #FFFFFF;
+      border: none;
+      border-bottom: 2px solid #E5E5E5;
+      border-radius: 0;
+      padding-left: 0;
+      transition: border-color 0.2s;
+    }
+
+    .login-input-minimal:focus {
+      outline: none;
+      border-bottom-color: #000000;
+      box-shadow: none;
+    }
+
+    .login-btn-arrow-shift:hover .material-symbols-outlined {
+      transform: translateX(4px);
+    }
+
+    .login-dot-pattern {
+      background-image: radial-gradient(#999999 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    /* =========================================================================
+       3. LANDING PAGE STYLES
+       ========================================================================= */
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #F3F4F6;
+      color: #121316;
+      overflow-x: hidden;
+    }
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 9999px; }
 
-    /* Custom stepped split transition styling */
     .stepped-dark-boundary {
       position: relative;
       background-color: #0A0C0E;
@@ -79,7 +289,161 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col antialiased">
+
+  <!-- ========================================================================= -->
+  <!-- 1. STAGE 1: MINIMAL 2-SECOND LOADING INTERFACE                            -->
+  <!-- ========================================================================= -->
+  <div id="drishtiPreloader">
+    <div class="preloader-cluster">
+      <div class="preloader-brand-row">
+        <div class="preloader-logo-box">
+          <span class="material-symbols-outlined">visibility</span>
+        </div>
+        <h1 class="preloader-title">DRISHTI</h1>
+      </div>
+      <div class="preloader-track">
+        <div class="preloader-bar"></div>
+      </div>
+      <div class="preloader-telemetry">
+        <span id="preloaderStatus">INITIALIZING CORE</span>
+        <span id="preloaderPct">0%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 2. STAGE 2: URBAN INTELLIGENCE LOGIN OVERLAY                              -->
+  <!-- ========================================================================= -->
+  <div id="drishtiLoginScreen">
+    <!-- Background Video & Surveillance Overlay -->
+    <div class="login-bg-video-wrapper">
+      <div class="login-video-overlay"></div>
+      <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-60 absolute inset-0 z-0">
+        <source src="login_video.mp4" type="video/mp4">
+      </video>
+      <div class="bg-cover bg-center w-full h-full opacity-60 absolute inset-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA0ThEQG5b8K5R1KNV_LAgdbUFx5j4qfEWcXYJ6OlyZf2qkiFDoOIVWrBFL48qpj1kBf0DaEzWK_cHuojsw7OfQ83i6BkVeCl8v8owvYkuWXPUXljY71MpS86DXijlIyoUbR7ejHFncnHghcgno4HNYpakKKjiDjDAsd1I9TCNbjfu2OeC-e5Zg1XdZ6PGznqfivY_iEQk34p2KJB0-9_-M4fUmchcPM-9PGOsMnPbDADNnE2szOw5o4w')"></div>
+    </div>
+
+    <!-- Outer Frame -->
+    <div class="login-outer-frame"></div>
+
+    <!-- Main Login Content -->
+    <div class="login-content-wrapper animate-fade-in">
+      <!-- Left Panel: Login Form -->
+      <div class="login-glass-panel w-full md:w-[38%] rounded-3xl p-8 lg:p-12 flex flex-col justify-between shadow-2xl relative overflow-hidden my-auto">
+        <div>
+          <!-- Header -->
+          <div class="flex items-center gap-2 mb-8 sm:mb-12">
+            <span class="material-symbols-outlined text-black text-2xl">visibility</span>
+            <h1 class="font-bold text-xl tracking-tighter text-black uppercase">DRISHTI</h1>
+          </div>
+          <!-- Editorial Headline -->
+          <h2 class="font-extrabold text-2xl sm:text-3xl text-black mb-6 uppercase max-w-sm leading-tight tracking-tight">
+            SEE THE CITY.<br/>
+            UNDERSTAND IT.<br/>
+            ACT BEFORE IT'S TOO LATE.
+          </h2>
+          <hr class="border-t-2 border-slate-200 mb-6 sm:mb-8"/>
+          <!-- Login Form -->
+          <div class="mb-4">
+            <h3 class="font-bold text-lg sm:text-xl text-black mb-1">Welcome back</h3>
+            <p class="text-sm text-slate-500 mb-6">Sign in to access the Drishti Command Center.</p>
+          </div>
+          <form id="drishtiAuthForm" onsubmit="handleDrishtiLogin(event)" class="flex flex-col gap-4 sm:gap-6">
+            <div class="flex flex-col">
+              <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5" for="loginEmail">Email address</label>
+              <input class="login-input-minimal text-sm sm:text-base text-black w-full py-2 placeholder:text-slate-400" id="loginEmail" placeholder="operative@drishti.gov" value="operative@drishti.gov" required type="email"/>
+            </div>
+            <div class="flex flex-col">
+              <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5" for="loginPassword">Password</label>
+              <input class="login-input-minimal text-sm sm:text-base text-black w-full py-2 placeholder:text-slate-400" id="loginPassword" placeholder="••••••••" value="••••••••" required type="password"/>
+            </div>
+            <div class="flex items-center justify-between mt-1">
+              <label class="flex items-center gap-2 cursor-pointer group">
+                <input class="rounded border-2 border-slate-300 text-black focus:ring-black h-4 w-4" checked type="checkbox"/>
+                <span class="text-xs text-slate-500 group-hover:text-black transition-colors">Remember me</span>
+              </label>
+              <a class="text-xs text-slate-500 hover:text-black transition-colors" href="#">Forgot password?</a>
+            </div>
+            <button id="loginSubmitBtn" class="login-btn-arrow-shift w-full bg-black text-white rounded-full py-3.5 sm:py-4 mt-4 flex items-center justify-center gap-2 hover:bg-neutral-800 transition-all shadow-md cursor-pointer" type="submit">
+              <span class="text-xs font-bold uppercase tracking-widest">SIGN IN</span>
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </button>
+          </form>
+        </div>
+        <!-- Footer Link -->
+        <div class="text-center mt-6">
+          <p class="text-xs text-slate-500">
+            Don't have an account? <a class="text-black font-bold hover:underline" href="#" onclick="handleDrishtiLogin(event)">Enter as Guest</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- Center: Floating Telemetry Badges -->
+      <div class="hidden md:flex flex-1 flex-col justify-center items-center relative pointer-events-none">
+        <div class="flex flex-col gap-6 w-full max-w-md">
+          <div class="login-dark-glass rounded-xl p-4 flex items-center justify-between text-white shadow-lg">
+            <div class="flex items-center gap-3">
+              <span class="w-2.5 h-2.5 rounded-full bg-white animate-pulse"></span>
+              <span class="text-[11px] font-bold uppercase tracking-wider">LIVE FEED: 24 CAMERAS ACTIVE</span>
+            </div>
+            <span class="material-symbols-outlined text-sm opacity-70">videocam</span>
+          </div>
+          <div class="login-dark-glass rounded-xl p-4 flex items-center justify-between text-white shadow-lg" style="margin-left: 20px;">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-sm text-amber-400">warning</span>
+              <span class="text-[11px] font-bold uppercase tracking-wider">07 INCIDENTS DETECTED</span>
+            </div>
+            <span class="text-xs font-mono opacity-70">SECTOR 4</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel: System Diagnostics -->
+      <div class="hidden lg:flex flex-col gap-6 w-[280px]">
+        <div class="login-glass-panel rounded-2xl p-6 relative overflow-hidden">
+          <div class="absolute inset-0 login-dot-pattern opacity-10 pointer-events-none"></div>
+          <h4 class="text-[11px] font-bold text-slate-500 mb-6 uppercase tracking-widest flex items-center gap-2">
+            <span class="text-black font-black">&gt;</span> DRISHTI MESH
+          </h4>
+          <nav class="flex flex-col gap-3.5 relative z-10 text-xs font-semibold text-slate-600">
+            <a class="text-black font-bold flex items-center gap-2" href="#" onclick="handleDrishtiLogin(event)">
+              <span class="text-black">&gt;</span> Landing Page
+            </a>
+            <a class="hover:text-black transition-colors flex items-center gap-2" href="dashboard.html">
+              Dashboard
+            </a>
+            <a class="hover:text-black transition-colors flex items-center gap-2" href="drishti.html">
+              Live Monitoring
+            </a>
+            <a class="hover:text-black transition-colors flex items-center gap-2" href="ai_demo.html">
+              AI Demo
+            </a>
+          </nav>
+        </div>
+
+        <div class="login-glass-panel rounded-2xl p-6 mt-auto">
+          <div class="flex flex-col gap-3">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">System Status</span>
+            <div class="flex items-center gap-2 text-black font-bold text-xs">
+              <span class="text-emerald-500">●</span> ALL SYSTEMS OPERATIONAL
+            </div>
+            <hr class="border-t border-slate-200"/>
+            <div class="text-[10px] font-bold text-black uppercase tracking-widest font-mono">
+              LIVE CITY INTELLIGENCE
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 3. STAGE 3: DRISHTI LANDING PAGE CONTENT                                  -->
+  <!-- ========================================================================= -->
+  <div id="drishtiLandingContent" class="w-full flex-1 flex flex-col">
+    
 
   <!-- ========================================================================= -->
   <!-- TOP HALF: 50% OF PAGE — CRISP WHITE / LIGHT THEME (#F3F4F6)              -->
@@ -909,5 +1273,77 @@
     }
   </script>
 
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- TRANSITION CONTROLLER JAVASCRIPT                                         -->
+  <!-- ========================================================================= -->
+  <script>
+    // 1. Stage 1: 2-Second Minimal Loading Interface Logic
+    (function() {
+      const preloader = document.getElementById("drishtiPreloader");
+      const pct = document.getElementById("preloaderPct");
+      const status = document.getElementById("preloaderStatus");
+      const startTime = performance.now();
+      const duration = 2000; // Exact 2.0 seconds
+
+      function animatePreloader(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1.0);
+        const percent = Math.floor(progress * 100);
+
+        if (pct) pct.textContent = `${percent}%`;
+
+        if (percent > 45 && percent < 80) {
+          if (status) status.textContent = "SYNCHRONIZING MESH";
+        } else if (percent >= 80) {
+          if (status) status.textContent = "SECURE PROTOCOL [OK]";
+        }
+
+        if (progress < 1.0) {
+          requestAnimationFrame(animatePreloader);
+        } else {
+          if (pct) pct.textContent = "100%";
+          // Seamless dissolve into Login Screen after exactly 2 seconds
+          setTimeout(() => {
+            if (preloader) preloader.classList.add("is-hidden");
+          }, 150);
+        }
+      }
+
+      requestAnimationFrame(animatePreloader);
+    })();
+
+    // 2. Stage 2 to Stage 3: Login to Landing Page Transition
+    function handleDrishtiLogin(e) {
+      if (e) e.preventDefault();
+      const loginScreen = document.getElementById("drishtiLoginScreen");
+      const submitBtn = document.getElementById("loginSubmitBtn");
+
+      if (submitBtn) {
+        submitBtn.innerHTML = `<span class="text-xs font-bold uppercase tracking-widest">AUTHENTICATING...</span><span class="material-symbols-outlined text-sm animate-spin">refresh</span>`;
+      }
+
+      setTimeout(() => {
+        // Unlock and dissolve into Drishti Landing Page
+        if (loginScreen) {
+          loginScreen.classList.add("is-unlocked");
+        }
+      }, 350);
+    }
+
+    // 3. Return to Login / Lock Console helper
+    function lockDrishtiConsole() {
+      const loginScreen = document.getElementById("drishtiLoginScreen");
+      if (loginScreen) {
+        loginScreen.classList.remove("is-unlocked");
+        const submitBtn = document.getElementById("loginSubmitBtn");
+        if (submitBtn) {
+          submitBtn.innerHTML = `<span class="text-xs font-bold uppercase tracking-widest">SIGN IN</span><span class="material-symbols-outlined text-sm">arrow_forward</span>`;
+        }
+      }
+    }
+  </script>
 </body>
 </html>

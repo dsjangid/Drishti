@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Drishti - Urban Intelligence Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;family=Manrope:wght@600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-primary-fixed-variant": "#474747",
+                        "error-container": "#ffdad6",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#1b1b1b",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#636262",
+                        "on-surface-variant": "#4c4546",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "on-tertiary-container": "#848484",
+                        "secondary-fixed": "#e5e2e1",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "on-primary-fixed": "#1b1b1b",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#dadada",
+                        "primary": "#000000",
+                        "primary-fixed-dim": "#c6c6c6",
+                        "outline": "#7e7576",
+                        "secondary-container": "#e2dfde",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#e2e2e2",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#474747",
+                        "tertiary-fixed-dim": "#c6c6c6",
+                        "surface-container-highest": "#e3e2e2",
+                        "on-surface": "#1a1c1c",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#e2e2e2",
+                        "secondary": "#5f5e5e",
+                        "on-tertiary-fixed": "#1b1b1b",
+                        "tertiary": "#000000",
+                        "surface-bright": "#faf9f9",
+                        "error": "#ba1a1a",
+                        "on-background": "#1a1c1c",
+                        "surface-container": "#efeeed",
+                        "surface-variant": "#e3e2e2",
+                        "inverse-on-surface": "#f1f0f0",
+                        "on-primary-container": "#848484",
+                        "background": "#faf9f9",
+                        "inverse-surface": "#2f3131",
+                        "outline-variant": "#cfc4c5",
+                        "surface-container-low": "#f4f3f3",
+                        "surface": "#faf9f9",
+                        "on-secondary-fixed-variant": "#474746",
+                        "surface-container-high": "#e9e8e8",
+                        "tertiary-container": "#1b1b1b",
+                        "inverse-primary": "#c6c6c6",
+                        "surface-tint": "#5e5e5e"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "2xl": "1rem",
+                        "3xl": "2rem"
+                    },
+                    spacing: {
+                        "section-margin": "64px",
+                        "panel-gap": "16px",
+                        "unit": "8px",
+                        "container-padding": "40px",
+                        "gutter": "24px"
+                    },
+                    fontFamily: {
+                        "body-lg": ["Inter", "sans-serif"],
+                        "headline-lg": ["Manrope", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "headline-md": ["Manrope", "sans-serif"],
+                        "label-sm": ["Inter", "sans-serif"],
+                        "label-caps": ["Inter", "sans-serif"],
+                        "display-lg": ["Manrope", "sans-serif"]
+                    },
+                    fontSize: {
+                        "body-lg": ["18px", { lineHeight: "1.6", letterSpacing: "0", fontWeight: "400" }],
+                        "headline-lg": ["32px", { lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "body-md": ["16px", { lineHeight: "1.5", letterSpacing: "0", fontWeight: "400" }],
+                        "headline-md": ["24px", { lineHeight: "1.2", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "label-sm": ["12px", { lineHeight: "14px", letterSpacing: "0.02em", fontWeight: "500" }],
+                        "label-caps": ["11px", { lineHeight: "16px", letterSpacing: "0.15em", fontWeight: "700" }],
+                        "display-lg": ["64px", { lineHeight: "1.0", letterSpacing: "-0.04em", fontWeight: "800" }]
+                    },
+                    animation: {
+                        "fade-in": "fadeIn 1s ease-out forwards",
+                        "slide-up": "slideUp 0.8s ease-out forwards",
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            "0%": { opacity: "0" },
+                            "100%": { opacity: "1" },
+                        },
+                        slideUp: {
+                            "0%": { opacity: "0", transform: "translateY(20px)" },
+                            "100%": { opacity: "1", transform: "translateY(0)" },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+        
+        .bg-video-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1;
+        }
+
+        .outer-frame {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 20;
+            height: 100vh;
+            display: flex;
+            padding: 40px;
+            gap: 24px;
+            pointer-events: auto;
+        }
+
+        .glass-panel {
+            background: rgba(247, 247, 245, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2px solid #E5E5E5;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .dark-glass {
+            background: rgba(23, 23, 23, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .input-minimal {
+            background: #FFFFFF;
+            border: none;
+            border-bottom: 2px solid #E5E5E5;
+            border-radius: 0;
+            padding-left: 0;
+            transition: border-color 0.2s;
+        }
+
+        .input-minimal:focus {
+            outline: none;
+            border-bottom-color: #000000;
+            box-shadow: none;
+        }
+
+        .btn-arrow-shift:hover .material-symbols-outlined {
+            transform: translateX(4px);
+        }
+        
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+            transition: transform 0.3s ease;
+        }
+
+        .dot-pattern {
+            background-image: radial-gradient(#999999 1px, transparent 1px);
+            background-size: 16px 16px;
+        }
+    
+        /* 2-Second Minimal Preloader Overlay */
+        #drishtiPreloader {
+            position: fixed;
+            inset: 0;
+            background-color: #000000;
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s;
+        }
+
+        #drishtiPreloader.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .preloader-cluster {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .preloader-brand-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .preloader-logo-box {
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid rgba(255, 255, 255, 0.85);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: 0 0 16px rgba(255, 255, 255, 0.08);
+        }
+
+        .preloader-logo-box .material-symbols-outlined {
+            font-size: 20px;
+            color: #ffffff;
+            font-variation-settings: "FILL" 0, "wght" 500;
+        }
+
+        .preloader-title {
+            font-family: "Manrope", sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 0.22em;
+            color: #ffffff;
+            text-transform: uppercase;
+            line-height: 1;
+            margin-right: -0.22em;
+        }
+
+        .preloader-track {
+            width: 260px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preloader-bar {
+            position: absolute;
+            top: 0; left: 0;
+            height: 100%;
+            width: 0%;
+            background: #ffffff;
+            box-shadow: 0 0 8px #ffffff;
+            animation: fillLoaderBar 2.0s cubic-bezier(0.25, 1, 0.35, 1) forwards;
+        }
+
+        .preloader-telemetry {
+            width: 260px;
+            display: flex;
+            justify-content: space-between;
+            font-family: "Inter", monospace;
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+        }
+
+        @keyframes fillLoaderBar {
+            0% { width: 0%; }
+            40% { width: 45%; }
+            75% { width: 80%; }
+            100% { width: 100%; }
+        }
+
+    </style>
+</head>
+<body class="font-body-md text-on-surface antialiased bg-primary">
+
+<!-- 2-Second Minimal Loading Interface -->
+<div id="drishtiPreloader">
+    <div class="preloader-cluster">
+        <div class="preloader-brand-row">
+            <div class="preloader-logo-box">
+                <span class="material-symbols-outlined">visibility</span>
+            </div>
+            <h1 class="preloader-title">DRISHTI</h1>
+        </div>
+        <div class="preloader-track">
+            <div class="preloader-bar"></div>
+        </div>
+        <div class="preloader-telemetry">
+            <span>COMMAND INIT</span>
+            <span id="preloaderPct">0%</span>
+        </div>
+    </div>
+</div>
+
+<!-- Background Video -->
+<div class="bg-video-wrapper">
+<div class="video-overlay"></div>
+<video autoplay muted loop playsinline class="w-full h-full object-cover opacity-60 absolute inset-0 z-0">
+    <source src="login_video.mp4" type="video/mp4">
+</video>
+<div class="bg-cover bg-center w-full h-full opacity-60 absolute inset-0" data-alt="A high-contrast, moody monochrome video still of an urban city intersection at night, dense with traffic, viewed from an elevated surveillance angle. Sharp geometric lines of the road, harsh lighting from street lamps, entirely in strict grayscale with deep blacks and bright white highlights. Cinematic, futuristic command center aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA0ThEQG5b8K5R1KNV_LAgdbUFx5j4qfEWcXYJ6OlyZf2qkiFDoOIVWrBFL48qpj1kBf0DaEzWK_cHuojsw7OfQ83i6BkVeCl8v8owvYkuWXPUXljY71MpS86DXijlIyoUbR7ejHFncnHghcgno4HNYpakKKjiDjDAsd1I9TCNbjfu2OeC-e5Zg1XdZ6PGznqfivY_iEQk34p2KJB0-9_-M4fUmchcPM-9PGOsMnPbDADNnE2szOw5o4w')"></div>
+</div>
+<!-- Outer Frame -->
+<div class="outer-frame"></div>
+<!-- Main Content -->
+<div class="content-wrapper animate-fade-in w-full max-w-[1600px] mx-auto">
+<!-- Left Panel: Login (Approx 35-38%) -->
+<div class="glass-panel w-full md:w-[38%] rounded-3xl p-8 lg:p-12 flex flex-col justify-between h-full shadow-lg relative overflow-hidden animate-slide-up" style="animation-delay: 0.2s;">
+<div>
+<!-- Header -->
+<div class="flex items-center gap-2 mb-12">
+<span class="material-symbols-outlined text-primary text-2xl">visibility</span>
+<h1 class="font-display-lg text-headline-md tracking-tighter text-primary uppercase">DRISHTI</h1>
+</div>
+<!-- Editorial Headline -->
+<h2 class="font-headline-lg text-headline-lg text-primary mb-8 uppercase max-w-sm">
+                    SEE THE CITY.<br/>
+                    UNDERSTAND IT.<br/>
+                    ACT BEFORE IT'S TOO LATE.
+                </h2>
+<hr class="border-t-2 border-outline-variant mb-8"/>
+<!-- Login Form -->
+<div class="mb-4">
+<h3 class="font-headline-md text-headline-md text-primary mb-2">Welcome back</h3>
+<p class="font-body-md text-secondary mb-8">Sign in to access the Drishti Command Center.</p>
+</div>
+<form class="flex flex-col gap-6" action="index.html">
+<div class="flex flex-col">
+<label class="font-label-caps text-label-caps text-secondary uppercase mb-2" for="email">Email address</label>
+<input class="input-minimal font-body-md text-primary w-full py-2 placeholder:text-surface-tint" id="email" placeholder="operative@drishti.gov" required="" type="email"/>
+</div>
+<div class="flex flex-col">
+<label class="font-label-caps text-label-caps text-secondary uppercase mb-2" for="password">Password</label>
+<input class="input-minimal font-body-md text-primary w-full py-2 placeholder:text-surface-tint" id="password" placeholder="••••••••" required="" type="password"/>
+</div>
+<div class="flex items-center justify-between mt-2">
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="rounded border-2 border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+<span class="font-label-sm text-label-sm text-secondary group-hover:text-primary transition-colors">Remember me</span>
+</label>
+<a class="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors" href="#">Forgot password?</a>
+</div>
+<button class="btn-arrow-shift w-full bg-primary text-on-primary rounded-full py-4 mt-6 flex items-center justify-center gap-2 hover:bg-inverse-surface transition-colors" type="submit">
+<span class="font-label-caps text-label-caps uppercase tracking-widest">SIGN IN</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</form>
+</div>
+<!-- Footer Link -->
+<div class="text-center mt-8">
+<p class="font-label-sm text-label-sm text-secondary">
+                    Don't have an account? <a class="text-primary hover:underline" href="#">Create account</a>
+</p>
+</div>
+</div>
+<!-- Center: Floating Telemetry -->
+<div class="hidden md:flex flex-1 flex-col justify-center items-center relative pointer-events-none">
+<div class="flex flex-col gap-6 w-full max-w-md">
+<div class="dark-glass rounded-xl p-4 flex items-center justify-between text-on-primary animate-slide-up" style="animation-delay: 0.4s;">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-on-primary animate-pulse"></span>
+<span class="font-label-caps text-label-caps uppercase">LIVE FEED: 24 CAMERAS ACTIVE</span>
+</div>
+<span class="material-symbols-outlined text-sm opacity-70">videocam</span>
+</div>
+<div class="dark-glass rounded-xl p-4 flex items-center justify-between text-on-primary animate-slide-up" style="animation-delay: 0.5s; margin-left: 20px;">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-sm opacity-70">warning</span>
+<span class="font-label-caps text-label-caps uppercase">07 INCIDENTS DETECTED</span>
+</div>
+<span class="font-label-sm text-label-sm opacity-70">SECTOR 4</span>
+</div>
+</div>
+</div>
+<!-- Right Panel: Navigation / Status -->
+<div class="hidden lg:flex flex-col gap-6 w-[280px] animate-slide-up" style="animation-delay: 0.3s;">
+<!-- Nav Card -->
+<div class="glass-panel rounded-2xl p-6 relative overflow-hidden">
+<div class="absolute inset-0 dot-pattern opacity-10 pointer-events-none"></div>
+<h4 class="font-label-caps text-label-caps text-secondary mb-6 uppercase tracking-widest flex items-center gap-2">
+<span class="text-primary">&gt;</span> DRISHTI
+                </h4>
+<nav class="flex flex-col gap-4 relative z-10">
+<a class="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors flex items-center gap-2" href="dashboard.html">
+                        Dashboard
+                    </a>
+<a class="font-label-sm text-label-sm text-primary font-bold flex items-center gap-2" href="drishti.html">
+<span class="text-primary">&gt;</span> Live Monitoring
+                    </a>
+<a class="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors flex items-center gap-2" href="dashboard.html">
+                        Incidents
+                    </a>
+<a class="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors flex items-center gap-2" href="dashboard.html">
+                        Analytics
+                    </a>
+<a class="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors flex items-center gap-2 mt-4" href="how_it_works.html">
+                        How It Works
+                    </a>
+</nav>
+</div>
+<!-- Status Card -->
+<div class="glass-panel rounded-2xl p-6 mt-auto">
+<div class="flex flex-col gap-4">
+<div class="flex flex-col gap-1">
+<span class="font-label-caps text-label-caps text-secondary uppercase">System Status</span>
+<div class="flex items-center gap-2 text-primary font-bold font-label-sm text-label-sm">
+<span class="text-primary">●</span> ALL SYSTEMS OPERATIONAL
+                        </div>
+</div>
+<hr class="border-t border-outline-variant"/>
+<div class="font-label-caps text-label-caps text-primary uppercase tracking-widest">
+                        LIVE CITY INTELLIGENCE
+                    </div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Chevron -->
+<div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 animate-bounce">
+<span class="material-symbols-outlined text-on-primary opacity-50">expand_more</span>
+</div>
+
+<script>
+    // 2-Second Minimal Loading Transition
+    (function() {
+        const preloader = document.getElementById("drishtiPreloader");
+        const pct = document.getElementById("preloaderPct");
+        const startTime = performance.now();
+        const duration = 2000;
+
+        function tick(now) {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1.0);
+            if (pct) pct.textContent = `${Math.floor(progress * 100)}%`;
+
+            if (progress < 1.0) {
+                requestAnimationFrame(tick);
+            } else {
+                if (pct) pct.textContent = "100%";
+                setTimeout(() => {
+                    preloader.classList.add("is-hidden");
+                }, 100);
+            }
+        }
+        requestAnimationFrame(tick);
+    })();
+</script>
+
+</body></html>
